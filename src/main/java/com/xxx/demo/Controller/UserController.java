@@ -24,10 +24,10 @@ public class UserController {
     @Value("${version}")
     private String version;
 
-    @PostMapping("/add-user")
+    @PostMapping("/api/user/adduser")
     public Response addUser (@RequestBody User thisUser){
-        thisUser.setdefposID("防区一");
-        thisUser.setregionID("区域一");
+        thisUser.setDefposID("防区一");
+        thisUser.setRegionID("区域一");
         User newUser = userService.addUser(thisUser);
 
         if (newUser == null){
@@ -62,9 +62,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("/set-user-info")
+    @PostMapping("/api/user/getUserInfo")
     public Response setUserInfo(@RequestBody User user){
-
         try {
             userService.updateUser(user.getUsername(),user.getRegionID(),user.getDefposID());
             return genSuccessResult();
@@ -94,22 +93,15 @@ public class UserController {
 
     @PostMapping("/change-password")
     public Response changePassword(@RequestBody User user){
-        userService.changePassword(user.getMail(),user.getPassword());
-        String vcode = Random.getRandomNumString(6);
-        try{
-            SendMail sendMail = new SendMail("tql_tql","HuaWei2018","tql_tql@163.com","tql","www");
-            sendMail.send("local",user.getMail(), vcode,"www");
-            return genSuccessResult(vcode);
-        }
-        catch (Exception e){
-            return genFailResult("发送验证邮件失败，请重试");
-        }
+        userService.changePassword(user.getUsername(),user.getPassword());
+        return genSuccessResult(true);
     }
 
-    @PostMapping("/delete-user")
+    @PostMapping("/api/user/deleteuser")
     public Response deleteUser(@RequestBody User user){
         try{
-            userService.deleteUser(user.getUsername());
+            userService.deleteUser(user.getUserID());
+            return genSuccessResult(true);
         }
         catch(Exception e) {
             return genFailResult("删除用户失败");

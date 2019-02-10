@@ -12,39 +12,38 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public User addUser (User user){
-        try{
+    public User addUser(User user) {
+        try {
             User newUser = userRepository.save(user);
             return newUser;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
 
-    public User searchUserByName (String username){
+    public User searchUserByName(String username) {
         User thisUser = userRepository.searchUserByName(username);
         return thisUser;
     }
 
-    public void updateUser(String username,String regionID,String defposID){
-        userRepository.setUserInfo(username,regionID,defposID);
+    public void updateUser(String username, String regionID, String defposID) {
+        userRepository.setUserInfo(username, regionID, defposID);
     }
 
-    public String getPassword (String username){
+    public String getPassword(String username) {
         return userRepository.getPassword(username);
     }
 
-    public boolean changePassword(String username, String password){
+    public boolean changePassword(String username, String password) {
         try {
-            userRepository.changePassword(username,password);
+            userRepository.changePassword(username, password);
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public void deleteUser (String username){
-        userRepository.deleteUser(username);
+    public void deleteUser(int id) {
+        userRepository.deleteById(id);
     }
+}

@@ -7,6 +7,8 @@ import java.util.Date;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    int userID;
 
     @Column
     String password;
@@ -17,16 +19,20 @@ public class User {
     @Column
     Date registerday;
 
-    @Column
+    @Column(name = "phone_id")
     String phoneID;
 
-    @Column
+    @Column(name = "defpos_id")
     String defposID;
+
+    @Column(name = "region_id")
+    String regionID;
 
     @Override
     public String toString() {
         return  "User{" +
-                " password='" + password + '\'' +
+                "userID="+ userID +
+                ", password='" + password + '\'' +
                 ", username='" + username + '\'' +
                 ", phoneID='" + phoneID + '\'' +
                 ", defposID='" + defposID + '\'' +
@@ -34,15 +40,18 @@ public class User {
                 '}';
     }
 
-    public User(String phoneID, String password,String username,String defposID,Date registerday) {
+    public User(String username,String password,String phoneID,String regionID,String defposID,Date registerday) {
         this.password=password;
         this.phoneID=phoneID;
         this.registerday=registerday;
+        this.regionID=regionID;
         this.defposID=defposID;
         this.username=username;
     }
 
     public User() { }
+
+    public int getUserID(){return userID;}
 
     public String getPassword() {
         return password;
@@ -60,7 +69,7 @@ public class User {
         this.username =newname;
     }
 
-    public Date getregiserday() {return registerday; }
+    public Date getRegiserday() {return registerday; }
 
     public void setRegisterday(Date registerday) {
         this.registerday = registerday;
@@ -75,11 +84,18 @@ public class User {
     }
 
     public String getDefposID() {
-        return DefposID;
+        return defposID;
     }
 
-    public void setDefposID(String DefposID) {
-        this.DefposID = DefposID;
+    public void setDefposID(String defposID) {
+        this.defposID = defposID;
     }
 
+    public String getRegionID() {
+        return regionID;
+    }
+
+    public void setRegionID(String regionID) {
+        this.regionID = regionID;
+    }
 }
