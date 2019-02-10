@@ -26,20 +26,21 @@ public class UserController {
 
     @PostMapping("/add-user")
     public Response addUser (@RequestBody User thisUser){
-        thisUser.setFavourite("");
+        thisUser.setdefposID("防区一");
+        thisUser.setregionID("区域一");
         User newUser = userService.addUser(thisUser);
 
         if (newUser == null){
-            return genFailResult("添加失败，该邮箱已被注册过");
+            return genFailResult("添加失败，该用户名已被注册过");
         }
         else {
             return genSuccessResult(newUser);
         }
     }
 
-    @GetMapping("/get-user-by-mail")
-    public Response getUserByID (@RequestParam String mail){
-        User thisUser = userService.searchUser(mail);
+    @GetMapping("/get-user-by-name")
+    public Response getUserByName (@RequestParam String username){
+        User thisUser = userService.searchUserByName(username);
         if (thisUser == null){
             return genFailResult("获取失败");
         }
@@ -65,7 +66,7 @@ public class UserController {
     public Response setUserInfo(@RequestBody User user){
 
         try {
-            userService.updateUser(user.getMail(),user.getNickName(),user.getBirthday(),user.getAge(),user.getGender(), user.getHobby());
+            userService.updateUser(user.getUsername(),user.getRegionID(),user.getDefposID());
             return genSuccessResult();
         }
         catch (Exception e){
@@ -77,7 +78,7 @@ public class UserController {
     public Response getPassword (@RequestBody User user){
 
         try{
-            String correctPassword = userService.getPassword(user.getMail());
+            String correctPassword = userService.getPassword(user.getUsername());
             if (correctPassword.equals(user.getPassword())){
                 return genSuccessResult(true);
             }
@@ -105,62 +106,15 @@ public class UserController {
         }
     }
 
-
-    @PostMapping ("/change-favourite")//只用到了userid和favourite
-    public Response changeFavourite(@RequestBody User user){
-        String current = userService.getFavourite(user.getMail());
-        String[] splitCurrent = current.split(",");
-        String newFavourite=current;
-        boolean result=true;
-        ArrayList<String> splitCurrentList = new ArrayList<>();
-        for (int i=0;i<splitCurrent.length;i++){
-            splitCurrentList.add(splitCurrent[i]);
+    @PostMapping("/delete-user")
+    public Response deleteUser(@RequestBody User user){
+        try{
+            userService.deleteUser(user.getUsername());
         }
-        if (!splitCurrentList.contains(user.getFavourite())){
-            newFavourite += "," + user.getFavourite();
-            result = userService.changeFavourite(user.getMail(), newFavourite);
-        }
-        if (!result){
-            return genFailResult("添加收藏失败，请稍后再试");
-        }
-        else {
-            return genSuccessResult(newFavourite);
+        catch(Exception e) {
+            return genFailResult("删除用户失败");
         }
     }
-
-    @GetMapping ("/get-favourite")
-    public Response getFavourite (@RequestParam String mail){
-        String favourite = userService.getFavourite(mail);
-        if (favourite == null){
-            return genFailResult("获取失败");
-        }
-        else{
-            return genSuccessResult(favourite);
-        }
-    }
-
-    @PostMapping ("/delete-favourite")
-    public Response deleteFavourite(@RequestBody User toDelete){
-        String current = userService.getFavourite(toDelete.getMail());
-        String[] splitCurrent = current.split(",");
-        String afterFavourite="";
-        ArrayList<String> splitCurrentList = new ArrayList<>();
-        for (int i=0;i<splitCurrent.length;i++){
-            splitCurrentList.add(splitCurrent[i]);
-        }
-        splitCurrentList.remove(toDelete.getFavourite());
-        for (int i=0;i<splitCurrentList.size();i++){
-            afterFavourite+=splitCurrentList.get(i)+",";
-        }
-        boolean result = userService.changeFavourite(toDelete.getMail(),afterFavourite);
-        if (result){
-            return genSuccessResult(afterFavourite);
-        }
-        else {
-            return genFailResult("取消收藏失败");
-        }
-    }
-
 
     @GetMapping("/get-version")
     public Response getVersion(){
