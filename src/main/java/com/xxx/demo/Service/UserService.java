@@ -26,8 +26,8 @@ public class UserService {
         return thisUser;
     }
 
-    public void updateUser(String username, String regionID, String defposID) {
-        userRepository.setUserInfo(username, regionID, defposID);
+    public void updateUserInfo(String username, String regionID, String defposID) {
+        userRepository.updateUserInfo(username, regionID, defposID);
     }
 
     public String getPassword(String username) {

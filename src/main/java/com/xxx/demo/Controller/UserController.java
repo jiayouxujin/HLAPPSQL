@@ -38,8 +38,8 @@ public class UserController {
         }
     }
 
-    @GetMapping("/get-user-by-name")
-    public Response getUserByName (@RequestParam String username){
+    @GetMapping("/api/user/getuserInfo")
+    public Response getUserByName(@RequestParam String username){
         User thisUser = userService.searchUserByName(username);
         if (thisUser == null){
             return genFailResult("获取失败");
@@ -62,23 +62,22 @@ public class UserController {
         }
     }
 
-    @PostMapping("/api/user/getUserInfo")
-    public Response setUserInfo(@RequestBody User user){
+    @PostMapping("/api/user/updateuserInfo")
+    public Response updateUserInfo(@RequestBody User user){
         try {
-            userService.updateUser(user.getUsername(),user.getRegionID(),user.getDefposID());
-            return genSuccessResult();
+            userService.updateUserInfo(user.getUsername(),user.getRegionID(),user.getDefposID());
+            return genSuccessResult(true);
         }
         catch (Exception e){
             return genFailResult("更新失败");
         }
     }
 
-    @PostMapping ("/user-login")
-    public Response getPassword (@RequestBody User user){
-
+    @PostMapping ("/api/user/login")
+    public Response getPassword (@RequestParam String username,@RequestParam String password){
         try{
-            String correctPassword = userService.getPassword(user.getUsername());
-            if (correctPassword.equals(user.getPassword())){
+            String correctPassword = userService.getPassword(username);
+            if (correctPassword.equals(password)){
                 return genSuccessResult(true);
             }
             else {

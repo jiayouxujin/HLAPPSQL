@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User,Integer>{
     @Transactional
     @Modifying
     @Query(value = "update user set region_id=?2,defpos_id=?3 where user_name=?1",nativeQuery = true)
-    public void setUserInfo(String username,String regionID,String defposID);
+    public void updateUserInfo(String username,String regionID,String defposID);
 
     @Query(value = "select password from user where user_name = ?1",nativeQuery = true)
     public String getPassword(String username);
