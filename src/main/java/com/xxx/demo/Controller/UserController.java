@@ -2,7 +2,6 @@ package com.xxx.demo.Controller;
 
 import com.xxx.demo.Common.Random;
 import com.xxx.demo.Common.Response;
-import com.xxx.demo.Common.SendMail;
 import com.xxx.demo.Entity.User;
 import com.xxx.demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
-
 import static com.xxx.demo.Common.ResultGenerator.genFailResult;
 import static com.xxx.demo.Common.ResultGenerator.genSuccessResult;
 
@@ -46,19 +44,6 @@ public class UserController {
         }
         else {
             return genSuccessResult(thisUser);
-        }
-    }
-
-    @GetMapping("/get-verification-code")
-    public Response getVerificationCode(@RequestParam String mail){
-        String vcode = Random.getRandomNumString(6);
-        try{
-            SendMail sendMail = new SendMail("tql_tql","HuaWei2018","tql_tql@163.com","tql","www");
-            sendMail.send("local",mail, vcode,"www");
-            return genSuccessResult(vcode);
-        }
-        catch (Exception e){
-            return genFailResult(e.getMessage());
         }
     }
 
