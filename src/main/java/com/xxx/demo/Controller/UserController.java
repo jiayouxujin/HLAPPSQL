@@ -2,7 +2,6 @@ package com.xxx.demo.Controller;
 
 import com.xxx.demo.Common.Random;
 import com.xxx.demo.Common.Response;
-import com.xxx.demo.Common.SendMail;
 import com.xxx.demo.Entity.User;
 import com.xxx.demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
-
 import static com.xxx.demo.Common.ResultGenerator.genFailResult;
 import static com.xxx.demo.Common.ResultGenerator.genSuccessResult;
 
@@ -24,22 +22,23 @@ public class UserController {
     @Value("${version}")
     private String version;
 
-    @PostMapping("/add-user")
+    @PostMapping("/api/user/adduser")
     public Response addUser (@RequestBody User thisUser){
-        thisUser.setFavourite("");
+        thisUser.setDefposID("防区一");
+        thisUser.setRegionID("区域一");
         User newUser = userService.addUser(thisUser);
 
         if (newUser == null){
-            return genFailResult("添加失败，该邮箱已被注册过");
+            return genFailResult("添加失败，该用户名已被注册过");
         }
         else {
             return genSuccessResult(newUser);
         }
     }
 
-    @GetMapping("/get-user-by-mail")
-    public Response getUserByID (@RequestParam String mail){
-        User thisUser = userService.searchUser(mail);
+    @GetMapping("/api/user/getuserInfo")
+    public Response getUserByName(@RequestParam String username){
+        User thisUser = userService.searchUserByName(username);
         if (thisUser == null){
             return genFailResult("获取失败");
         }
@@ -48,37 +47,22 @@ public class UserController {
         }
     }
 
-    @GetMapping("/get-verification-code")
-    public Response getVerificationCode(@RequestParam String mail){
-        String vcode = Random.getRandomNumString(6);
-        try{
-            SendMail sendMail = new SendMail("tql_tql","HuaWei2018","tql_tql@163.com","tql","www");
-            sendMail.send("local",mail, vcode,"www");
-            return genSuccessResult(vcode);
-        }
-        catch (Exception e){
-            return genFailResult(e.getMessage());
-        }
-    }
-
-    @PostMapping("/set-user-info")
-    public Response setUserInfo(@RequestBody User user){
-
+    @PostMapping("/api/user/updateuserInfo")
+    public Response updateUserInfo(@RequestParam String username,@RequestParam String regionID,@RequestParam String defposID){
         try {
-            userService.updateUser(user.getMail(),user.getNickName(),user.getBirthday(),user.getAge(),user.getGender(), user.getHobby());
-            return genSuccessResult();
+            userService.updateUserInfo(username, regionID, defposID);
+            return genSuccessResult(true);
         }
         catch (Exception e){
             return genFailResult("更新失败");
         }
     }
 
-    @PostMapping ("/user-login")
-    public Response getPassword (@RequestBody User user){
-
+    @PostMapping ("/api/user/login")
+    public Response getPassword (@RequestParam String username,@RequestParam String password){
         try{
-            String correctPassword = userService.getPassword(user.getMail());
-            if (correctPassword.equals(user.getPassword())){
+            String correctPassword = userService.getPassword(username);
+            if (correctPassword.equals(password)){
                 return genSuccessResult(true);
             }
             else {
@@ -91,76 +75,22 @@ public class UserController {
 
     }
 
-    @PostMapping("/change-password")
-    public Response changePassword(@RequestBody User user){
-        userService.changePassword(user.getMail(),user.getPassword());
-        String vcode = Random.getRandomNumString(6);
+    @PostMapping("/api/user/changepassword")
+    public Response changePassword(@RequestParam String username,@RequestParam String password){
+        userService.changePassword(username,password);
+        return genSuccessResult(true);
+    }
+
+    @PostMapping("/api/user/deleteuser")
+    public Response deleteUser(@RequestParam int userID){
         try{
-            SendMail sendMail = new SendMail("tql_tql","HuaWei2018","tql_tql@163.com","tql","www");
-            sendMail.send("local",user.getMail(), vcode,"www");
-            return genSuccessResult(vcode);
+            userService.deleteUser(userID);
+            return genSuccessResult(true);
         }
-        catch (Exception e){
-            return genFailResult("发送验证邮件失败，请重试");
-        }
-    }
-
-
-    @PostMapping ("/change-favourite")//只用到了userid和favourite
-    public Response changeFavourite(@RequestBody User user){
-        String current = userService.getFavourite(user.getMail());
-        String[] splitCurrent = current.split(",");
-        String newFavourite=current;
-        boolean result=true;
-        ArrayList<String> splitCurrentList = new ArrayList<>();
-        for (int i=0;i<splitCurrent.length;i++){
-            splitCurrentList.add(splitCurrent[i]);
-        }
-        if (!splitCurrentList.contains(user.getFavourite())){
-            newFavourite += "," + user.getFavourite();
-            result = userService.changeFavourite(user.getMail(), newFavourite);
-        }
-        if (!result){
-            return genFailResult("添加收藏失败，请稍后再试");
-        }
-        else {
-            return genSuccessResult(newFavourite);
+        catch(Exception e) {
+            return genFailResult("删除用户失败");
         }
     }
-
-    @GetMapping ("/get-favourite")
-    public Response getFavourite (@RequestParam String mail){
-        String favourite = userService.getFavourite(mail);
-        if (favourite == null){
-            return genFailResult("获取失败");
-        }
-        else{
-            return genSuccessResult(favourite);
-        }
-    }
-
-    @PostMapping ("/delete-favourite")
-    public Response deleteFavourite(@RequestBody User toDelete){
-        String current = userService.getFavourite(toDelete.getMail());
-        String[] splitCurrent = current.split(",");
-        String afterFavourite="";
-        ArrayList<String> splitCurrentList = new ArrayList<>();
-        for (int i=0;i<splitCurrent.length;i++){
-            splitCurrentList.add(splitCurrent[i]);
-        }
-        splitCurrentList.remove(toDelete.getFavourite());
-        for (int i=0;i<splitCurrentList.size();i++){
-            afterFavourite+=splitCurrentList.get(i)+",";
-        }
-        boolean result = userService.changeFavourite(toDelete.getMail(),afterFavourite);
-        if (result){
-            return genSuccessResult(afterFavourite);
-        }
-        else {
-            return genFailResult("取消收藏失败");
-        }
-    }
-
 
     @GetMapping("/get-version")
     public Response getVersion(){

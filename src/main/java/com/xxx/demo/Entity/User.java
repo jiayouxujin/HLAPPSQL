@@ -7,95 +7,51 @@ import java.util.Date;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "user_id")
+    @Column(name = "user_id")
     int userID;
-
-    @Column
-    String mail;
 
     @Column
     String password;
 
-    @Column(name = "nick_name",columnDefinition = "char(200) character set utf8")
-    String nickName;
+    @Column(name = "user_name",columnDefinition = "char(200) character set utf8")
+    String username;
 
     @Column
-    int age;
+    Date registerday;
 
-    @Column
-    int gender;
+    @Column(name = "phone_id")
+    String phoneID;
 
-    @Column
-    Date birthday;
+    @Column(name = "defpos_id")
+    String defposID;
 
-    @Column
-    String hobby;
-
-    @Column
-    String favourite;
+    @Column(name = "region_id")
+    String regionID;
 
     @Override
     public String toString() {
         return  "User{" +
-                "userID=" + userID +
-                ", mail='" + mail + '\'' +
+                "userID="+ userID +
                 ", password='" + password + '\'' +
-                ", nickName='" + nickName + '\'' +
-                ", age=" + age +
-                ", gender=" + gender +
-                ", birthday=" + birthday +
-                ", hobby='" + hobby + '\'' +
-                ", favourite='" + favourite + '\'' +
+                ", username='" + username + '\'' +
+                ", phoneID='" + phoneID + '\'' +
+                ", defposID='" + defposID + '\'' +
+                ", registerday="+registerday+
                 '}';
     }
 
-    public String getFavourite() {
-        return favourite;
+    public User(String username,String password,String phoneID,String regionID,String defposID,Date registerday) {
+        this.password=password;
+        this.phoneID=phoneID;
+        this.registerday=registerday;
+        this.regionID=regionID;
+        this.defposID=defposID;
+        this.username=username;
     }
 
-    public void setFavourite(String favourite) {
-        this.favourite = favourite;
-    }
+    public User() { }
 
-    public User(String mail, String password, String nickName, int age, int gender, Date birthday, String hobby, String favourite) {
-        this.mail = mail;
-        this.password = password;
-        this.nickName = nickName;
-        this.age = age;
-        this.gender = gender;
-        this.birthday = birthday;
-        this.hobby = hobby;
-        this.favourite = favourite;
-    }
-
-    public User(String mail, String password, String nickName, int age, int gender, Date birthday, String hobby) {
-        this.mail = mail;
-        this.password = password;
-        this.nickName = nickName;
-        this.age = age;
-        this.gender = gender;
-        this.birthday = birthday;
-        this.hobby = hobby;
-    }
-
-    public User() {
-    }
-
-    public int getUserID() {
-        return userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
+    public int getUserID(){return userID;}
 
     public String getPassword() {
         return password;
@@ -105,44 +61,41 @@ public class User {
         this.password = password;
     }
 
-    public String getNickName() {
-        return nickName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setUsername(String newname) {
+        this.username =newname;
     }
 
-    public int getAge() {
-        return age;
+    public Date getRegiserday() {return registerday; }
+
+    public void setRegisterday(Date registerday) {
+        this.registerday = registerday;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public String getPhoneID() {
+        return phoneID;
     }
 
-    public int getGender() {
-        return gender;
+    public void setPhoneID(String phoneID) {
+        this.phoneID = phoneID;
     }
 
-    public void setGender(int gender) {
-        this.gender = gender;
+    public String getDefposID() {
+        return defposID;
     }
 
-    public Date getBirthday() {
-        return birthday;
+    public void setDefposID(String defposID) {
+        this.defposID = defposID;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public String getRegionID() {
+        return regionID;
     }
 
-    public String getHobby() {
-        return hobby;
+    public void setRegionID(String regionID) {
+        this.regionID = regionID;
     }
-
-    public void setHobby(String hobby) {
-        this.hobby = hobby;
-    }
-
 }
