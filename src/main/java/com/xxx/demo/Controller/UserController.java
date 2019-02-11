@@ -48,9 +48,9 @@ public class UserController {
     }
 
     @PostMapping("/api/user/updateuserInfo")
-    public Response updateUserInfo(@RequestBody User user){
+    public Response updateUserInfo(@RequestParam String username,@RequestParam String regionID,@RequestParam String defposID){
         try {
-            userService.updateUserInfo(user.getUsername(),user.getRegionID(),user.getDefposID());
+            userService.updateUserInfo(username, regionID, defposID);
             return genSuccessResult(true);
         }
         catch (Exception e){
@@ -75,16 +75,16 @@ public class UserController {
 
     }
 
-    @PostMapping("/change-password")
-    public Response changePassword(@RequestBody User user){
-        userService.changePassword(user.getUsername(),user.getPassword());
+    @PostMapping("/api/user/changepassword")
+    public Response changePassword(@RequestParam String username,@RequestParam String password){
+        userService.changePassword(username,password);
         return genSuccessResult(true);
     }
 
     @PostMapping("/api/user/deleteuser")
-    public Response deleteUser(@RequestBody User user){
+    public Response deleteUser(@RequestParam int userID){
         try{
-            userService.deleteUser(user.getUserID());
+            userService.deleteUser(userID);
             return genSuccessResult(true);
         }
         catch(Exception e) {
