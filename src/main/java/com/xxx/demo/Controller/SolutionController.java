@@ -49,9 +49,9 @@ public class SolutionController {
 
 
     @PostMapping("/api/solution/deletesolution")
-    public Response deleteSolution(@RequestParam int solutionID,@RequestParam String title,@RequestParam String context){
+    public Response deleteSolution(@RequestParam int solutionID){
         try{
-            solutionService.deleteSolution(solutionID,title,context);
+            solutionService.deleteSolution(solutionID);
             return genSuccessResult(true);
         }
         catch(Exception e) {
@@ -64,7 +64,7 @@ public class SolutionController {
     public Response searchSolutionByName(@RequestParam String username)
     {
         List<Solution> solutionList = solutionService.searchSolutionByName(username);
-        if (solutionList == null){
+        if (solutionList == null||solutionList.size()==0){
             return genFailResult("无记录或查询失败");
         }
         else {

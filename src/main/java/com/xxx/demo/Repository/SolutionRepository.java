@@ -21,14 +21,9 @@ public interface SolutionRepository extends JpaRepository<Solution,Integer> {
 
     @Transactional
     @Modifying
-    @Query(value = "update solution set solution_id=?1,title=?2,context=?3",nativeQuery = true)
+    @Query(value = "update solution set title=?2,context=?3 where solution_id=?1",nativeQuery = true)
     public void updateSolution(int solutionID,String title,String context);
 
-
-    @Transactional
-    @Modifying
-    @Query (value = "delete from solution where solution_id = ?1 and title=?2 and context=?3",nativeQuery = true)
-    public void delteSolution(int solutionID,String title,String context);
 
     @Query (value = "SELECT * from solution where user_name = ?1",nativeQuery = true)
     public List<Solution> searchSolutionByName (String username);

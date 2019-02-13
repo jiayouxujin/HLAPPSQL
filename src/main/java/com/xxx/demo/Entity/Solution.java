@@ -32,15 +32,16 @@ public class Solution {
     @Column(columnDefinition = "char(200) character set utf8")
     String context;
 
-    public Solution(int recordID, int userID, String username, String title, String context) {
+    public Solution(){}
+    public Solution(int recordID, String recordnum, Date deltime, int userID, String username, String title, String context) {
         this.recordID = recordID;
+        this.recordnum = recordnum;
+        this.deltime = deltime;
         this.userID = userID;
         this.username = username;
         this.title = title;
         this.context = context;
     }
-
-
 
     @Override
     public String toString() {

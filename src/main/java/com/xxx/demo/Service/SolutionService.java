@@ -24,8 +24,8 @@ public class SolutionService {
         solutionRepository.updateSolution(solutionID, title, context);
     }
 
-    public void deleteSolution(int solutionID,String title,String context) {
-        solutionRepository.delteSolution(solutionID,title,context);
+    public void deleteSolution(int solutionID) {
+        solutionRepository.deleteById(solutionID);
     }
 
     public List<Solution> searchSolutionByName (String username){
