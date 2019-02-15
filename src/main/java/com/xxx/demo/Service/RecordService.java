@@ -38,9 +38,9 @@ public class RecordService {
        }
     }
 
-    public Boolean deleteRecord(int deviceID, String devicenum, String devicetype, Date deltime){
+    public Boolean deleteRecord(String recordnum){
         try{
-            recordRepository.deleteRecord(deviceID,devicenum,devicetype,deltime);
+            recordRepository.deleteRecord(recordnum);
             return true;
         }catch (Exception e){
             return  false;

@@ -70,9 +70,9 @@ public class RecordController {
     }
 
     @PostMapping("/api/record/deleterecord")
-    public Response deleteRecord(@RequestParam int deviceID, @RequestParam String devicenum, @RequestParam String devicetype, @RequestParam Date deltime){
+    public Response deleteRecord(@RequestParam String recordnum){
         try{
-            if(recordService.deleteRecord(deviceID,devicenum,devicetype,deltime)){
+            if(recordService.deleteRecord(recordnum)){
                 return genSuccessResult(true);
             }
             else return genFailResult("删除记录失败");

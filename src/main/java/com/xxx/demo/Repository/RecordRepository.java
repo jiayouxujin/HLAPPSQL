@@ -29,8 +29,8 @@ public interface RecordRepository extends JpaRepository<Record,Integer> {
 
     @Transactional
     @Modifying
-    @Query (value = "delete from record where device_id=?1 and devicenum=?2 and devicetype=?3 and deltime=?4",nativeQuery = true)
-    public void deleteRecord(int deviceID, String devicenum, String devicetype, Date deltime);
+    @Query (value = "delete from record where recordnum=?1 ",nativeQuery = true)
+    public void deleteRecord(String recordnum);
 
 
 }
