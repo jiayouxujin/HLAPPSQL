@@ -24,12 +24,12 @@ public class RecordService {
         return recordList;
     }
 
-    public List<Record> searchAllDeviceRecordBytime (String lowerbound, String upperbound){
+    public List<Record> searchAllDeviceRecordBytime (Date lowerbound, Date upperbound){
         List<Record> recordList= recordRepository.searchAllDeviceRecordByTime(lowerbound,upperbound);
         return recordList;
     }
 
-    public Boolean addRecord(String devicenum,String devicetype,String devicestatus,String recordtime){
+    public Boolean addRecord(String devicenum,String devicetype,String devicestatus,Date recordtime){
        try {
            recordRepository.addRecord(devicenum, devicetype, devicestatus, recordtime);
            return true;
@@ -38,13 +38,8 @@ public class RecordService {
        }
     }
 
-    public Boolean deleteRecord(String recordnum){
-        try{
-            recordRepository.deleteRecord(recordnum);
-            return true;
-        }catch (Exception e){
-            return  false;
-        }
+    public void deleteRecord(int recordID){
+            recordRepository.deleteById(recordID);
     }
 
 
