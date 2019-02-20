@@ -17,10 +17,10 @@ public class Record {
     String recordnum;
 
     @Column
-    String recordtime;
+    Date recordtime;
 
     @Column
-    Bool recordstatus;
+    String recordstatus;
 
     @Column(name = "solution_id")
     int solutionID;
@@ -68,7 +68,7 @@ public class Record {
     Date deltime;
 
     public Record(){}
-    public Record(String recordnum, String recordtime, Bool recordstatus, int solutionID, int userID, String username, String title, String context, int deviceID, String devicenum, String deviceaddress, String regionID, String defposID, Double devicelat, Double devicelng, String devicetype, String devicestatus, Date deltime) {
+    public Record(String recordnum, Date recordtime, String recordstatus, int solutionID, int userID, String username, String title, String context, int deviceID, String devicenum, String deviceaddress, String regionID, String defposID, Double devicelat, Double devicelng, String devicetype, String devicestatus, Date deltime) {
         this.recordnum = recordnum;
         this.recordtime = recordtime;
         this.recordstatus = recordstatus;
@@ -122,19 +122,19 @@ public class Record {
         this.recordnum = recordnum;
     }
 
-    public String getRecordtime() {
+    public Date getRecordtime() {
         return recordtime;
     }
 
-    public void setRecordtime(String recordtime) {
+    public void setRecordtime(Date recordtime) {
         this.recordtime = recordtime;
     }
 
-    public Bool getRecordstatus() {
+    public String getRecordstatus() {
         return recordstatus;
     }
 
-    public void setRecordstatus(Bool recordstatus) {
+    public void setRecordstatus(String recordstatus) {
         this.recordstatus = recordstatus;
     }
 
