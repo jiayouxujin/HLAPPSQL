@@ -15,7 +15,7 @@ public class RecordService {
     RecordRepository recordRepository;
 
     public List<Record> searchDeviceRecord (int deviceID, String devicenum, String devicetype){
-        List<Record> recordList= recordRepository.searchDeviceRecord(deviceID,devicenum,devicetype);
+        List<Record> recordList= recordRepository.searchDeviceRecord(deviceID);
         return recordList;
     }
 
@@ -42,5 +42,12 @@ public class RecordService {
             recordRepository.deleteById(recordID);
     }
 
-
+    public Boolean updatestatus(int recordID,int userID,String username,String title,String context){
+        try {
+            recordRepository.updatestatus(recordID,userID,username,title,context);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
 }

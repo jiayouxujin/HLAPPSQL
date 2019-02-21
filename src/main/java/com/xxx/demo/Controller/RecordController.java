@@ -81,4 +81,15 @@ public class RecordController {
         recordService.deleteRecord(recordID);
         return genSuccessResult(true);
     }
+
+    @PostMapping("/api/record/updatestatus")
+    public Response updateStatus (@RequestParam int recordID,@RequestParam int userID,@RequestParam String username,@RequestParam String title,@RequestParam String context){
+        try {
+            recordService.updatestatus(recordID,userID,username,title,context);
+            return genSuccessResult(true);
+        }
+        catch (Exception e){
+            return genFailResult("添加失败");
+        }
+    }
 }

@@ -10,13 +10,13 @@ public class Device {
     @Column(name = "device_id")
     int DeviceID;
 
-    @Column
+    @Column(name = "device_num")
     String devicenum;
 
-    @Column
+    @Column(name = "device_lat")
     Double devicelat;
 
-    @Column
+    @Column(name = "device_lng")
     Double devicelng;
 
     @Column(name = "device_address",columnDefinition = "char(200) character set utf8")
@@ -25,7 +25,7 @@ public class Device {
     @Column(name = "device_status",columnDefinition = "char(200) character set utf8")
     String devicestatus;
 
-    @Column(columnDefinition = "char(200) character set utf8")
+    @Column(name = "device_type",columnDefinition = "char(200) character set utf8")
     String devicetype;
 
     @Column(name = "region_id")
