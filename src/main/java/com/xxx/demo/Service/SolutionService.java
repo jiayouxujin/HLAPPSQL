@@ -14,10 +14,8 @@ public class SolutionService {
     @Autowired
     SolutionRepository solutionRepository;
 
-    public void addSolution(String recordnum, Date deltime, Solution solution) {
-        solution.setRecordnum(recordnum);
-        solution.setDeltime(deltime);
-        solutionRepository.save(solution);
+    public void addSolution(String recordnum,int recordID,Date deltime,int userID,String username,String title,String context) {
+        solutionRepository.addSolution(recordnum,recordID,deltime,userID,username,title,context);
     }
 
     public void updateSolution(int solutionID,String title,String context) {

@@ -14,6 +14,11 @@ public class RecordService {
     @Autowired
     RecordRepository recordRepository;
 
+    public List<Record> check(String recordnum){
+        List<Record> recordList= recordRepository.check(recordnum);
+        return recordList;
+    }
+
     public List<Record> searchDeviceRecord (int deviceID, String devicenum, String devicetype){
         List<Record> recordList= recordRepository.searchDeviceRecord(deviceID);
         return recordList;
@@ -29,15 +34,19 @@ public class RecordService {
         return recordList;
     }
 
-    public Boolean addRecord(String devicenum,String devicetype,String devicestatus,Date recordtime){
+    public Boolean addRecord(String devicenum,String devicetype,String devicestatus,Date recordtime,String recordnum){
        try {
-           recordRepository.addRecord(devicenum, devicetype, devicestatus, recordtime);
+           recordRepository.addRecord(devicenum, devicetype, devicestatus, recordtime,recordnum);
            return true;
        }catch (Exception e){
            return false;
        }
     }
 
+    public Record addRecord0(String devicenum,String devicetype,String devicestatus,Date recordtime,String recordnum){
+        Record record=recordRepository.addRecord0(devicenum, devicetype, devicestatus, recordtime,recordnum);
+        return record;
+    }
     public void deleteRecord(int recordID){
             recordRepository.deleteById(recordID);
     }

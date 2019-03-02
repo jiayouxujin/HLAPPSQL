@@ -22,10 +22,18 @@ public interface RecordRepository extends JpaRepository<Record,Integer> {
     @Query(value = "SELECT * from record where recordtime between ?1 and ?2 order by recordtime",nativeQuery = true)
     public List<Record> searchAllDeviceRecordByTime(Date lowerbound, Date upperbound);
 
+    @Query(value = "SELECT * from record where record_num=?1",nativeQuery = true)
+    public List<Record> check(String recordnum);
+
     @Transactional
     @Modifying
-    @Query (value = "insert into record set devicenum=?1,devicetype=?2,devicestatus=?3,recordtime=?4",nativeQuery = true)
-    public void addRecord(String devicenum, String devicetype, String devicestatus, Date recordtime);
+    @Query (value = "insert into record set devicenum=?1,devicetype=?2,devicestatus=?3,recordtime=?4,recordnum=?5",nativeQuery = true)
+    public void addRecord(String devicenum, String devicetype, String devicestatus, Date recordtime,String recordnum);
+
+    @Transactional
+    @Modifying
+    @Query (value = "insert into record set devicenum=?1,devicetype=?2,devicestatus=?3,recordtime=?4,recordnum=?5",nativeQuery = true)
+    public Record addRecord0(String devicenum, String devicetype, String devicestatus, Date recordtime,String recordnum);
 
     @Transactional
     @Modifying

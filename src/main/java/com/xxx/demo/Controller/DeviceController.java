@@ -1,10 +1,13 @@
 package com.xxx.demo.Controller;
 
 
+import com.xxx.demo.Common.DeviceThread;
 import com.xxx.demo.Common.Response;
 import com.xxx.demo.Entity.Device;
+import com.xxx.demo.Entity.Record;
 import com.xxx.demo.Service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -21,6 +24,30 @@ public class DeviceController {
 
     @Autowired
     DeviceService deviceService;
+/*
+    @Autowired
+    ThreadPoolTaskExecutor threadpool;
+
+    public void myexecuter(){
+        Device device=deviceService.createdevice0("0","0","0",0,0,"0","0","0","0");
+        threadpool.execute(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                deviceService.deletedevice(device.getDeviceID());
+            }
+        });
+    }*/
+
+    public boolean check(){
+        List<Device> list=deviceService.check("0");
+        if(list.isEmpty()) return false;
+        else return true;
+    }
 
     @GetMapping("/api/device/getdevicelist")
     public Response getDeviceList()
@@ -58,9 +85,12 @@ public class DeviceController {
     }
 
     @PostMapping("/api/device/updatestatus")
-    public Response updateStatus(@RequestParam String devicenum,@RequestParam String devicetype,@RequestParam String newstatus){
-        deviceService.updatestatus(devicenum,devicetype,newstatus);
-        return genSuccessResult(true);
+    public Response updateStatus(@RequestParam String devicenum,@RequestParam String newstatus){
+        if(deviceService.updatestatus(devicenum,newstatus)){
+            DeviceThread thread=new DeviceThread();
+            return genSuccessResult(true);
+        }
+        else return genFailResult("修改失败");
     }
 
 }

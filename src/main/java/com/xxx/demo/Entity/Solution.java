@@ -14,7 +14,7 @@ public class Solution {
     @Column(name = "record_id")
     int recordID;
 
-    @Column
+    @Column(name = "record_num")
     String recordnum;
 
     @Column

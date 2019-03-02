@@ -114,6 +114,10 @@ public class Record {
                 '}';
     }
 
+    public int getRecordID() {
+        return recordID;
+    }
+
     public String getRecordnum() {
         return recordnum;
     }

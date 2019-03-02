@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -24,9 +25,11 @@ public class SolutionController {
     private String version;
 
     @PostMapping("/api/solution/addsolution")
-    public Response addSolution (@RequestParam String recordnum, @RequestParam Date deltime, @RequestBody Solution thisSolution){
+    public Response addSolution (@RequestParam String recordnum,@RequestParam int recordID,@RequestParam String deltime,@RequestParam int userID,@RequestParam String username,@RequestParam String title,@RequestParam String context){
         try {
-            solutionService.addSolution(recordnum,deltime,thisSolution);
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date=format.parse(deltime);
+            solutionService.addSolution(recordnum,recordID,date,userID,username,title,context);
             return genSuccessResult(true);
         }
         catch (Exception e){

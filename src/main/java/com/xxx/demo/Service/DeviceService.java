@@ -29,6 +29,14 @@ public class DeviceService {
             return false;
         }
     }
+    public Device createdevice0(String devicenum,String devicetype,String devicestatus,double devicelat,double devicelng,String deviceaddress,String regionID,String defposID,String IP){
+        try {
+            Device list=deviceRepository.createdevice0(devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,IP);
+            return list;
+        }catch (Exception e){
+            return null;
+        }
+    }
 
     public void deletedevice(int deviceID){
         deviceRepository.deleteById(deviceID);
@@ -43,12 +51,17 @@ public class DeviceService {
         }
     }
 
-    public boolean updatestatus(String devicenum,String devicetype,String newstatus){
+    public boolean updatestatus(String devicenum,String newstatus){
         try{
-            deviceRepository.updatestatus(devicenum,devicetype,newstatus);
+            deviceRepository.updatestatus(devicenum,newstatus);
             return true;
         }catch (Exception e){
             return false;
         }
+    }
+
+    public List<Device> check(String devicenum){
+        List<Device> list=deviceRepository.check(devicenum);
+        return list;
     }
 }
