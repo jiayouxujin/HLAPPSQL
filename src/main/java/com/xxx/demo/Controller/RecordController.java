@@ -24,46 +24,26 @@ public class RecordController {
 
     @Autowired
     RecordService recordService;
-    /*@Autowired
-    ThreadPoolTaskExecutor threadpool;
 
-
-    public void myexecuter()throws ParseException{
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String ch="2019-02-25 19:19:19";
-        Date date=format.parse(ch);
-        Record record=recordService.addRecord0("123123","11","设想中",date,"0");
-        threadpool.execute(new Runnable(){
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                recordService.deleteRecord(record.getRecordID());
-            }
-        });
-    }*/
-    public boolean check(){
-        List<Record> list=recordService.check("0");
-        if(list.isEmpty()) return false;
-        else return true;
-    }
-
-    @GetMapping("api/record/updatemap")
-    public Response timerPollReport(){
-        while(true){
+    public class RecordThread extends Thread{
+        Record record=new Record();
+        @Override
+        public void run() {
+            record=recordService.addRecord0("0","0","0",null,"0");
             try {
-                if(check()){
-                    List<Record> list=recordService.searchAllDeviceRecord();
-                    return genSuccessResult(list);
-                }
-                Thread.sleep(3000);//防止循序太频繁
+                sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            recordService.deleteRecord(record.getRecordID());
         }
+    }
+
+    @GetMapping("/api/record/check")
+    public Response check(){
+        List<Record> list=recordService.check("0");
+        if(list.isEmpty()) return genSuccessResult(false);
+        else return genSuccessResult(true);
     }
 
     @GetMapping("/api/record/getdevicerecord")
@@ -106,12 +86,12 @@ public class RecordController {
     }
 
     @PostMapping("/api/record/createrecord")
-    public Response addRecord (@RequestParam String devicenum, @RequestParam String devicetype, @RequestParam String devicestatus, @RequestParam String recordtime,@RequestParam String recordnum){
+    public Response createRecord (@RequestParam String devicenum, @RequestParam String devicetype, @RequestParam String devicestatus,@RequestParam  double devicelat,@RequestParam double devicelng,@RequestParam String deviceaddress,@RequestParam String regionID,@RequestParam String defposID,@RequestParam String recordtime,@RequestParam String recordnum) throws ParseException{
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date=format.parse(recordtime);
-            if(recordService.addRecord(devicenum,devicetype,devicestatus,date,recordnum)){
-               // myexecuter();
+            if(recordService.addRecord(devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,date,recordnum)){
+                new RecordThread().start();
                 return genSuccessResult(true);
             }
             else return genFailResult("添加失败");
@@ -121,9 +101,11 @@ public class RecordController {
         }
     }
 
+
     @PostMapping("/api/record/deleterecord")
     public Response deleteRecord(@RequestParam int recordID){
         recordService.deleteRecord(recordID);
+        new RecordThread().start();
         return genSuccessResult(true);
     }
 
@@ -131,6 +113,7 @@ public class RecordController {
     public Response updateStatus (@RequestParam int recordID,@RequestParam int userID,@RequestParam String username,@RequestParam String title,@RequestParam String context){
         try {
             recordService.updatestatus(recordID,userID,username,title,context);
+            new RecordThread().start();
             return genSuccessResult(true);
         }
         catch (Exception e){

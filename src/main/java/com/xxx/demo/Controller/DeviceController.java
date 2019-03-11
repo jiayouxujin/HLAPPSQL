@@ -1,15 +1,15 @@
 package com.xxx.demo.Controller;
 
-
-import com.xxx.demo.Common.DeviceThread;
 import com.xxx.demo.Common.Response;
 import com.xxx.demo.Entity.Device;
 import com.xxx.demo.Entity.Record;
 import com.xxx.demo.Service.DeviceService;
+import com.xxx.demo.Service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,31 +22,44 @@ import static com.xxx.demo.Common.ResultGenerator.genSuccessResult;
 @CrossOrigin
 public class DeviceController {
 
+
     @Autowired
     DeviceService deviceService;
-/*
     @Autowired
-    ThreadPoolTaskExecutor threadpool;
+    RecordService recordService;
 
-    public void myexecuter(){
-        Device device=deviceService.createdevice0("0","0","0",0,0,"0","0","0","0");
-        threadpool.execute(new Runnable(){
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                deviceService.deletedevice(device.getDeviceID());
+    public class RecordThread extends Thread{
+        Record record=new Record();
+        @Override
+        public void run() {
+            record=recordService.addRecord0("0","0","0",null,"0");
+            try {
+                sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        });
-    }*/
+            recordService.deleteRecord(record.getRecordID());
+        }
+    }
+    public class DeviceThread extends Thread{
+        Device device=new Device();
+        @Override
+        public void run() {
+            device=deviceService.createdevice0("0","0","0",0,0,"0","0","0","0");
+            try {
+                sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            deviceService.deletedevice(device.getDeviceID());
+        }
+    }
 
-    public boolean check(){
+    @GetMapping("/api/device/check")
+    public Response check(){
         List<Device> list=deviceService.check("0");
-        if(list.isEmpty()) return false;
-        else return true;
+        if(list.isEmpty()) return genSuccessResult(false);
+        else return genSuccessResult(true);
     }
 
     @GetMapping("/api/device/getdevicelist")
@@ -65,6 +78,7 @@ public class DeviceController {
     public Response createDevice(@RequestParam String devicenum,@RequestParam String devicetype,@RequestParam String devicestatus,@RequestParam double devicelat,@RequestParam double devicelng,@RequestParam String deviceaddress,@RequestParam String regionID,@RequestParam String defposID,@RequestParam String IP){
         try {
             deviceService.createdevice(devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,IP);
+            new DeviceThread().start();
             return genSuccessResult(true);
         }catch (Exception e){
             return genFailResult("添加失败");
@@ -75,22 +89,28 @@ public class DeviceController {
     @PostMapping("/api/device/deletedevice")
     public Response deleteDevice(@RequestParam int deviceID){
         deviceService.deletedevice(deviceID);
+        new DeviceThread().start();
         return genSuccessResult(true);
     }
 
     @PostMapping("/api/device/modifydevice")
     public Response modifyDevice(@RequestParam int deviceID,@RequestParam String devicenum,@RequestParam String devicetype,@RequestParam String devicestatus,@RequestParam double devicelat,@RequestParam double devicelng,@RequestParam String deviceaddress,@RequestParam String regionID,@RequestParam String defposID,@RequestParam String IP){
         deviceService.modifydevice(deviceID,devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,IP);
+        new DeviceThread().start();
         return genSuccessResult(true);
     }
 
     @PostMapping("/api/device/updatestatus")
     public Response updateStatus(@RequestParam String devicenum,@RequestParam String newstatus){
         if(deviceService.updatestatus(devicenum,newstatus)){
-            DeviceThread thread=new DeviceThread();
+            List<Device> a=deviceService.searchbynum(devicenum);
+            Device device=a.get(0);
+            Date date=new Date();
+            recordService.addRecord(devicenum,device.getDevicetype(),newstatus,device.getDevicelat(),device.getDevicelng(),device.getDeviceaddress(),device.getRegionID(),device.getDefposID(),date,"test");
+            new DeviceThread().start();
+            new RecordThread().start();
             return genSuccessResult(true);
         }
         else return genFailResult("修改失败");
     }
-
 }

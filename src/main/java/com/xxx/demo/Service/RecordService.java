@@ -4,6 +4,7 @@ import com.xxx.demo.Entity.Record;
 import com.xxx.demo.Repository.RecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.List;
@@ -34,9 +35,9 @@ public class RecordService {
         return recordList;
     }
 
-    public Boolean addRecord(String devicenum,String devicetype,String devicestatus,Date recordtime,String recordnum){
+    public Boolean addRecord(String devicenum,String devicetype,String devicestatus,double devicelat,double devicelng,String deviceaddress,String regionID,String defposID,Date recordtime,String recordnum){
        try {
-           recordRepository.addRecord(devicenum, devicetype, devicestatus, recordtime,recordnum);
+           recordRepository.addRecord(devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,recordtime,recordnum);
            return true;
        }catch (Exception e){
            return false;
@@ -44,16 +45,22 @@ public class RecordService {
     }
 
     public Record addRecord0(String devicenum,String devicetype,String devicestatus,Date recordtime,String recordnum){
-        Record record=recordRepository.addRecord0(devicenum, devicetype, devicestatus, recordtime,recordnum);
-        return record;
+        Record a=new Record();
+        a.setDevicenum(devicenum);
+        a.setDevicetype(devicetype);
+        a.setDevicestatus(devicestatus);
+        a.setRecordtime(recordtime);
+        a.setRecordnum(recordnum);
+        return recordRepository.save(a);
     }
+
     public void deleteRecord(int recordID){
             recordRepository.deleteById(recordID);
     }
 
     public Boolean updatestatus(int recordID,int userID,String username,String title,String context){
         try {
-            recordRepository.updatestatus(recordID,userID,username,title,context);
+            recordRepository.updatestatus(recordID,userID,username,title,context,"已处理");
             return true;
         }catch (Exception e){
             return false;

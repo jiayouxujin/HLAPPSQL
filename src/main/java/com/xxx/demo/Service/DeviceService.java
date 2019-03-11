@@ -31,8 +31,16 @@ public class DeviceService {
     }
     public Device createdevice0(String devicenum,String devicetype,String devicestatus,double devicelat,double devicelng,String deviceaddress,String regionID,String defposID,String IP){
         try {
-            Device list=deviceRepository.createdevice0(devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,IP);
-            return list;
+            Device a=new Device();
+            a.setDevicenum(devicenum);
+            a.setDevicetype(devicetype);
+            a.setDevicestatus(devicestatus);
+            a.setDevicelat(devicelat);
+            a.setDevicelng(devicelng);
+            a.setDeviceaddress(deviceaddress);
+            a.setRegionID(regionID);
+            a.setDefposID(defposID);
+            return deviceRepository.save(a);
         }catch (Exception e){
             return null;
         }
@@ -63,5 +71,9 @@ public class DeviceService {
     public List<Device> check(String devicenum){
         List<Device> list=deviceRepository.check(devicenum);
         return list;
+    }
+    public List<Device> searchbynum(String devicenum){
+        List<Device> a=deviceRepository.check(devicenum);
+        return a;
     }
 }

@@ -13,13 +13,13 @@ public class Record {
     @Column(name = "record_id")
     int recordID;
 
-    @Column
+    @Column(name = "record_num")
     String recordnum;
 
-    @Column
+    @Column(name = "record_time")
     Date recordtime;
 
-    @Column
+    @Column(name = "record_status")
     String recordstatus;
 
     @Column(name = "solution_id")
@@ -40,10 +40,10 @@ public class Record {
     @Column(name = "device_id")
     int deviceID;
 
-    @Column
+    @Column(name = "device_num")
     String devicenum;
 
-    @Column
+    @Column(name = "device_address")
     String deviceaddress;
 
     @Column(name = "region_id")
@@ -52,16 +52,16 @@ public class Record {
     @Column(name = "defpos_id")
     String defposID;
 
-    @Column
+    @Column(name = "device_lat")
     Double devicelat;
 
-    @Column
+    @Column(name = "device_lng")
     Double devicelng;
 
-    @Column
+    @Column(name = "device_type")
     String devicetype;
 
-    @Column
+    @Column(name = "device_status")
     String devicestatus;
 
     @Column
