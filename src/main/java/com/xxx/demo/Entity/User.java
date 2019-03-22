@@ -28,6 +28,8 @@ public class User {
     @Column(name = "region_id")
     String regionID;
 
+    @Column(name = "checked")
+    int checked;
     @Override
     public String toString() {
         return  "User{" +
