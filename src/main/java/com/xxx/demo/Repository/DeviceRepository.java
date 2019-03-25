@@ -16,6 +16,9 @@ public interface DeviceRepository extends JpaRepository<Device,Integer> {
     @Query(value = "SELECT * from device",nativeQuery = true)
     public List<Device> getdevicelist();
 
+    @Query(value = "SELECT * from device where device_status=?1",nativeQuery = true)
+    public List<Device> getdevicelistbystatus(String status);
+
     @Transactional
     @Modifying
     @Query (value = "insert into device set device_num=?1,device_type=?2,device_status=?3,device_lat=?4,device_lng=?5,device_address=?6,region_id=?7,defpos_id=?8,ip=?9",nativeQuery = true)

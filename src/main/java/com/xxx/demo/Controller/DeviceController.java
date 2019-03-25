@@ -74,6 +74,18 @@ public class DeviceController {
         }
     }
 
+    @GetMapping("/api/device/getdevicelistbystatus")
+    public Response getDeviceList(@RequestParam String status)
+    {
+        List<Device> deviceList = deviceService.getdevicelistbystatus(status);
+        if (deviceList == null||deviceList.size()==0){
+            return genFailResult("无记录或查询失败");
+        }
+        else {
+            return genSuccessResult(deviceList);
+        }
+    }
+
     @PostMapping("/api/device/createdevice")
     public Response createDevice(@RequestParam String devicenum,@RequestParam String devicetype,@RequestParam String devicestatus,@RequestParam double devicelat,@RequestParam double devicelng,@RequestParam String deviceaddress,@RequestParam String regionID,@RequestParam String defposID,@RequestParam String IP){
         try {
@@ -113,4 +125,6 @@ public class DeviceController {
         }
         else return genFailResult("修改失败");
     }
+
+
 }

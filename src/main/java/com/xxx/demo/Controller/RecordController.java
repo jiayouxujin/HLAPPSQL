@@ -70,8 +70,31 @@ public class RecordController {
         }
     }
 
+    @GetMapping("/api/record/searchRecordbydevicestatus")
+    public Response searchRecordbydevicestatus(@RequestParam String status)
+    {
+        List<Record> recordList = recordService.searchRecordbydevicestatus(status);
+        if (recordList == null||recordList.size()==0){
+            return genFailResult("无记录或查询失败");
+        }
+        else {
+            return genSuccessResult(recordList);
+        }
+    }
+
+    @GetMapping("/api/record/searchRecordbyrecordstatus")
+    public Response searchRecordbyrecordstatus(@RequestParam String status)
+    {
+        List<Record> recordList = recordService.searchRecordbyrecordstatus(status);
+        if (recordList == null||recordList.size()==0){
+            return genFailResult("无记录或查询失败");
+        }
+        else {
+            return genSuccessResult(recordList);
+        }
+    }
     @GetMapping("/api/record/getrecordlistbytime")
-    public Response searchAllDeviceRecordByTime(String begintime, String endtime) throws ParseException
+    public Response searchAllDeviceRecordByTime(@RequestParam String begintime,@RequestParam String endtime) throws ParseException
     {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date lowerbound=format.parse(begintime);
@@ -110,9 +133,9 @@ public class RecordController {
     }
 
     @PostMapping("/api/record/updatestatus")
-    public Response updateStatus (@RequestParam int recordID,@RequestParam int userID,@RequestParam String username,@RequestParam String title,@RequestParam String context){
+    public Response updateStatus (@RequestParam int recordID,@RequestParam int userID,@RequestParam String username,@RequestParam String title,@RequestParam String context,@RequestParam String status){
         try {
-            recordService.updatestatus(recordID,userID,username,title,context);
+            recordService.updatestatus(recordID,userID,username,title,context,status);
             new RecordThread().start();
             return genSuccessResult(true);
         }

@@ -29,7 +29,14 @@ public class RecordService {
         List<Record> recordList= recordRepository.searchAllDeviceRecord();
         return recordList;
     }
-
+    public List<Record> searchRecordbydevicestatus(String status){
+        List<Record> recordList= recordRepository.searchRecordbydevicestatus(status);
+        return recordList;
+    }
+    public List<Record> searchRecordbyrecordstatus(String status){
+        List<Record> recordList= recordRepository.searchRecordbyrecordstatus(status);
+        return recordList;
+    }
     public List<Record> searchAllDeviceRecordBytime (Date lowerbound, Date upperbound){
         List<Record> recordList= recordRepository.searchAllDeviceRecordByTime(lowerbound,upperbound);
         return recordList;
@@ -37,7 +44,7 @@ public class RecordService {
 
     public Boolean addRecord(String devicenum,String devicetype,String devicestatus,double devicelat,double devicelng,String deviceaddress,String regionID,String defposID,Date recordtime,String recordnum){
        try {
-           recordRepository.addRecord(devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,recordtime,recordnum);
+           recordRepository.addRecord(devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,recordtime,recordnum,"未处理");
            return true;
        }catch (Exception e){
            return false;
@@ -58,9 +65,9 @@ public class RecordService {
             recordRepository.deleteById(recordID);
     }
 
-    public Boolean updatestatus(int recordID,int userID,String username,String title,String context){
+    public Boolean updatestatus(int recordID,int userID,String username,String title,String context,String status){
         try {
-            recordRepository.updatestatus(recordID,userID,username,title,context,"已处理");
+            recordRepository.updatestatus(recordID,userID,username,title,context,status);
             return true;
         }catch (Exception e){
             return false;
