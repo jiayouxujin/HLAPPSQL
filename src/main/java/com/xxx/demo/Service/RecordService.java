@@ -73,4 +73,8 @@ public class RecordService {
             return false;
         }
     }
+
+    public void deleteall(){
+        recordRepository.deleteAll();
+    }
 }

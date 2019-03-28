@@ -15,8 +15,8 @@ public interface SolutionRepository extends JpaRepository<Solution,Integer> {
 
     @Transactional
     @Modifying
-    @Query(value = "insert into solution set record_num=?1,record_id=?2,deltime=?3,user_id=?4,user_name=?5,title=?6,context=?7",nativeQuery = true)
-    public void addSolution(String recordnum,int recordID,Date deltime,int userID,String username,String title,String context);
+    @Query(value = "insert into solution set record_num=?1,record_id=?2,deltime=?3,user_id=?4,user_name=?5,title=?6,context=?7,device_num=?8",nativeQuery = true)
+    public void addSolution(String recordnum,int recordID,Date deltime,int userID,String username,String title,String context,String devicenum);
 
 
     @Transactional

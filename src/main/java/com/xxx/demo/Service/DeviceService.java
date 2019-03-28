@@ -81,4 +81,9 @@ public class DeviceService {
         List<Device> a=deviceRepository.check(devicenum);
         return a;
     }
+
+    public void deleteall(){
+        deviceRepository.deleteAll();
+    }
+
 }

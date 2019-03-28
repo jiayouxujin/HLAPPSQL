@@ -92,6 +92,17 @@ public class UserController {
         }
     }
 
+    @PostMapping("/api/user/deleteall")
+    public Response deleteall(){
+        try{
+            userService.deleteall();
+            return genSuccessResult(true);
+        }
+        catch(Exception e) {
+            return genFailResult("清空失败");
+        }
+    }
+
     @GetMapping("/get-version")
     public Response getVersion(){
         return genSuccessResult (version);

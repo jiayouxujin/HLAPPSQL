@@ -143,4 +143,14 @@ public class RecordController {
             return genFailResult("添加失败");
         }
     }
+    @PostMapping("/api/record/deleteall")
+    public Response deleteall(){
+        try{
+            recordService.deleteall();
+            return genSuccessResult(true);
+        }
+        catch(Exception e) {
+            return genFailResult("清空失败");
+        }
+    }
 }

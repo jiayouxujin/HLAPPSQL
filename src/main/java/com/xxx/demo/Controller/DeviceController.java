@@ -126,5 +126,14 @@ public class DeviceController {
         else return genFailResult("修改失败");
     }
 
-
+    @PostMapping("/api/device/deleteall")
+    public Response deleteall(){
+        try{
+            deviceService.deleteall();
+            return genSuccessResult(true);
+        }
+        catch(Exception e) {
+            return genFailResult("清空失败");
+        }
+    }
 }
