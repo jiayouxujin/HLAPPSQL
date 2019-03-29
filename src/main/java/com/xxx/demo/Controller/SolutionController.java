@@ -2,6 +2,7 @@ package com.xxx.demo.Controller;
 
 import com.xxx.demo.Common.Response;
 import com.xxx.demo.Entity.Solution;
+import com.xxx.demo.Service.RecordService;
 import com.xxx.demo.Service.SolutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +18,8 @@ import static com.xxx.demo.Common.ResultGenerator.genSuccessResult;
 @RestController
 @CrossOrigin
 public class SolutionController {
-
+    @Autowired
+    RecordService recordService;
     @Autowired
     SolutionService solutionService;
 
@@ -25,11 +27,12 @@ public class SolutionController {
     private String version;
 
     @PostMapping("/api/solution/addsolution")
-    public Response addSolution (@RequestParam String recordnum,@RequestParam int recordID,@RequestParam String deltime,@RequestParam int userID,@RequestParam String username,@RequestParam String title,@RequestParam String context){
+    public Response addSolution (@RequestParam String recordnum,@RequestParam int recordID,@RequestParam String deltime,@RequestParam int userID,@RequestParam String username,@RequestParam String title,@RequestParam String context,@RequestParam String devicenum){
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date=format.parse(deltime);
-            solutionService.addSolution(recordnum,recordID,date,userID,username,title,context);
+            solutionService.addSolution(recordnum,recordID,date,userID,username,title,context,devicenum);
+            recordService.updatestatus(recordID,userID,username,title,context,"已处理");
             return genSuccessResult(true);
         }
         catch (Exception e){
@@ -72,6 +75,16 @@ public class SolutionController {
         }
         else {
             return genSuccessResult(solutionList);
+        }
+    }
+    @PostMapping("/api/solution/deleteall")
+    public Response deleteall(){
+        try{
+            solutionService.deleteall();
+            return genSuccessResult(true);
+        }
+        catch(Exception e) {
+            return genFailResult("清空失败");
         }
     }
 }

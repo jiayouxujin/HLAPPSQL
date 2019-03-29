@@ -14,8 +14,8 @@ public class SolutionService {
     @Autowired
     SolutionRepository solutionRepository;
 
-    public void addSolution(String recordnum,int recordID,Date deltime,int userID,String username,String title,String context) {
-        solutionRepository.addSolution(recordnum,recordID,deltime,userID,username,title,context);
+    public void addSolution(String recordnum,int recordID,Date deltime,int userID,String username,String title,String context,String devicenum) {
+        solutionRepository.addSolution(recordnum,recordID,deltime,userID,username,title,context,devicenum);
     }
 
     public void updateSolution(int solutionID,String title,String context) {
@@ -24,6 +24,10 @@ public class SolutionService {
 
     public void deleteSolution(int solutionID) {
         solutionRepository.deleteById(solutionID);
+    }
+
+    public void deleteall(){
+        solutionRepository.deleteAll();
     }
 
     public List<Solution> searchSolutionByName (String username){

@@ -21,6 +21,11 @@ public class DeviceService {
         return deviceList;
     }
 
+    public List<Device> getdevicelistbystatus (String status){
+        List<Device> deviceList= deviceRepository.getdevicelistbystatus(status);
+        return deviceList;
+    }
+
     public boolean createdevice(String devicenum,String devicetype,String devicestatus,double devicelat,double devicelng,String deviceaddress,String regionID,String defposID,String IP){
         try {
             deviceRepository.createdevice(devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,IP);
@@ -76,4 +81,9 @@ public class DeviceService {
         List<Device> a=deviceRepository.check(devicenum);
         return a;
     }
+
+    public void deleteall(){
+        deviceRepository.deleteAll();
+    }
+
 }

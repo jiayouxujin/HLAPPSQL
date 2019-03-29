@@ -32,8 +32,11 @@ public class Solution {
     @Column(columnDefinition = "char(200) character set utf8")
     String context;
 
+    @Column(name="device_num",columnDefinition = "char(200) character set utf8")
+    String devicenum;
+
     public Solution(){}
-    public Solution(int recordID, String recordnum, Date deltime, int userID, String username, String title, String context) {
+    public Solution(int recordID, String recordnum, Date deltime, int userID, String username, String title, String context,String devicenum) {
         this.recordID = recordID;
         this.recordnum = recordnum;
         this.deltime = deltime;
@@ -41,6 +44,7 @@ public class Solution {
         this.username = username;
         this.title = title;
         this.context = context;
+        this.devicenum=devicenum;
     }
 
     @Override
@@ -121,5 +125,13 @@ public class Solution {
 
     public void setContext(String context) {
         this.context = context;
+    }
+
+    public void setDevicenum(String devicenum) {
+        this.devicenum = devicenum;
+    }
+
+    public String getDevicenum() {
+        return devicenum;
     }
 }
