@@ -25,7 +25,7 @@ public interface SolutionRepository extends JpaRepository<Solution,Integer> {
     public void updateSolution(int solutionID,String title,String context);
 
 
-    @Query (value = "SELECT * from solution where user_name = ?1",nativeQuery = true)
+    @Query (value = "SELECT * from solution where user_name = ?1 order by deltime DESC",nativeQuery = true)
     public List<Solution> searchSolutionByName (String username);
 
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface DeviceRepository extends JpaRepository<Device,Integer> {
-    @Query(value = "SELECT * from device",nativeQuery = true)
+    @Query(value = "SELECT * from device order by device_num",nativeQuery = true)
     public List<Device> getdevicelist();
 
     @Query(value = "SELECT * from device where device_status=?1",nativeQuery = true)

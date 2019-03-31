@@ -34,7 +34,9 @@ public class RecordService {
         return recordList;
     }
     public List<Record> searchRecordbyrecordstatus(String status){
-        List<Record> recordList= recordRepository.searchRecordbyrecordstatus(status);
+        List<Record> recordList= recordRepository.searchRecordbyrecordstatus(status,"报警状态");
+        List<Record> recordList1= recordRepository.searchRecordbyrecordstatus(status,"预警状态");
+        recordList.addAll(recordList1);
         return recordList;
     }
     public List<Record> searchAllDeviceRecordBytime (Date lowerbound, Date upperbound){
