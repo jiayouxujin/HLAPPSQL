@@ -117,11 +117,15 @@ public class DeviceController {
         if(deviceService.updatestatus(devicenum,newstatus)){
             List<Device> a=deviceService.searchbynum(devicenum);
             Device device=a.get(0);
-            Date date=new Date();
-            recordService.addRecord(devicenum,device.getDevicetype(),newstatus,device.getDevicelat(),device.getDevicelng(),device.getDeviceaddress(),device.getRegionID(),device.getDefposID(),date,"test");
-            new DeviceThread().start();
-            new RecordThread().start();
-            return genSuccessResult(true);
+            if(device.getDevicestatus()!=newstatus){
+                Date date=new Date();
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                recordService.addRecord(devicenum,device.getDevicetype(),newstatus,device.getDevicelat(),device.getDevicelng(),device.getDeviceaddress(),device.getRegionID(),device.getDefposID(),date,device.getDevicetype()+format.format(date).substring(17));
+                new DeviceThread().start();
+                new RecordThread().start();
+                return genSuccessResult(true);
+            }
+                else return genSuccessResult("新状态与当前状态相同");
         }
         else return genFailResult("修改失败");
     }

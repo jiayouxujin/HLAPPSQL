@@ -13,19 +13,19 @@ import java.util.List;
 @Repository
 public interface RecordRepository extends JpaRepository<Record,Integer> {
 
-    @Query(value = "SELECT * from record where device_id=?1 order by record_time",nativeQuery = true)
+    @Query(value = "SELECT * from record where device_id=?1 order by record_time DESC",nativeQuery = true)
     public List<Record> searchDeviceRecord(int deviceID);
 
-    @Query(value = "SELECT * from record order by record_time",nativeQuery = true)
+    @Query(value = "SELECT * from record order by record_time DESC",nativeQuery = true)
     public List<Record> searchAllDeviceRecord();
 
-    @Query(value = "SELECT * from record where device_status=?1 order by record_time",nativeQuery = true)
+    @Query(value = "SELECT * from record where device_status=?1 order by record_time DESC",nativeQuery = true)
     public List<Record> searchRecordbydevicestatus(String status);
 
-    @Query(value = "SELECT * from record where record_status=?1 order by record_time",nativeQuery = true)
-    public List<Record> searchRecordbyrecordstatus(String status);
+    @Query(value = "SELECT * from record where record_status=?1 and device_status=?2 order by record_time DESC",nativeQuery = true)
+    public List<Record> searchRecordbyrecordstatus(String status,String devicestatus);
 
-    @Query(value = "SELECT * from record where record_time between ?1 and ?2 order by record_time",nativeQuery = true)
+    @Query(value = "SELECT * from record where record_time between ?1 and ?2 order by record_time DESC",nativeQuery = true)
     public List<Record> searchAllDeviceRecordByTime(Date lowerbound, Date upperbound);
 
     @Query(value = "SELECT * from record where record_num=?1",nativeQuery = true)
