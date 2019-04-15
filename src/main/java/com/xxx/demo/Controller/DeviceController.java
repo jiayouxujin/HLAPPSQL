@@ -122,7 +122,7 @@ public class DeviceController {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 recordService.addRecord(devicenum,device.getDevicetype(),newstatus,device.getDevicelat(),device.getDevicelng(),device.getDeviceaddress(),device.getRegionID(),device.getDefposID(),date,device.getDevicetype()+format.format(date).substring(17));
                 new DeviceThread().start();
-                new RecordThread().start();
+                //new RecordThread().start();
                 return genSuccessResult(true);
             }
                 else return genSuccessResult("新状态与当前状态相同");
@@ -134,6 +134,7 @@ public class DeviceController {
     public Response deleteall(){
         try{
             deviceService.deleteall();
+            new DeviceThread().start();
             return genSuccessResult(true);
         }
         catch(Exception e) {
