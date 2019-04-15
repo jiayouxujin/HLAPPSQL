@@ -114,7 +114,7 @@ public class RecordController {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date=format.parse(recordtime);
             if(recordService.addRecord(devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,date,recordnum)){
-                new RecordThread().start();
+                //new RecordThread().start();
                 return genSuccessResult(true);
             }
             else return genFailResult("添加失败");
@@ -128,7 +128,7 @@ public class RecordController {
     @PostMapping("/api/record/deleterecord")
     public Response deleteRecord(@RequestParam int recordID){
         recordService.deleteRecord(recordID);
-        new RecordThread().start();
+        //new RecordThread().start();
         return genSuccessResult(true);
     }
 
@@ -136,7 +136,7 @@ public class RecordController {
     public Response updateStatus (@RequestParam int recordID,@RequestParam int userID,@RequestParam String username,@RequestParam String title,@RequestParam String context,@RequestParam String status){
         try {
             recordService.updatestatus(recordID,userID,username,title,context,status);
-            new RecordThread().start();
+            //new RecordThread().start();
             return genSuccessResult(true);
         }
         catch (Exception e){
