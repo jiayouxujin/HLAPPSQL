@@ -24,8 +24,17 @@ public class AdminController {
 
     @RequestMapping(value = "/login" ,method = RequestMethod.GET)
     public String returnIndex(ModelMap map){
-        map.addAttribute("name", "yaohuiqin");
+        //
         return "login";
+    }
+
+
+    @PostMapping("/api/admin/login")
+    public String login(@RequestParam String  username,@RequestParam String password){
+        if(username=="josee"&&password=="josee"){
+            return "index";
+        }
+        else return "login";
     }
 
 }
