@@ -31,7 +31,7 @@ public class AdminController {
 
     @PostMapping("/api/admin/login")
     public String login(@RequestParam String  username,@RequestParam String password){
-        if(username.equals("josee")&&password.equals("josee")){
+        if(username=="josee"&&password=="josee"){
             return "index";
         }
         else return "login";
