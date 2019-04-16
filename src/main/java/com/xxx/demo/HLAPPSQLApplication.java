@@ -17,7 +17,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 @EntityScan(basePackages = {"com.xxx.demo.Entity"})
 @ComponentScan(basePackages = {"com.xxx.demo.Service"})
 @ComponentScan()
-@SpringBootApplication
+@SpringBootApplication(exclude= {DataSourceAutoConfiguration.class})
 public class HLAPPSQLApplication extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
