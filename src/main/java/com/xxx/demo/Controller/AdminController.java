@@ -28,4 +28,10 @@ public class AdminController {
         return "login";
     }
 
+    @RequestMapping(value = "/devicelist",method = RequestMethod.GET)
+    public String returnDeviceList(ModelMap map){
+        return "devicelist";
+    }
+
+
 }
