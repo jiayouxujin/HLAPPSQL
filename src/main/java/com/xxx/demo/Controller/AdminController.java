@@ -23,18 +23,9 @@ public class AdminController {
     private String version;
 
     @RequestMapping(value = "/login" ,method = RequestMethod.GET)
-    public String returnIndex(ModelMap map){
+    public String returnLogin(ModelMap map){
         //
         return "login";
-    }
-
-
-    @PostMapping("/api/admin/login")
-    public String login(@RequestParam String  username,@RequestParam String password){
-        if(username=="josee"&&password=="josee"){
-            return "index";
-        }
-        else return "login";
     }
 
 }
