@@ -3,6 +3,7 @@ package com.xxx.demo.Controller;
 import com.xxx.demo.Common.Random;
 import com.xxx.demo.Common.Response;
 import com.xxx.demo.Entity.User;
+import com.xxx.demo.Service.AdminService;
 import com.xxx.demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,9 +19,18 @@ import static com.xxx.demo.Common.ResultGenerator.genSuccessResult;
 public class UserController {
     @Autowired
     UserService userService;
-
+    @Autowired
+    AdminService adminService;
     @Value("${version}")
     private String version;
+
+    @PostMapping("/api/admin/login")
+    public Response returnlogin(@RequestParam String username,@RequestParam String password){
+        if(adminService.getPassword(username).equals(password)){
+            return genSuccessResult("success");
+        }
+        return genFailResult("fail");
+    }
 
     @PostMapping("/api/user/adduser")
     public Response addUser (@RequestBody User thisUser){

@@ -36,26 +36,24 @@
     <div class="login-box-body">
         <p class="login-box-msg">Sign in to start</p>
 
-        <form action="http://47.100.107.158:8080/api/admin/login" method="post">
+        <form name="login_form"  method="post">
             <div class="form-group has-feedback">
-                <input type="text" name="username" class="form-control" placeholder="用户名">
+                <input id="username" type="text" name="username" class="form-control" placeholder="用户名">
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
             </div>
             <div class="form-group has-feedback">
-                <input type="password" name="password" class="form-control" placeholder="密码">
+                <input id="password" type="password" name="password" class="form-control" placeholder="密码">
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
-            <div class="row">
-                <div class="col-xs-8">
-                </div>
-                <!-- /.col -->
-                <div class="col-xs-4">
-                    <button type="submit" class="btn btn-primary btn-block btn-flat">登录</button>
-                </div>
-
-            </div>
         </form>
-
+        <div class="row">
+            <div class="col-xs-8">
+            </div>
+            <!-- /.col -->
+            <div class="col-xs-4">
+                <button class="btn btn-primary btn-block btn-flat" onclick="out()">登录</button>
+            </div>
+        </div>
     </div>
     <!-- /.login-box-body -->
 </div>
@@ -68,6 +66,32 @@
 <!-- iCheck -->
 <script src="../static/plugins/iCheck/icheck.min.js" th:src="@{/static/plugins/iCheck/icheck.min.js}"></script>
 <script>
+  function out(){
+     var username = document.getElementById('username').value;
+     var password = document.getElementById('password').value;
+     if (username.length==0 || password.length==0) {
+            alert('请输入用户名密码后登录');
+            return;
+     }
+      var formData = new FormData(document.forms.namedItem("login_form"));
+      $.ajax({
+            url: "/api/admin/login",
+            type: "POST",
+            data: formData,
+            processData: false,  // 告诉jQuery不要去处理发送的数据
+            contentType: false   // 告诉jQuery不要去设置Content-Type请求头
+        }).done(function(message,data,hr) {
+            if(data == "success"){
+                alert('登陆成功!');
+                window.location.href="/devicelist";
+            }
+            else{
+                alert('登陆失败，请检查用户名密码');
+            }
+        }).fail(function(err) {
+            alert('服务器未响应');
+        });
+  }
   $(function () {
     $('input').iCheck({
       checkboxClass: 'icheckbox_square-blue',
