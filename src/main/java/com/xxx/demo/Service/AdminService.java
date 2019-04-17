@@ -26,7 +26,6 @@ public class AdminService {
     public String getPassword(String username) {
         return adminRepository.getPassword(username);
     }
-
     public boolean changePassword(String username, String password) {
         try {
             adminRepository.changePassword(username, password);

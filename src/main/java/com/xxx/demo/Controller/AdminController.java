@@ -23,6 +23,7 @@ public class AdminController {
     @Value("${version}")
     private String version;
 
+
     @RequestMapping(value = "/" ,method = RequestMethod.GET)
     public String returnLogin(ModelMap map){
         //
@@ -30,8 +31,24 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/devicelist",method = RequestMethod.GET)
-    public String returnDeviceList(ModelMap map){
+    public String returndevicelist(ModelMap map){
         return "devicelist";
     }
 
+    @RequestMapping(value = "/map",method = RequestMethod.GET)
+    public String returnmap(ModelMap map){
+        return "map";
+    }
+    @RequestMapping(value = "/statistics",method = RequestMethod.GET)
+    public String returnstatistics(ModelMap map){
+        return "statistics";
+    }
+    @RequestMapping(value = "/recordlist",method = RequestMethod.GET)
+    public String returnRecordList(ModelMap map){
+        return "recordlist";
+    }
+    @RequestMapping(value = "/userManagement",method = RequestMethod.GET)
+    public String returnusermanagement(ModelMap map){
+        return "userManagement";
+    }
 }

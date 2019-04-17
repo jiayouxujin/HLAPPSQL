@@ -74,23 +74,24 @@
             return;
      }
       var formData = new FormData(document.forms.namedItem("login_form"));
-      $.ajax({
+      var a=$.ajax({
             url: "/api/admin/login",
             type: "POST",
             data: formData,
             processData: false,  // 告诉jQuery不要去处理发送的数据
             contentType: false   // 告诉jQuery不要去设置Content-Type请求头
-        }).done(function(message,data,hr) {
-            if(data == "success"){
-                alert('登陆成功!');
-                window.location.href="/devicelist";
-            }
-            else{
-                alert('登陆失败，请检查用户名密码');
-            }
+        }).done(function(resp) {
+                if(resp.data == "success"){
+                    alert("登陆成功");
+                    window.location.href="/devicelist";
+                }
+                else if(resp.data == "fail"){
+                    alert("用户名或密码错误");
+                }
         }).fail(function(err) {
-            alert('服务器未响应');
+                alert("服务器无响应");
         });
+
   }
   $(function () {
     $('input').iCheck({
