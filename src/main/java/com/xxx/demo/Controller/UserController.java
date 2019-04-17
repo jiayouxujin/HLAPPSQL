@@ -2,12 +2,15 @@ package com.xxx.demo.Controller;
 
 import com.xxx.demo.Common.Random;
 import com.xxx.demo.Common.Response;
+import com.xxx.demo.Common.WebSecurityConfig;
 import com.xxx.demo.Entity.User;
+import com.xxx.demo.Service.AdminService;
 import com.xxx.demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import static com.xxx.demo.Common.ResultGenerator.genFailResult;
@@ -18,9 +21,25 @@ import static com.xxx.demo.Common.ResultGenerator.genSuccessResult;
 public class UserController {
     @Autowired
     UserService userService;
-
+    @Autowired
+    AdminService adminService;
     @Value("${version}")
     private String version;
+
+    @PostMapping("/api/admin/login")
+    public Response returnlogin(@RequestParam String username, @RequestParam String password, HttpSession session){
+        try{
+            if(adminService.getPassword(username).equals(password)){
+                //
+                session.setAttribute(WebSecurityConfig.SESSION_KEY, username);
+                //
+                return genSuccessResult("success");
+            }
+        }catch (NullPointerException e) {
+            return genSuccessResult("fail");
+        }
+        return genSuccessResult("fail");
+    }
 
     @PostMapping("/api/user/adduser")
     public Response addUser (@RequestBody User thisUser){

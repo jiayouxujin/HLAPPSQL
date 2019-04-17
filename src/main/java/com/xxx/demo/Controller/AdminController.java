@@ -2,6 +2,7 @@ package com.xxx.demo.Controller;
 
 import com.xxx.demo.Common.Response;
 import com.xxx.demo.Entity.Solution;
+import com.xxx.demo.Service.AdminService;
 import com.xxx.demo.Service.RecordService;
 import com.xxx.demo.Service.SolutionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +23,32 @@ public class AdminController {
     @Value("${version}")
     private String version;
 
-    @RequestMapping(value = "/login" ,method = RequestMethod.GET)
+
+    @RequestMapping(value = "/" ,method = RequestMethod.GET)
     public String returnLogin(ModelMap map){
         //
         return "login";
     }
 
     @RequestMapping(value = "/devicelist",method = RequestMethod.GET)
-    public String returnDeviceList(ModelMap map){
+    public String returndevicelist(ModelMap map){
         return "devicelist";
     }
 
-
-
-
+    @RequestMapping(value = "/map",method = RequestMethod.GET)
+    public String returnmap(ModelMap map){
+        return "map";
+    }
+    @RequestMapping(value = "/statistics",method = RequestMethod.GET)
+    public String returnstatistics(ModelMap map){
+        return "statistics";
+    }
+    @RequestMapping(value = "/recordlist",method = RequestMethod.GET)
+    public String returnRecordList(ModelMap map){
+        return "recordlist";
+    }
+    @RequestMapping(value = "/userManagement",method = RequestMethod.GET)
+    public String returnusermanagement(ModelMap map){
+        return "userManagement";
+    }
 }
