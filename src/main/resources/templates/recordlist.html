@@ -147,11 +147,10 @@
           <div class="box">
             <div class="box-header">
               <h3 class="box-title">所用记录</h3>
-
             </div>
             <!-- /.box-header -->
             <div class="box-body table-responsive no-padding">
-              <table class="table table-hover">
+              <table  class="table table-hover">
                 <tr>
                   <th>设备编号</th>
                   <th>设备地点</th>
@@ -159,32 +158,8 @@
                   <th>警报状态</th>
                   <th>处理情况</th>
                 </tr>
-                <tr>
-                  <td>MT007</td>
-                  <td>华东理工大学</td>
-                  <td>2019-04-16</td>
-                  <td><span class="label label-success">正常运转</span></td>
-                  <td><span style="color: #0a0a0a">已处理</span></td>
-                </tr><tr>
-                  <td>MT007</td>
-                  <td>华东理工大学</td>
-                  <td>2019-04-16</td>
-                  <td><span class="label label-danger">报警状态</span></td>
-                  <td><span style="color: #0a0a0a">已处理</span></td>
-                </tr><tr>
-                  <td>MT007</td>
-                  <td>华东理工大学</td>
-                  <td>2019-04-16</td>
-                  <td><span class="label label-warning">预警状态</span></td>
-                  <td><span style="color: #87211a">未处理</span></td>
-                </tr><tr>
-                  <td>MT007</td>
-                  <td>华东理工大学</td>
-                  <td>2019-04-16</td>
-                  <td><span class="label label-default">停机状态</span></td>
-                  <td><span style="color: #0a0a0a">已处理</span></td>
-                </tr>
-
+                  <tbody id="recordlist">
+                  </tbody>
               </table>
             </div>
             <!-- /.box-body -->
@@ -218,5 +193,131 @@
 <script src="../static/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../static/dist/js/demo.js"></script>
+<script language="JavaScript">
+    // <tr>
+    // <td>MT007</td>
+    // <td>华东理工大学</td>
+    // <td>2019-04-16</td>
+    // <td><span class="label label-success">正常运转</span></td>
+    // <td><span style="color: #0a0a0a">已处理</span></td>
+    // </tr>
+    window.onload = init()
+  function init(){
+      var a=$.ajax({
+          url: "/api/record/getrecordlist",
+          type: "GET",
+          processData: false,  // 告诉jQuery不要去处理发送的数据
+          contentType: false   // 告诉jQuery不要去设置Content-Type请求头
+      }).done(function(resp) {
+          if(resp.data == "success"){
+              console.log(resp)
+          }
+          else if(resp.data == "fail"){
+              alert("服务器无响应");
+          }
+      }).fail(function(err) {
+          alert("服务器无响应");
+      });
+        //生成表格
+     _table=document.getElementById("recordlist");
+     for(var i=1;i<10;i++){
+         var row=document.createElement("tr");  
+         row.id=i;
+         for(var j=1;j<6;j++){
+             var cell=document.createElement("td");  
+             cell.id=i+"/"+j;
+             cell.appendChild(document.createTextNode("第"+cell.id+"列"));  
+             row.appendChild(cell);  
+         }
+         document.getElementById("recordlist").appendChild(row);  
+     }
+ }  
+ 
+ function rebulid(){
+     var beginRow=document.getElementById("beginRow").value;/*开始行*/
+    var endRow=document.getElementById("endRow").value;/*结束行*/
+    
+    var beginCol=document.getElementById("beginCol").value;/*开始列*/
+    var endCol=document.getElementById("endCol").value;/*结束列*/
+    
+    var tempCol=beginRow+"/"+beginCol;/*定位要改变属性的列*/
+    alert(tempCol);
+    var td=document.getElementById(tempCol);
+    
+    /*删除要合并的单元格*/
+    for(var x=beginRow;x<=endRow;x++){
+        for(var i=beginCol;i<=endCol;i++){
+          if(x==beginRow){
+           
+            document.getElementById("table").rows[x].deleteCell(i+1);
+            
+          }
+          else{
+              
+             document.getElementById("table").rows[x].deleteCell(i);
+          
+          }
+            
+        }
+    }
+    td.rowSpan=(endRow-beginRow)+1;
+}
+ /*添加行，使用appendChild方法*/
+ function addRow(){
+   var length=document.getElementById("table").rows.length;
+   /*document.getElementById("newbody").insertRow(length);
+   document.getElementById(length+1).setAttribute("id",length+2);*/
+   var tr=document.createElement("tr");
+   tr.id=length+1;
+   var td=document.createElement("td");
+   for(i=1;i<4;i++){
+       td.id=tr.id+"/"+i;
+    td.appendChild(document.createTextNode("第"+td.id+"列"));
+    tr.appendChild(td);
+   
+   }
+  document.getElementById("newbody").appendChild(tr);  
+ } 
+ 
+ function addRow_withInsert(){
+     var row=document.getElementById("table").insertRow(document.getElementById("table").rows.length);
+    var rowCount=document.getElementById("table").rows.length;
+    
+    var countCell=document.getElementById("table").rows.item(0).cells.length;
+    for(var i=0;i<countCell;i++){
+      var cell=row.insertCell(i);
+     
+      cell.innerHTML="新"+(rowCount)+"/"+(i+1)+"列";
+      cell.id=(rowCount)+"/"+(i+1);
+      
+      }
+ }
+ 
+ /*删除行，采用deleteRow(row Index)*/
+ function removeRow(){
+  /* var row=document.getElementById("2"); 
+   var index=row.rowIndex;
+   alert(index);*/
+   document.getElementById("newbody").deleteRow(document.getElementById(document.getElementById("table").rows.length).rowIndex); 
+ }
+ 
+ /*添加列，采用insertCell(列位置)方法*/
+ function addCell(){
+ /*document.getElementById("table").rows.item(0).cells.length
+  用来获得表格的列数
+ */
+    for(var i=0;i<document.getElementById("table").rows.length;i++){
+        var cell=document.getElementById("table").rows[i].insertCell(2);
+        cell.innerHTML="第"+(i+1)+"/"+3+"列";
+        
+    }
+ }
+ /*删除列，采用deleteCell(列位置)的方法*/
+ function removeCell(){
+    for(var i=0;i<document.getElementById("table").rows.length;i++){
+        document.getElementById("table").rows[i].deleteCell(0);
+    }
+}
+</script>
 </body>
 </html>
