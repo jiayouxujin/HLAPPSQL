@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import static com.xxx.demo.Common.ResultGenerator.genFailResult;
 import static com.xxx.demo.Common.ResultGenerator.genSuccessResult;
 
@@ -65,7 +67,16 @@ public class UserController {
             return genSuccessResult(thisUser);
         }
     }
-
+    @GetMapping("/api/user/getuserlist")
+    public Response getUserlist(){
+        List<User> list = userService.getuserlist();
+        if (list.size()==0){
+            return genFailResult("无记录或获取失败");
+        }
+        else {
+            return genSuccessResult(list);
+        }
+    }
     @PostMapping("/api/user/updateuserInfo")
     public Response updateUserInfo(@RequestParam String username,@RequestParam String regionID,@RequestParam String defposID){
         try {

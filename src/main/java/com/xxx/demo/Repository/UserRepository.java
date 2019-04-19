@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Integer>{
@@ -19,6 +20,9 @@ public interface UserRepository extends JpaRepository<User,Integer>{
 
     @Query (value = "SELECT * from user where user_name = ?1",nativeQuery = true)
     public User searchUserByName (String username);
+
+    @Query (value = "SELECT * from user ",nativeQuery = true)
+    public List<User> getuserlist();
 
     @Transactional
     @Modifying
