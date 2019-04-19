@@ -146,7 +146,7 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">所用记录</h3>
+              <h3 class="box-title">所有记录</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body table-responsive no-padding">
@@ -194,199 +194,83 @@
 <!-- AdminLTE for demo purposes -->
 <script src="../static/dist/js/demo.js"></script>
 <script language="JavaScript">
-    // <tr>
-    // <td>MT007</td>
-    // <td>华东理工大学</td>
-    // <td>2019-04-16</td>
-    // <td><span class="label label-success">正常运转</span></td>
-    // <td><span style="color: #0a0a0a">已处理</span></td>
-    // </tr>
-    //recordlist
-    var recordlist=[];
+
+    //启动页面启动init()函数
     window.onload = init()
+    var recordlist=[];
   function init(){
       $.ajax({
-          url: "/api/record/getrecordlist",
+          url: "http://47.100.107.158:8080/api/record/getrecordlist",
           type: "GET",
           data: "",
           contentType: false   // 告诉jQuery不要去设置Content-Type请求头
       }).done(function(resp) {
           recordlist=eval(resp.data);
+          if(recordlist.length) createtable();
       }).fail(function(err) {
           alert("服务器无响应");
       });
-      // //生成表格
-      // _table=document.getElementById("recordlist");
-      // for(var i=1;i<10;i++){
-      //     var row=document.createElement("tr");
-      //     row.id=i;
-      //     for(var j=1;j<6;j++){
-      //         var cell=document.createElement("td");
-      //         cell.id=recordlist[1].devi;
-      //         cell.appendChild(document.createTextNode("第"+cell.id+"列"));
-      //         row.appendChild(cell);
-      //     }
-      //     document.getElementById("recordlist").appendChild(row);
-      // }
-      // if(recordlist.size) createtable();
-      _table=document.getElementById("recordlist");
-      for(var i in recordlist){
-          console.log("执行到这里");
-          var row=document.createElement("tr");
-          row.id=i;
-          //设备编号
-          var devicenumcell=document.createElement("td");
-          devicenumcell.context=recordlist[i].devicenum;
-          devicenumcell.appendChild(document.createTextNode(devicenumcell.context));
-          row.appendChild(devicenumcell);
-          //设备地点
-          var deviceaddresscell=document.createElement("td");
-          deviceaddresscell.context=recordlist[i].deviceaddress.substring(0,10) ;
-          deviceaddresscell.appendChild(document.createTextNode(deviceaddresscell.context));
-          row.appendChild(deviceaddresscell);
-          //警报时间
-          var recordtimecell=document.createElement("td");
-          recordtimecell.context=recordlist[i].recordtime;
-          deviceaddresscell.appendChild(document.createTextNode( recordtimecell.context));
-          row.appendChild(recordtimecell);
-          //设备运行状态
-          var devicestatuscell=document.createElement("td");
-          devicestatuscell.context=recordlist[i].devicestatus;
-          devicestatuscell.appendChild(document.createTextNode( devicestatuscell.context));
-          row.appendChild(devicestatuscell);
-
-          //警报处理状态
-          var recordstatuscell=document.createElement("td");
-          recordstatuscell.context=recordlist[i].recordstatus;
-          recordstatuscell.appendChild(document.createTextNode( recordstatuscell.context));
-          row.appendChild(recordstatuscell);
-
-          document.getElementById("recordlist").appendChild(row);
-      }
   }  
  function createtable() {
+     _table=document.getElementById("recordlist");
      for(var i in recordlist){
-         _table=document.getElementById("recordlist");
-         for(var i in recordlist){
-             console.log("执行到这里");
-             var row=document.createElement("tr");
-             row.id=i;
-             //设备编号
-             var devicenumcell=document.createElement("td");
-             devicenumcell.context=recordlist[i].devicenum;
-             devicenumcell.appendChild(document.createTextNode(devicenumcell.context));
-             row.appendChild(devicenumcell);
-             //设备地点
-             var deviceaddresscell=document.createElement("td");
-             deviceaddresscell.context=recordlist[i].devicenum;
-             deviceaddresscell.appendChild(document.createTextNode(deviceaddresscell.context));
-             row.appendChild(deviceaddresscell);
-             //警报时间
-             var recordtimecell=document.createElement("td");
-             recordtimecell.context=recordlist[i].recordtime;
-             deviceaddresscell.appendChild(document.createTextNode( recordtimecell.context));
-             row.appendChild(recordtimecell);
-             //设备运行状态
-             var devicestatuscell=document.createElement("td");
-             devicestatuscell.context=recordlist[i].devicestatus;
-             devicestatuscell.appendChild(document.createTextNode( devicestatuscell.context));
-             row.appendChild(devicestatuscell);
+         var row=document.createElement("tr");
+         row.id=i;
+         //设备编号
+         var devicenumcell=document.createElement("td");
+         devicenumcell.context=recordlist[i].devicenum;
+         devicenumcell.appendChild(document.createTextNode(devicenumcell.context));
+         row.appendChild(devicenumcell);
 
-             //警报处理状态
-             var recordstatuscell=document.createElement("td");
-             recordstatuscell.context=recordlist[i].recordstatus;
-             recordstatuscell.appendChild(document.createTextNode( recordstatuscell.context));
-             row.appendChild(recordstatuscell);
+         //设备地点
+         var deviceaddresscell=document.createElement("td");
+         deviceaddresscell.context=recordlist[i].deviceaddress;
+         deviceaddresscell.appendChild(document.createTextNode(deviceaddresscell.context));
+         row.appendChild(deviceaddresscell);
 
-             document.getElementById("recordlist").appendChild(row);
+         //警报时间
+         var recordtimecell=document.createElement("td");
+         recordtimecell.context=recordlist[i].recordtime;
+         recordtimecell.appendChild(document.createTextNode( recordtimecell.context));
+         row.appendChild(recordtimecell);
+
+         //设备运行状态
+         var devicestatuscell=document.createElement("td");
+         switch (recordlist[i].devicestatus) {
+             case "正常运转":
+                    devicestatuscell.innerHTML="<span class=\"label label-success\">正常运转</span>";
+                    break;
+             case "报警状态":
+                 devicestatuscell.innerHTML=" <span class=\"label label-danger\">报警状态</span>";
+                         break;
+             case "停机状态":
+                 devicestatuscell.innerHTML=" <span class=\"label label-default\">停机状态</span>";
+                 break;
+             case "预警状态":
+                 devicestatuscell.innerHTML="<span class=\"label label-warning\">预警状态</span>";
+                 break;
+             default:
+                 devicestatuscell=recordlist[i].devicestatus;
+                 break;
          }
+         row.appendChild(devicestatuscell);
+
+         //警报处理状态
+         var recordstatuscell=document.createElement("td");
+         recordstatuscell.context=recordlist[i].recordstatus;
+         switch (recordlist[i].recordstatus) {
+             case "未处理":
+                 recordstatuscell.setAttribute("style","color: #c9302c");
+                 break;
+             default :
+                 break;
+         }
+         recordstatuscell.appendChild(document.createTextNode( recordstatuscell.context));
+         row.appendChild(recordstatuscell);
+
+         document.getElementById("recordlist").appendChild(row);
      }
  }
- function rebulid(){
-     var beginRow=document.getElementById("beginRow").value;/*开始行*/
-    var endRow=document.getElementById("endRow").value;/*结束行*/
-    
-    var beginCol=document.getElementById("beginCol").value;/*开始列*/
-    var endCol=document.getElementById("endCol").value;/*结束列*/
-    
-    var tempCol=beginRow+"/"+beginCol;/*定位要改变属性的列*/
-    alert(tempCol);
-    var td=document.getElementById(tempCol);
-    
-    /*删除要合并的单元格*/
-    for(var x=beginRow;x<=endRow;x++){
-        for(var i=beginCol;i<=endCol;i++){
-          if(x==beginRow){
-           
-            document.getElementById("table").rows[x].deleteCell(i+1);
-            
-          }
-          else{
-              
-             document.getElementById("table").rows[x].deleteCell(i);
-          
-          }
-            
-        }
-    }
-    td.rowSpan=(endRow-beginRow)+1;
-}
- /*添加行，使用appendChild方法*/
- function addRow(){
-   var length=document.getElementById("table").rows.length;
-   /*document.getElementById("newbody").insertRow(length);
-   document.getElementById(length+1).setAttribute("id",length+2);*/
-   var tr=document.createElement("tr");
-   tr.id=length+1;
-   var td=document.createElement("td");
-   for(i=1;i<4;i++){
-       td.id=tr.id+"/"+i;
-    td.appendChild(document.createTextNode("第"+td.id+"列"));
-    tr.appendChild(td);
-   
-   }
-  document.getElementById("newbody").appendChild(tr);  
- } 
- 
- function addRow_withInsert(){
-     var row=document.getElementById("table").insertRow(document.getElementById("table").rows.length);
-    var rowCount=document.getElementById("table").rows.length;
-    
-    var countCell=document.getElementById("table").rows.item(0).cells.length;
-    for(var i=0;i<countCell;i++){
-      var cell=row.insertCell(i);
-     
-      cell.innerHTML="新"+(rowCount)+"/"+(i+1)+"列";
-      cell.id=(rowCount)+"/"+(i+1);
-      
-      }
- }
- 
- /*删除行，采用deleteRow(row Index)*/
- function removeRow(){
-  /* var row=document.getElementById("2"); 
-   var index=row.rowIndex;
-   alert(index);*/
-   document.getElementById("newbody").deleteRow(document.getElementById(document.getElementById("table").rows.length).rowIndex); 
- }
- 
- /*添加列，采用insertCell(列位置)方法*/
- function addCell(){
- /*document.getElementById("table").rows.item(0).cells.length
-  用来获得表格的列数
- */
-    for(var i=0;i<document.getElementById("table").rows.length;i++){
-        var cell=document.getElementById("table").rows[i].insertCell(2);
-        cell.innerHTML="第"+(i+1)+"/"+3+"列";
-        
-    }
- }
- /*删除列，采用deleteCell(列位置)的方法*/
- function removeCell(){
-    for(var i=0;i<document.getElementById("table").rows.length;i++){
-        document.getElementById("table").rows[i].deleteCell(0);
-    }
-}
 </script>
 </body>
 </html>
