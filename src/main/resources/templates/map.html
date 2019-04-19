@@ -176,7 +176,7 @@
 <!-- AdminLTE for demo purposes -->
 <script src="../static/dist/js/demo.js"></script>
 <script>
-    var lnglatXY,imgsize,imgpixel;
+    var lnglatXY,imgsize,imgpixel,index;
     //device sets
     var cameralist=[],sensorlist=[],radarlist=[],devicelist=[];
     //marker sets
@@ -274,14 +274,16 @@
                 devicemarkers.push(marker);
                 num2marker.put(devicelist[i].devicenum,marker);
                 num2device.put(devicelist[i].devicenum,devicelist[i]);
-                console.log(num2device);
+                console.log(num2device);    
                 marker.setMap(map);
             }
+            modify(index);
         }).fail(function(err) {
                 alert("服务器无响应");
         });
     }
-    function modify(index){
+    function modify(indexx){
+        index=indexx;
             switch(index){
                 case 0:
                     visable(cameramarkers,true);
