@@ -201,38 +201,107 @@
     // <td><span class="label label-success">正常运转</span></td>
     // <td><span style="color: #0a0a0a">已处理</span></td>
     // </tr>
+    //recordlist
+    var recordlist=[];
     window.onload = init()
   function init(){
-      var a=$.ajax({
+      $.ajax({
           url: "/api/record/getrecordlist",
           type: "GET",
-          processData: false,  // 告诉jQuery不要去处理发送的数据
+          data: "",
           contentType: false   // 告诉jQuery不要去设置Content-Type请求头
       }).done(function(resp) {
-          if(resp.data == "success"){
-              console.log(resp)
-          }
-          else if(resp.data == "fail"){
-              alert("服务器无响应");
-          }
+          recordlist=eval(resp.data);
       }).fail(function(err) {
           alert("服务器无响应");
       });
-        //生成表格
-     _table=document.getElementById("recordlist");
-     for(var i=1;i<10;i++){
-         var row=document.createElement("tr");  
-         row.id=i;
-         for(var j=1;j<6;j++){
-             var cell=document.createElement("td");  
-             cell.id=i+"/"+j;
-             cell.appendChild(document.createTextNode("第"+cell.id+"列"));  
-             row.appendChild(cell);  
-         }
-         document.getElementById("recordlist").appendChild(row);  
-     }
- }  
- 
+      // //生成表格
+      // _table=document.getElementById("recordlist");
+      // for(var i=1;i<10;i++){
+      //     var row=document.createElement("tr");
+      //     row.id=i;
+      //     for(var j=1;j<6;j++){
+      //         var cell=document.createElement("td");
+      //         cell.id=recordlist[1].devi;
+      //         cell.appendChild(document.createTextNode("第"+cell.id+"列"));
+      //         row.appendChild(cell);
+      //     }
+      //     document.getElementById("recordlist").appendChild(row);
+      // }
+      // if(recordlist.size) createtable();
+      _table=document.getElementById("recordlist");
+      for(var i in recordlist){
+          console.log("执行到这里");
+          var row=document.createElement("tr");
+          row.id=i;
+          //设备编号
+          var devicenumcell=document.createElement("td");
+          devicenumcell.context=recordlist[i].devicenum;
+          devicenumcell.appendChild(document.createTextNode(devicenumcell.context));
+          row.appendChild(devicenumcell);
+          //设备地点
+          var deviceaddresscell=document.createElement("td");
+          deviceaddresscell.context=recordlist[i].deviceaddress.substring(0,10) ;
+          deviceaddresscell.appendChild(document.createTextNode(deviceaddresscell.context));
+          row.appendChild(deviceaddresscell);
+          //警报时间
+          var recordtimecell=document.createElement("td");
+          recordtimecell.context=recordlist[i].recordtime;
+          deviceaddresscell.appendChild(document.createTextNode( recordtimecell.context));
+          row.appendChild(recordtimecell);
+          //设备运行状态
+          var devicestatuscell=document.createElement("td");
+          devicestatuscell.context=recordlist[i].devicestatus;
+          devicestatuscell.appendChild(document.createTextNode( devicestatuscell.context));
+          row.appendChild(devicestatuscell);
+
+          //警报处理状态
+          var recordstatuscell=document.createElement("td");
+          recordstatuscell.context=recordlist[i].recordstatus;
+          recordstatuscell.appendChild(document.createTextNode( recordstatuscell.context));
+          row.appendChild(recordstatuscell);
+
+          document.getElementById("recordlist").appendChild(row);
+      }
+  }  
+ function createtable() {
+     for(var i in recordlist){
+         _table=document.getElementById("recordlist");
+         for(var i in recordlist){
+             console.log("执行到这里");
+             var row=document.createElement("tr");
+             row.id=i;
+             //设备编号
+             var devicenumcell=document.createElement("td");
+             devicenumcell.context=recordlist[i].devicenum;
+             devicenumcell.appendChild(document.createTextNode(devicenumcell.context));
+             row.appendChild(devicenumcell);
+             //设备地点
+             var deviceaddresscell=document.createElement("td");
+             deviceaddresscell.context=recordlist[i].devicenum;
+             deviceaddresscell.appendChild(document.createTextNode(deviceaddresscell.context));
+             row.appendChild(deviceaddresscell);
+             //警报时间
+             var recordtimecell=document.createElement("td");
+             recordtimecell.context=recordlist[i].recordtime;
+             deviceaddresscell.appendChild(document.createTextNode( recordtimecell.context));
+             row.appendChild(recordtimecell);
+             //设备运行状态
+             var devicestatuscell=document.createElement("td");
+             devicestatuscell.context=recordlist[i].devicestatus;
+             devicestatuscell.appendChild(document.createTextNode( devicestatuscell.context));
+             row.appendChild(devicestatuscell);
+
+             //警报处理状态
+             var recordstatuscell=document.createElement("td");
+             recordstatuscell.context=recordlist[i].recordstatus;
+             recordstatuscell.appendChild(document.createTextNode( recordstatuscell.context));
+             row.appendChild(recordstatuscell);
+
+             document.getElementById("recordlist").appendChild(row);
+         }
+     }
+ }
  function rebulid(){
      var beginRow=document.getElementById("beginRow").value;/*开始行*/
     var endRow=document.getElementById("endRow").value;/*结束行*/
