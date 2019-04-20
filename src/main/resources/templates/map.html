@@ -30,8 +30,19 @@
     <!-- import map-->
     <link rel="stylesheet" href="https://cache.amap.com/lbs/static/main1119.css"/>
     <script src="https://cache.amap.com/lbs/static/es5.min.js"></script>
-    <script src="https://webapi.amap.com/maps?v=1.4.8&key=0e8d2438d077719d5e2f901cb4d737c2"></script>
+    <script src="https://webapi.amap.com/maps?v=1.4.8&key=d45e066e9d7b475ce397fc37e04aeef1&plugin=AMap.PlaceSearch,AMap.AdvancedInfoWindow"></script>
     <script src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <style>
+        #search{
+            width: 250px;
+            height: 40px;       
+            position: relative;
+            float:right ;
+            z-index:1000;
+            margin: 30px;
+            margin-top: 100px;
+        }
+    </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -148,18 +159,15 @@
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <section class="content">
-            <div id="container"></div>
+            <div id="container">
+                <div>
+                    <input id="search" class="form-control input-style" placeholder="输入关键字搜索位置" value=""/>
+                </div>
+            </div>
         </section>
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 2.4.0
-        </div>
-        <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-        reserved.
-    </footer>
 </div>
 <!-- ./wrapper -->
 
@@ -193,8 +201,23 @@
     	resizeEnable: true
     });
     runEvery4Sec();
-
-    // 每隔  10 秒钟 运行一次，发送一个 ajax 请求
+    AMap.plugin(['AMap.Autocomplete','AMap.PlaceSearch'],function(){
+        var autoOptions = {
+            city: "上海",
+            input: "search"//使用联想输入的input的id（也就是上边那个唯一的id）
+        };
+        autocomplete= new AMap.Autocomplete(autoOptions);
+        var placeSearch = new AMap.PlaceSearch({
+            city: "上海",
+            map:map
+        })
+        AMap.event.addListener(autocomplete, "select", function(e){
+            //TODO 针对选中的poi实现自己的功能
+            placeSearch.setCity(e.poi.adcode);
+            placeSearch.search(e.poi.name)
+        });
+    });
+    // 每隔  4 秒钟 运行一次，发送一个 ajax 请求
     function runEvery4Sec() {
         setTimeout( runEvery4Sec, 1000 * 4 );
          $.ajax({
@@ -214,10 +237,13 @@
             num2marker = new HashMap(),marker2num = new HashMap();
             for(var i in devicelist){
                 var marker = new AMap.Marker({
-                     offset: new AMap.Pixel(-15, -38),
-                     position: new AMap.LngLat(devicelist[i].devicelng,devicelist[i].devicelat) ,
-                     title: devicelist[i].devicenum,
+                    map:map,
+                    offset: new AMap.Pixel(-15, -38),
+                    position: new AMap.LngLat(devicelist[i].devicelng,devicelist[i].devicelat) ,
+                    title: devicelist[i].devicenum,
+                    clickable:true,
                 });
+
                 switch(devicelist[i].devicetype){
                     case "监控":
                         switch(devicelist[i].devicestatus){
@@ -274,14 +300,18 @@
                 devicemarkers.push(marker);
                 num2marker.put(devicelist[i].devicenum,marker);
                 num2device.put(devicelist[i].devicenum,devicelist[i]);
-                console.log(num2device);    
-                marker.setMap(map);
+                //go   ---marker.setMap(map);
+                AMap.event.addListener(marker,'click',showinfo);
             }
             modify(index);
         }).fail(function(err) {
                 alert("服务器无响应");
         });
     }
+    function showinfo(){
+        
+    }
+
     function modify(indexx){
         index=indexx;
             switch(index){
