@@ -161,43 +161,7 @@
                   <th>区域</th>
                   <th>注册日期</th>
                 </tr>
-                <tr>
-                  <td>1</td>
-                  <td>admin</td>
-                  <td>admi</td>
-                  <td>小米</td>
-                  <td>1</td>
-                  <td>2</td>
-                  <td>2019/4/16</td>
-                </tr>
-                  <tr>
-                      <td>1</td>
-                      <td>admin</td>
-                      <td>admi</td>
-                      <td>小米</td>
-                      <td>1</td>
-                      <td>2</td>
-                      <td>2019/4/16</td>
-                  </tr>
-                  <tr>
-                      <td>1</td>
-                      <td>admin</td>
-                      <td>admi</td>
-                      <td>小米</td>
-                      <td>1</td>
-                      <td>2</td>
-                      <td>2019/4/16</td>
-                  </tr>
-                  <tr>
-                  <td>1</td>
-                  <td>admin</td>
-                  <td>admi</td>
-                  <td>小米</td>
-                  <td>1</td>
-                  <td>2</td>
-                  <td>2019/4/16</td>
-              </tr>
-
+                  <tbody id="userlist"></tbody>
               </table>
             </div>
             <!-- /.box-body -->
@@ -231,5 +195,78 @@
 <script src="../static/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../static/dist/js/demo.js"></script>
+
+<script language="JavaScript">
+
+    //启动页面启动Init（）函数
+    window.onload=init();
+
+    var userlist=[];
+    //初始化函数
+    function init() {
+        $.ajax({
+            url:"http://47.100.107.158:8080/api/user/getuserlist",
+            type:"GET",
+            data:"",
+            contentType:false
+        }).done(function (resp) {
+            userlist=eval(resp.data);
+            if (userlist.length) createtable();
+        }).fail(function (err) {
+            alert("服务器无响应");
+        });
+    }
+    //生成表格
+    function createtable(){
+        _table=document.getElementById("userlist");
+        for(var i in userlist){
+            var row=document.createElement("tr");
+            row.id=i;
+            //用户Id
+            var idcell=document.createElement("td");
+            idcell.context=userlist[i].userID;
+            idcell.appendChild(document.createTextNode(idcell.context));
+            row.appendChild(idcell);
+
+            //用户名
+            var usernamecell=document.createElement("td");
+            usernamecell.context=userlist[i].username;
+            usernamecell.appendChild(document.createTextNode(usernamecell.context));
+            row.appendChild(usernamecell);
+
+            //密码
+            var passwordcell=document.createElement("td");
+            passwordcell.context=userlist[i].password;
+            passwordcell.appendChild(document.createTextNode(passwordcell.context));
+            row.appendChild(passwordcell);
+
+            //认证设备
+            var confirmdevicecell=document.createElement("td");
+            confirmdevicecell.context="小米";
+            confirmdevicecell.appendChild(document.createTextNode(confirmdevicecell.context));
+            row.appendChild(confirmdevicecell);
+
+            //防区
+            var defendcell=document.createElement("td");
+            defendcell.context=userlist[i].defposID;
+            defendcell.appendChild(document.createTextNode(defendcell.context));
+            row.appendChild(defendcell);
+
+            //区域
+            var regioncell=document.createElement("td");
+            regioncell.context=userlist[i].regionID;
+            regioncell.appendChild(document.createTextNode(regioncell.context));
+            row.appendChild(regioncell);
+
+            //注册日期
+            var regiserday=document.createElement("td");
+            regiserday.context=userlist[i].regiserday;
+            regiserday.appendChild(document.createTextNode(regiserday.context));
+            row.appendChild(regiserday);
+
+            document.getElementById("userlist").appendChild(row);
+        }
+    }
+</script>
 </body>
 </html>

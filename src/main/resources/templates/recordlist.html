@@ -146,12 +146,11 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">所用记录</h3>
-
+              <h3 class="box-title">所有记录</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body table-responsive no-padding">
-              <table class="table table-hover">
+              <table  class="table table-hover">
                 <tr>
                   <th>设备编号</th>
                   <th>设备地点</th>
@@ -159,32 +158,8 @@
                   <th>警报状态</th>
                   <th>处理情况</th>
                 </tr>
-                <tr>
-                  <td>MT007</td>
-                  <td>华东理工大学</td>
-                  <td>2019-04-16</td>
-                  <td><span class="label label-success">正常运转</span></td>
-                  <td><span style="color: #0a0a0a">已处理</span></td>
-                </tr><tr>
-                  <td>MT007</td>
-                  <td>华东理工大学</td>
-                  <td>2019-04-16</td>
-                  <td><span class="label label-danger">报警状态</span></td>
-                  <td><span style="color: #0a0a0a">已处理</span></td>
-                </tr><tr>
-                  <td>MT007</td>
-                  <td>华东理工大学</td>
-                  <td>2019-04-16</td>
-                  <td><span class="label label-warning">预警状态</span></td>
-                  <td><span style="color: #87211a">未处理</span></td>
-                </tr><tr>
-                  <td>MT007</td>
-                  <td>华东理工大学</td>
-                  <td>2019-04-16</td>
-                  <td><span class="label label-default">停机状态</span></td>
-                  <td><span style="color: #0a0a0a">已处理</span></td>
-                </tr>
-
+                  <tbody id="recordlist">
+                  </tbody>
               </table>
             </div>
             <!-- /.box-body -->
@@ -218,5 +193,84 @@
 <script src="../static/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../static/dist/js/demo.js"></script>
+<script language="JavaScript">
+
+    //启动页面启动init()函数
+    window.onload = init()
+    var recordlist=[];
+  function init(){
+      $.ajax({
+          url: "http://47.100.107.158:8080/api/record/getrecordlist",
+          type: "GET",
+          data: "",
+          contentType: false   // 告诉jQuery不要去设置Content-Type请求头
+      }).done(function(resp) {
+          recordlist=eval(resp.data);
+          if(recordlist.length) createtable();
+      }).fail(function(err) {
+          alert("服务器无响应");
+      });
+  }  
+ function createtable() {
+     _table=document.getElementById("recordlist");
+     for(var i in recordlist){
+         var row=document.createElement("tr");
+         row.id=i;
+         //设备编号
+         var devicenumcell=document.createElement("td");
+         devicenumcell.context=recordlist[i].devicenum;
+         devicenumcell.appendChild(document.createTextNode(devicenumcell.context));
+         row.appendChild(devicenumcell);
+
+         //设备地点
+         var deviceaddresscell=document.createElement("td");
+         deviceaddresscell.context=recordlist[i].deviceaddress;
+         deviceaddresscell.appendChild(document.createTextNode(deviceaddresscell.context));
+         row.appendChild(deviceaddresscell);
+
+         //警报时间
+         var recordtimecell=document.createElement("td");
+         recordtimecell.context=recordlist[i].recordtime;
+         recordtimecell.appendChild(document.createTextNode( recordtimecell.context));
+         row.appendChild(recordtimecell);
+
+         //设备运行状态
+         var devicestatuscell=document.createElement("td");
+         switch (recordlist[i].devicestatus) {
+             case "正常运转":
+                    devicestatuscell.innerHTML="<span class=\"label label-success\">正常运转</span>";
+                    break;
+             case "报警状态":
+                 devicestatuscell.innerHTML=" <span class=\"label label-danger\">报警状态</span>";
+                         break;
+             case "停机状态":
+                 devicestatuscell.innerHTML=" <span class=\"label label-default\">停机状态</span>";
+                 break;
+             case "预警状态":
+                 devicestatuscell.innerHTML="<span class=\"label label-warning\">预警状态</span>";
+                 break;
+             default:
+                 devicestatuscell=recordlist[i].devicestatus;
+                 break;
+         }
+         row.appendChild(devicestatuscell);
+
+         //警报处理状态
+         var recordstatuscell=document.createElement("td");
+         recordstatuscell.context=recordlist[i].recordstatus;
+         switch (recordlist[i].recordstatus) {
+             case "未处理":
+                 recordstatuscell.setAttribute("style","color: #c9302c");
+                 break;
+             default :
+                 break;
+         }
+         recordstatuscell.appendChild(document.createTextNode( recordstatuscell.context));
+         row.appendChild(recordstatuscell);
+
+         document.getElementById("recordlist").appendChild(row);
+     }
+ }
+</script>
 </body>
 </html>

@@ -141,7 +141,7 @@
       <!-- Main content -->
       <section class="content">
           <div class="row">
-              <div class="col-md-8">
+              <div class="col-md-4">
                   <!-- 月份统计 CHART -->
                   <div class="box box-primary">
                       <div class="box-header with-border">
@@ -161,7 +161,8 @@
                       <!-- /.box-body -->
                   </div>
                   <!-- /.box -->
-
+              </div>
+              <div class="col-md-4">
                   <!-- 总共统计 CHART -->
                   <div class="box box-danger">
                       <div class="box-header with-border">
@@ -212,55 +213,205 @@
 <script src="../static/dist/js/demo.js"></script>
 <!-- page script -->
 <script>
+    window.onload=getrecordlist();
+    //请求警报记录
+    var recordlist=[];
+    function getrecordlist(){
+        $.ajax({
+            url: "http://47.100.107.158:8080/api/record/getrecordlist",
+            type: "GET",
+            data: "",
+            contentType: false   // 告诉jQuery不要去设置Content-Type请求头
+        }).done(function(resp) {
+            recordlist=eval(resp.data);
+        }).fail(function(err) {
+            alert("服务器无响应");
+        });
+    }
     $(function () {
-        /* ChartJS
-         * -------
-         * Here we will create a few charts using ChartJS
-         */
 
-        //--------------
-        //-月份统计表 -
-        //--------------
-        // Get context with jQuery - using jQuery's .get() method.
-        var areaChartCanvas = $('#areaChart').get(0).getContext('2d')
+        //最近月份的数量
+        var previoustowmonthnormal=0,previoustowmonthstop=0,previoustowmonthwarning=0,previoustowmonthalarm=0;
+        var previousonemonthnormal=0,previousonemonthstop=0,previousonemonthwarning=0,previousonemonthalarm=0;
+        var nowmonthnormal=0,nowmonthstop=0,nowmonthwarning=0,nowmonthalarm=0;
+        //得到总量
+        var normal=0,stop=0,warning=0,alarm=0;
+
+        //得到当前年份 月份
+        var date=new Date;
+        var year=date.getFullYear();
+        var month=date.getMonth()+1;
+        month =(month<10 ?0+month:month);
+        var previoustowmonth=(month+10)%12;
+        var previousonemonth=(month+11)%12;
+
+        //遍历recordlist得到数据
+        //先得到最近月份的数据
+        //遍历得到当前月的数据
+        for(var i in recordlist){
+            //得到警报记录的年份 月份
+            var recordyear=recordlist[i].recordtime.substring(0,4);
+            var recordmonth=recordlist[i].recordtime.substring(5,7);
+            // //先判断是不是当年的前提是当月大于2月
+            // if(month>2&&recordyear<year) continue;
+            // if(month<=2&&recordyear<year-1) continue;
+            // //现在年份正确 判断月份是否正确
+            if(recordmonth==previoustowmonth){
+                if(recordlist[i].devicestatus=="正常运转"){
+                    previoustowmonthnormal++;
+                }else if(recordlist[i].devicestatus=="报警状态"){
+                    previoustowmonthalarm++;
+                }else if(recordlist[i].devicestatus=="停机状态"){
+                    previoustowmonthstop++;
+                }else{
+                    previoustowmonthwarning++;
+                }
+            }
+            else if(recordmonth==previousonemonth){
+                if(recordlist[i].devicestatus=="正常运转"){
+                    previousonemonthnormal++;
+                }else if(recordlist[i].devicestatus=="报警状态"){
+                    previousonemonthalarm++;
+                }else if(recordlist[i].devicestatus=="停机状态"){
+                    previousonemonthstop++;
+                }else{
+                    previousonemonthwarning++;
+                }
+            }else{
+                if(recordlist[i].devicestatus=="正常运转"){
+                    nowmonthnormal++;
+                }else if(recordlist[i].devicestatus=="报警状态"){
+                    nowmonthalarm++;
+                }else if(recordlist[i].devicestatus=="停机状态"){
+                    nowmonthstop++;
+                }else{
+                    nowmonthwarning++;
+                }
+            }
+            switch (recordmonth) {
+                case previoustowmonth:
+                    switch (recordlist[i].devicestatus) {
+                        case "正常运转":
+                            previoustowmonthnormal++;
+                            break;
+                        case "报警状态":
+                            previoustowmonthalarm++;
+                            break;
+                        case "停机状态":
+                            previoustowmonthstop++;
+                            break;
+                        case "预警状态":
+                            previoustowmonthwarning++;
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case previousonemonth:
+                    if(recordlist[i].devicestatus=="正常运转"){
+                        previousonemonthnormal++;
+                    }else if(recordlist[i].devicestatus=="报警状态"){
+                        previousonemonthalarm++;
+                    }else if(recordlist[i].devicestatus=="停机状态"){
+                        previousonemonthstop++;
+                    }else{
+                        previousonemonthwarning++;
+                    }
+                    console.log("运行到这里");
+                    break;
+                case month:
+                    switch (recordlist[i].devicestatus) {
+                        case "正常运转":
+                            nowmonthnormal++;
+                            break;
+                        case "报警状态":
+                            nowmonthalarm++;
+                            break;
+                        case "停机状态":
+                            nowmonthstop++;
+                            break;
+                        case "预警状态":
+                            nowmonthwarning++;
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        //得到总的数据
+        for (var i in recordlist){
+            switch (recordlist[i].devicestatus) {
+                case "正常运转":
+                    normal++;
+                    break;
+                case "报警状态":
+                    alarm++;
+                    break;
+                case "停机状态":
+                    stop++;
+                    break;
+                case "预警状态":
+                   warning++;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
+        //最近月份统计图
+        var areaChartCanvas = $('#areaChart').get(0).getContext('2d');
         // This will get the first returned node in the jQuery collection.
-        var areaChart       = new Chart(areaChartCanvas)
+        var areaChart       = new Chart(areaChartCanvas);
 
         var areaChartData = {
-            labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels  : [previoustowmonth+"月",previousonemonth+"月", month+"月"],
             datasets: [
                 {
-                    label               : 'Electronics',
-                    fillColor           : 'rgba(210, 214, 222, 1)',
-                    strokeColor         : 'rgba(210, 214, 222, 1)',
-                    pointColor          : 'rgba(210, 214, 222, 1)',
-                    pointStrokeColor    : '#c1c7d1',
+                    label               : '正常运转',
+                    fillColor           : '#5cb85c',
+                    strokeColor         : '#5cb85c',
+                    pointColor          : '#5cb85c',
+                    pointStrokeColor    : '#5cb85c',
                     pointHighlightFill  : '#fff',
                     pointHighlightStroke: 'rgba(220,220,220,1)',
-                    data                : [65, 59, 80, 81, 56, 55, 40]
+                    data                : [previoustowmonthnormal, previousonemonthnormal, nowmonthnormal]
                     //这个是正常运行的统计情况
                 },
                 {
-                    label               : 'Digital Goods',
-                    fillColor           : 'rgba(60,141,188,0.9)',
-                    strokeColor         : 'rgba(60,141,188,0.8)',
-                    pointColor          : '#3b8bba',
-                    pointStrokeColor    : 'rgba(60,141,188,1)',
+                    label               : '报警状态',
+                    fillColor           : '#c9302c',
+                    strokeColor         : '#c9302c',
+                    pointColor          : '#c9302c',
+                    pointStrokeColor    : '#c9302c',
                     pointHighlightFill  : '#fff',
                     pointHighlightStroke: 'rgba(60,141,188,1)',
-                    data                : [28, 48, 40, 19, 86, 27, 90]
-                    //这个是预警的统计情况
+                    data                : [previoustowmonthalarm, previousonemonthalarm, nowmonthalarm]
                 },
                 {
-                    label               : 'Digital Goods',
-                    fillColor           : 'rgba(60,141,188,0.9)',
-                    strokeColor         : 'rgba(60,141,188,0.8)',
-                    pointColor          : '#3b8bba',
-                    pointStrokeColor    : 'rgba(60,141,188,1)',
+                    label               : '预警状态',
+                    fillColor           : '#ec971f',
+                    strokeColor         : '#ec971f',
+                    pointColor          : '#ec971f',
+                    pointStrokeColor    : '#ec971f',
                     pointHighlightFill  : '#fff',
                     pointHighlightStroke: 'rgba(60,141,188,1)',
-                    data                : [2, 4, 4, 1, 8, 2, 9]
-                    //这个是预警的统计情况
+                    data                : [previoustowmonthwarning,previousonemonthwarning,nowmonthwarning]
+
+                },
+                {
+                    label               : '停机状态',
+                    fillColor           : '#5e5e5e',
+                    strokeColor         : '#5e5e5e',
+                    pointColor          : '#5e5e5e',
+                    pointStrokeColor    : '#5e5e5e',
+                    pointHighlightFill  : '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data                : [previoustowmonthstop,previousonemonthstop,nowmonthstop]
+
                 }
             ]
         }
@@ -315,27 +466,27 @@
         var pieChart       = new Chart(pieChartCanvas)
         var PieData        = [
             {
-                value    : 700,
-                color    : '#f56954',
-                highlight: '#f56954',
+                value    : normal,
+                color    : '#5cb85c',
+                highlight: '#5cb85c',
                 label    : '正常运行'
             },
             {
-                value    : 500,
-                color    : '#00a65a',
-                highlight: '#00a65a',
-                label    : '预警状态'
-            },
-            {
-                value    : 400,
-                color    : '#f39c12',
-                highlight: '#f39c12',
+                value    : alarm,
+                color    : '#c9302c',
+                highlight: '#c9302c',
                 label    : '报警状态'
             },
             {
-                value    : 600,
-                color    : '#00c0ef',
-                highlight: '#00c0ef',
+                value    : warning,
+                color    : '#ec971f',
+                highlight: '#ec971f',
+                label    : '预警状态'
+            },
+            {
+                value    : stop,
+                color    : '#5e5e5e',
+                highlight: '#5e5e5e',
                 label    : '停机状态'
             }
         ]
@@ -366,8 +517,6 @@
         //Create pie or douhnut chart
         // You can switch between pie and douhnut using the method below.
         pieChart.Doughnut(PieData, pieOptions)
-
-
 
 
     })
