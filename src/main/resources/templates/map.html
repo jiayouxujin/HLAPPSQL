@@ -200,6 +200,7 @@
     var map = new AMap.Map('container', {
     	resizeEnable: true
     });
+    updatedevicelist();
     runEvery4Sec();
     AMap.plugin(['AMap.Autocomplete','AMap.PlaceSearch'],function(){
         var autoOptions = {
@@ -220,98 +221,113 @@
     // 每隔  4 秒钟 运行一次，发送一个 ajax 请求
     function runEvery4Sec() {
         setTimeout( runEvery4Sec, 1000 * 4 );
-         $.ajax({
-            url: "http://47.100.107.158:8080/api/device/getdevicelist",
+        $.ajax({
+            url: "http://47.100.107.158:8080/api/device/check",
             type: "GET",
             data: "",
             contentType: false   // 告诉jQuery不要去设置Content-Type请求头
         }).done(function(resp) {
-            let devicelist=[];
             var data=eval(resp.data);
-            for(var i in data){
-                devicelist.push(data[i]);
+            if(data==true) {
+                updatedevicelist();
             }
-            map.clearMap();
-            cameralist=[],sensorlist=[],radarlist=[];
-            cameramarkers=[],radarmarkers=[],sensormarkers=[],devicemarkers=[];
-            num2marker = new HashMap(),marker2num = new HashMap();
-            for(var i in devicelist){
-                var marker = new AMap.Marker({
-                    map:map,
-                    offset: new AMap.Pixel(-15, -38),
-                    position: new AMap.LngLat(devicelist[i].devicelng,devicelist[i].devicelat) ,
-                    title: devicelist[i].devicenum,
-                    clickable:true,
-                });
-
-                switch(devicelist[i].devicetype){
-                    case "监控":
-                        switch(devicelist[i].devicestatus){
-                            case "正常运转":
-                            marker.setIcon(camera_g);
-                            break;
-                            case "报警状态":
-                            marker.setIcon(camera_r);
-                            break;
-                            case "预警状态":
-                            marker.setIcon(camera_y);
-                            break;
-                            case "停机状态":
-                            marker.setIcon(camera_grey);
-                            break;
-                        }
-                        cameramarkers.push(marker);
-                        break;
-                    case "雷达":
-                        switch(devicelist[i].devicestatus){
-                            case "正常运转":
-                            marker.setIcon(radar_g);
-                            break;
-                            case "报警状态":
-                            marker.setIcon(radar_r);
-                            break;
-                            case "预警状态":
-                            marker.setIcon(radar_y);
-                            break;
-                            case "停机状态":
-                            marker.setIcon(radar_grey);
-                            break;
-                        }
-                        radarmarkers.push(marker);
-                        break;
-                    case "振动传感":
-                        switch(devicelist[i].devicestatus){
-                            case "正常运转":
-                            marker.setIcon(sensor_g);
-                            break;
-                            case "报警状态":
-                            marker.setIcon(sensor_r);
-                            break;
-                            case "预警状态":
-                            marker.setIcon(sensor_y);
-                            break;
-                            case "停机状态":
-                            marker.setIcon(sensor_grey);
-                            break;
-                        }
-                        sensormarkers.push(marker);
-                        break;
-                }
-                devicemarkers.push(marker);
-                num2marker.put(devicelist[i].devicenum,marker);
-                num2device.put(devicelist[i].devicenum,devicelist[i]);
-                //go   ---marker.setMap(map);
-                AMap.event.addListener(marker,'click',showinfo);
-            }
-            modify(index);
         }).fail(function(err) {
                 alert("服务器无响应");
         });
-    }
-    function showinfo(){
         
     }
+    function updatedevicelist(){
+         $.ajax({
+             url: "http://47.100.107.158:8080/api/device/getdevicelist",
+             type: "GET",
+             data: "",
+             contentType: false   // 告诉jQuery不要去设置Content-Type请求头
+         }).done(function(resp) {
+             let devicelist=[];
+             var data=eval(resp.data);
+             for(var i in data){
+                 devicelist.push(data[i]);
+             }
+             map.clearMap();
+             cameralist=[],sensorlist=[],radarlist=[];
+             cameramarkers=[],radarmarkers=[],sensormarkers=[],devicemarkers=[];
+             num2marker = new HashMap(),marker2num = new HashMap();
+             for(var i in devicelist){
+                 var marker = new AMap.Marker({
+                     map:map,
+                     offset: new AMap.Pixel(-15, -38),
+                     position: new AMap.LngLat(devicelist[i].devicelng,devicelist[i].devicelat) ,
+                     title: devicelist[i].devicenum,
+                     clickable:true,
+                 });
 
+                 switch(devicelist[i].devicetype){
+                     case "监控":
+                         switch(devicelist[i].devicestatus){
+                             case "正常运转":
+                             marker.setIcon(camera_g);
+                             break;
+                             case "报警状态":
+                             marker.setIcon(camera_r);
+                             break;
+                             case "预警状态":
+                             marker.setIcon(camera_y);
+                             break;
+                             case "停机状态":
+                             marker.setIcon(camera_grey);
+                             break;
+                         }
+                         cameramarkers.push(marker);
+                         break;
+                     case "雷达":
+                         switch(devicelist[i].devicestatus){
+                             case "正常运转":
+                             marker.setIcon(radar_g);
+                             break;
+                             case "报警状态":
+                             marker.setIcon(radar_r);
+                             break;
+                             case "预警状态":
+                             marker.setIcon(radar_y);
+                             break;
+                             case "停机状态":
+                             marker.setIcon(radar_grey);
+                             break;
+                         }
+                         radarmarkers.push(marker);
+                         break;
+                     case "振动传感":
+                         switch(devicelist[i].devicestatus){
+                             case "正常运转":
+                             marker.setIcon(sensor_g);
+                             break;
+                             case "报警状态":
+                             marker.setIcon(sensor_r);
+                             break;
+                             case "预警状态":
+                             marker.setIcon(sensor_y);
+                             break;
+                             case "停机状态":
+                             marker.setIcon(sensor_grey);
+                             break;
+                         }
+                         sensormarkers.push(marker);
+                         break;
+                 }
+                 devicemarkers.push(marker);
+                 num2marker.put(devicelist[i].devicenum,marker);
+                 num2device.put(devicelist[i].devicenum,devicelist[i]);
+                 //go   ---marker.setMap(map);
+                 AMap.event.addListener(marker,'click',showinfo);
+             }
+             modify(index);
+         }).fail(function(err) {
+                 alert("服务器无响应");
+         });
+    }
+    function showinfo(){
+           
+    }
     function modify(indexx){
         index=indexx;
             switch(index){
