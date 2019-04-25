@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>背景滚动</title>
+   <meta charset="utf-8">
+        <style> 
+           body {
+                background: #dddddd;
+            }
+
+            #canvas {
+            position: absolute;
+            top: 30px;
+            left: 10px;
+            background: #ffffff;
+            cursor: crosshair;
+            margin-left: 10px;
+            margin-top: 10px;
+            -webkit-box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+            -moz-box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+            box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+            }
+
+         input {
+            margin-left: 15px;
+            }
+
+        </style>
+
+</head>
+<body>
+    <canvas id='canvas' width='1024' height='512'>
+      Canvas not supported
+    </canvas>
+
+    <input id='animateButton' type='button' value='Animate'/>
+
+    <script src='./js/requestNextAnimationFrame.js'></script>
+   
+</body>
+</html>
+
+
+<script type="text/javascript">
+var canvas=document.getElementById("canvas")
+var context=canvas.getContext("2d")
+
+var Sprite=function(name,painter,behaviors){
+  if(name!==undefined){this.name=name}
+    if(painter!==undefined){this.painter=painter}
+      this.top=0
+      this.left=0
+      this.width=0
+      this.height=0
+      this.velocityX=0
+      this.velocityY=0
+      this.visible=true
+      this.animating=false
+      this.behaviors=behaviors||[]
+      this.RADIUS=0
+      return this
+
+
+}
+Sprite.prototype={
+   paint:function(context){
+    if(this.painter!==undefined&&this.visible){this.painter.paint(this,context)}
+   },
+   update:function(context,time){
+    for(var i=0;i<this.behaviors.length;i++){
+      this.behaviors[i].excute(this,context,time)
+    }
+   }
+}
+
+// var RADIUS=5
+var pai={
+        paint:function(sprite,context){
+
+             context.save()
+
+             context.beginPath()
+             sprite.left=sprite.left+sprite.velocityX
+             sprite.top=sprite.top+sprite.velocityY
+
+             if(sprite.left+sprite.RADIUS>canvas.width||sprite.left-sprite.RADIUS<0){
+                sprite.velocityX=-sprite.velocityX
+             }
+             if(sprite.top+sprite.RADIUS>canvas.height||sprite.top-sprite.RADIUS<0){
+                sprite.velocityY=-sprite.velocityY
+             }
+
+
+             
+             context.arc(sprite.left+sprite.width/2,sprite.top+sprite.height/2,sprite.RADIUS,0,Math.PI*2,false)
+             context.clip()
+
+             context.shadowBlur=8
+             context.lineWidth=2
+             context.strokeStyle="rgb(100,100,195)"
+             context.fillStyle="rgba(30,144,255,0.15)"
+             context.fill()
+             context.stroke()
+             context.restore()
+
+
+        }
+
+}
+var star_list=[]
+for(var i=0;i<100;i++){
+  var star=new Sprite("star"+i,pai)
+   star.left=parseInt(19+(Math.random()*800))
+   star.top=parseInt(19+(Math.random()*450))
+
+  if(i%2==0){
+    star.velocityY=parseInt(Math.random()*15+1)
+  star.velocityX=parseInt(Math.random()*15+1)
+
+  }else{
+
+       star.velocityY=-(parseInt(Math.random()*15+1))
+  star.velocityX=-(parseInt(Math.random()*15+1))
+  }
+
+  
+
+
+  star.RADIUS=parseInt(Math.random()*20+1)
+  star_list.push(star)
+}
+function animate(){
+       context.clearRect(0,0,canvas.width,canvas.height)
+       context.fillStyle="rgb(0,0,0)"
+       context.fillRect(0,0,canvas.width,canvas.height)
+       
+       for(var i=0;i<star_list.length;i++){
+
+           star_list[i].paint(context)
+       }
+
+       window.requestAnimationFrame(animate)
+}
+
+window.requestAnimationFrame(animate)
+
+
+</script>
