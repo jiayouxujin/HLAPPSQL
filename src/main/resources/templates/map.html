@@ -32,6 +32,7 @@
     <script src="https://cache.amap.com/lbs/static/es5.min.js"></script>
     <script src="https://webapi.amap.com/maps?v=1.4.8&key=d45e066e9d7b475ce397fc37e04aeef1&plugin=AMap.PlaceSearch,AMap.AdvancedInfoWindow"></script>
     <script src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+
     <style>
         #search{
             width: 250px;
@@ -196,6 +197,12 @@
     var camera_g,camera_r,camera_y,camera_grey;
     var sensor_g,sensor_r,sensor_y,sensor_grey;
     var radar_g,radar_r,radar_y,radar_grey;
+    var advancedInfoWindow = new AMap.AdvancedInfoWindow({
+        offset:new AMap.Pixel(0,-30),
+        placeSearch: true,
+        asOrigin: false,
+        asDestination: true,
+    });
     initpic();                                              //初始化图标
     var map = new AMap.Map('container', {
     	resizeEnable: true
@@ -232,7 +239,6 @@
                 updatedevicelist();
             }
         }).fail(function(err) {
-                alert("服务器无响应");
         });
         
     }
@@ -314,19 +320,21 @@
                          sensormarkers.push(marker);
                          break;
                  }
+                 marker.content='<div class="infowindow-content">'+'<div class="amap-info-header">'+devicelist[i].devicenum+'</div>'+'<div class="amap-info-body">'+devicelist[i].deviceaddress+'</div></div>';
                  devicemarkers.push(marker);
                  num2marker.put(devicelist[i].devicenum,marker);
                  num2device.put(devicelist[i].devicenum,devicelist[i]);
                  //go   ---marker.setMap(map);
-                 AMap.event.addListener(marker,'click',showinfo);
+                 AMap.event.addListener(marker,'click',markerClick);
              }
              modify(index);
          }).fail(function(err) {
                  alert("服务器无响应");
          });
     }
-    function showinfo(){
-           
+    function markerClick(e){
+        advancedInfoWindow.setContent(e.target.content);
+        advancedInfoWindow.open(map, e.target.getPosition());
     }
     function modify(indexx){
         index=indexx;
