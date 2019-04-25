@@ -37,9 +37,9 @@
     <!-- Logo -->
     <a href="../static/index2.html" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini">安防</span>
+      <span class="logo-mini">后台</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg">围界安防</span>
+      <span class="logo-lg">共享单车</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -65,7 +65,7 @@
                 <img src="../static/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                 <p>
-                 JOSEE-围界安防管理者
+                 JOSEE-共享管理者
                 </p>
               </li>
               <!-- Menu Footer-->
@@ -109,17 +109,22 @@
                 </li>
                 <li>
                     <a href="map">
-                        <i class="fa fa-laptop"></i><span>地图功能</span>
+                        <i class="fa fa-map"></i><span>地图功能</span>
                     </a>
                 </li>
                 <li >
                     <a href="devicelist">
-                        <i class="fa fa-files-o"></i><span>设备列表</span>
+                        <i class="fa fa-files-o"></i><span>单车列表</span>
                     </a>
                 </li>
                 <li>
                     <a href="recordlist">
                         <i class="fa fa-edit"></i> <span>报警记录</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="recordlist">
+                        <i class="fa fa-wrench"></i> <span>维修记录</span>
                     </a>
                 </li>
                 <li>
@@ -136,7 +141,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                设备列表
+                单车列表
             </h1>
         </section>
 
@@ -148,32 +153,30 @@
                         <div class="box-header">
                             <select id="typeselect" class="form-control input-sm " style="width: 100px; Float:left;height:30px; margin-left: 40px;">
                                 <option >类型</option>
-                                <option>振动传感</option>
-                                <option >监控</option>
-                                <option>雷达</option>
+                                <option>哈罗</option>
+                                <option >摩拜</option>
                             </select>
-                            <select id="regionselect" class="form-control input-sm" style="width: 100px; Float:left;height:30px; margin-left: 40px;">
+                            <select id="stateselect" class="form-control input-sm" style="width: 100px; Float:left;height:30px; margin-left: 40px;">
+                                <option >状态</option>
+                                <option >正常运转</option>
+                                <option >报警状态</option>
+                                <option >停机状态</option>
+                            </select>
+                            <select id="regionselect" class="form-control input-sm "style="width: 100px; Float:left;height:30px; margin-left: 40px;">
                                 <option >区域</option>
                                 <option >区域一</option>
                                 <option >区域二</option>
                                 <option >区域三</option>
                             </select>
-                            <select id="defendselect" class="form-control input-sm "style="width: 100px; Float:left;height:30px; margin-left: 40px;">
-                                <option >防区</option>
-                                <option>防区一</option>
-                                <option >防区二</option>
-                                <option >防区三</option>
-                            </select>
                         </div>
                         <div class="box-body table-responsive no-padding">
                             <table  class="table table-hover">
                                 <tr>
-                                    <th>设备编号</th>
-                                    <th>设备类型</th>
-                                    <th>设备地点</th>
+                                    <th>单车编号</th>
+                                    <th>单车类型</th>
+                                    <th>单车地点</th>
                                     <th>区域</th>
-                                    <th>防区</th>
-                                    <th>运行情况</th>
+                                    <th>运行状态</th>
                                 </tr>
                                 <tbody id="devicelist"></tbody>
                             </table>
@@ -248,37 +251,33 @@
 
         //对三个筛选框进行判断
         var type=$("#typeselect option:selected").text();
+        var state=$("#stateselect option:selected").text();
         var region=$("#regionselect option:selected").text();
-        var defend=$("#defendselect option:selected").text();
 
-        console.log(devicelist);
         for (var i=devicelist.length-1;i>=0;i--){
             if(type=="类型") break;
             else if(devicelist[i].devicetype==type){
                 continue;
             }else{
-                    devicelist.splice(i, 1);
+                devicelist.splice(i, 1);
             }
         }
-        console.log(devicelist);
         for(var i=devicelist.length-1;i>=0;i--){
-            if (region=="区域") break;
+            if (state=="状态") break;
+            else if(devicelist[i].devicestatus==state){
+                continue;
+            }else{
+                devicelist.splice(i,1);
+            }
+        }
+        for(var i=devicelist.length-1;i>=0;i--){
+            if(region=="区域")break;
             else if(devicelist[i].regionID==region){
                 continue;
             }else{
                 devicelist.splice(i,1);
             }
         }
-        console.log(devicelist);
-        for(var i =devicelist.length-1;i>=0;i--){
-            if(defend=="防区")break;
-            else if(devicelist[i].defposID==defend){
-                continue;
-            }else{
-                devicelist.splice(i,1);
-            }
-        }
-        console.log(devicelist);
         //清空表格
         $("#devicelist").html("");
         for(var i in devicelist){
@@ -309,14 +308,8 @@
             regionidcell.appendChild(document.createTextNode(regionidcell.context));
             row.appendChild(regionidcell);
 
-            //防区
-            var defendcell=document.createElement("td");
-            defendcell.context=devicelist[i].defposID;
-            defendcell.appendChild(document.createTextNode(defendcell.context));
-            row.appendChild(defendcell);
-            
 
-            //注册日期
+            //状态
             var devicestatuscell=document.createElement("td");
             devicestatuscell.context=devicelist[i].devicestatus;
             devicestatuscell.appendChild(document.createTextNode(devicestatuscell.context));
@@ -335,7 +328,7 @@
         devicelist=[];
         init();
     })
-    $("#defendselect").change(function(){
+    $("#stateselect").change(function(){
         devicelist=[];
         init();
     })

@@ -34,48 +34,48 @@
     <header class="main-header">
         <!-- Logo -->
         <a href="../static/index2.html" class="logo">
-            <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini">安防</span>
-            <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg">围界安防</span>
+          <!-- mini logo for sidebar mini 50x50 pixels -->
+          <span class="logo-mini">后台</span>
+          <!-- logo for regular state and mobile devices -->
+          <span class="logo-lg">共享单车</span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top">
-            <!-- Sidebar toggle button-->
-            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </a>
-
-            <div class="navbar-custom-menu">
-                <ul class="nav navbar-nav">
-                    <!-- User Account: style can be found in dropdown.less -->
-                    <li class="dropdown user user-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="../static/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                            <span class="hidden-xs">JOSEE</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <!-- User image -->
-                            <li class="user-header">
-                                <img src="../static/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-
-                                <p>
-                                    JOSEE-围界安防管理者
-                                </p>
-                            </li>
-                            <!-- Menu Footer-->
-                            <li class="user-footer">
-                                <div style="margin:0 auto;width:50px;">
-                                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+    
+          <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+              <!-- User Account: style can be found in dropdown.less -->
+              <li class="dropdown user user-menu">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <img src="../static/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                  <span class="hidden-xs">JOSEE</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <!-- User image -->
+                  <li class="user-header">
+                    <img src="../static/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+    
+                    <p>
+                     JOSEE-共享管理者
+                    </p>
+                  </li>
+                  <!-- Menu Footer-->
+                  <li class="user-footer">
+                    <div style="margin:0 auto;width:50px;">
+                      <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                    </div>
+                  </li>
                 </ul>
-            </div>
+              </li>
+            </ul>
+          </div>
         </nav>
     </header>
     <!-- Left side column. contains the logo and sidebar -->
@@ -107,17 +107,22 @@
                 </li>
                 <li>
                     <a href="map">
-                        <i class="fa fa-laptop"></i><span>地图功能</span>
+                        <i class="fa fa-map"></i><span>地图功能</span>
                     </a>
                 </li>
                 <li >
                     <a href="devicelist">
-                        <i class="fa fa-files-o"></i><span>设备列表</span>
+                        <i class="fa fa-files-o"></i><span>单车列表</span>
                     </a>
                 </li>
                 <li>
                     <a href="recordlist">
                         <i class="fa fa-edit"></i> <span>报警记录</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="recordlist">
+                        <i class="fa fa-wrench"></i> <span>维修记录</span>
                     </a>
                 </li>
                 <li>
@@ -152,9 +157,9 @@
             <div class="box-body table-responsive no-padding">
               <table  class="table table-hover">
                 <tr>
-                  <th>设备编号</th>
-                  <th>设备地点</th>
-                  <th>警报时间</th>
+                  <th>单车编号</th>
+                  <th>单车地点</th>
+                  <th>事故时间</th>
                   <th>警报状态</th>
                   <th>处理情况</th>
                 </tr>
@@ -230,7 +235,8 @@
 
          //警报时间
          var recordtimecell=document.createElement("td");
-         recordtimecell.context=recordlist[i].recordtime;
+         var time=myTime(recordlist[i].recordtime);
+         recordtimecell.context=formatDateTime(time);
          recordtimecell.appendChild(document.createTextNode( recordtimecell.context));
          row.appendChild(recordtimecell);
 
@@ -271,6 +277,32 @@
          document.getElementById("recordlist").appendChild(row);
      }
  }
+    function myTime(date){
+        var arr=date.split("T");
+        var d=arr[0];
+        var darr = d.split('-');
+        var t=arr[1];
+        var tarr = t.split('.000');
+        var marr = tarr[0].split(':');
+        var dd = parseInt(darr[0])+"/"+parseInt(darr[1])+"/"+parseInt(darr[2])+" "+parseInt(marr[0])+":"+parseInt(marr[1])+":"+parseInt(marr[2]);
+        return dd;
+    }
+    // 数字补0操作
+    function  addZero(num) {
+        return num < 10 ? '0' + num : num;
+    } 
+
+    function formatDateTime (date) {
+        var time = new Date(Date.parse(date));
+        time.setTime(time.setHours(time.getHours() + 8));
+        var Y = time.getFullYear() + '-';
+        var  M = this.addZero(time.getMonth() + 1) + '-';
+        var D = this.addZero(time.getDate()) + ' ';
+        var h = this.addZero(time.getHours()) + ':';
+        var m = this.addZero(time.getMinutes()) + ':';
+        var  s = this.addZero(time.getSeconds());
+        return Y + M + D +" "+ h + m + s;
+    }
 </script>
 </body>
 </html>
