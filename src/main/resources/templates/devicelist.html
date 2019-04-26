@@ -216,7 +216,7 @@
                         <form role="form" name="device_form"  method="post">
                             <!-- text input -->
                             <div class="form-group">
-                                <label>设备号</label>
+                                <label>设备编号</label>
                                 <input id="devicenum" type="text" class="form-control" placeholder="设备编号">
                             </div>
 
@@ -358,7 +358,12 @@
         for(var i in devicelist){
             if(devicelist[i]==undefined) continue;
             var row=document.createElement("tr");
-            row.id=i;
+            if(i){
+                row.id=i;
+            }
+            else {
+                row.id=0;
+            }
             //设备编号
             var devicenumcell=document.createElement("td");
             devicenumcell.context=devicelist[i].devicenum;
@@ -498,7 +503,7 @@
             url: "/api/device/modifydevice",
             type: "POST",
             data:{
-                "deviceID":deviceID,
+                "deviceID":"414",
                 "devicenum":devicenum,
                 "devicetype":devicetype,
                 "devicestatus":devicestatus,
