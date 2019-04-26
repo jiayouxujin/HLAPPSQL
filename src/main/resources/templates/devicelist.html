@@ -178,7 +178,7 @@
                                 <tbody id="devicelist"></tbody>
                             </table>
                             <!--点击添加设备跳出弹窗-->
-                            <button type="button" class="btn btn-block btn-primary" style="width: 100px;float: right;margin-right: 40px" data-toggle="modal" data-target="#modal-device">添加设备</button>
+                            <button type="button" class="btn btn-block btn-primary" style="width: 100px;float: right;margin-right: 40px" data-toggle="modal" data-target="#modal-device" onclick="editInfo(this)">添加设备</button>
                         </div>
                         <!-- /.box-body -->
                     </div>
@@ -265,7 +265,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="device()">提交</button>
+                <button type="button" class="btn btn-primary" onclick="neworchangedevice()">提交</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -297,9 +297,10 @@
     window.onload=init();
 
     //这个isneworchange表示当前是对设备进行修改还是新建 true表示新建 false表示修改
-    var isneworchange=true;
+    var isneworchange;
     var devicelat,devicelng;
-    var deviceID,devicestatus;
+    var deviceID;
+    var devicestatus;
 
     var devicelist=[];
     //初始化函数
@@ -396,7 +397,7 @@
             row.appendChild(devicestatuscell);
 
             var changebuttoncell=document.createElement("td");
-            changebuttoncell.innerHTML="<button type=\"button\" class=\"btn btn-danger\" data-toggle=\"modal\" data-target=\"#modal-device\" style='height: 25px; text-align:center;'onclick='editInfo(this)'>修改</button>";
+            changebuttoncell.innerHTML="<button type=\"button\" class=\"btn btn-default\" data-toggle=\"modal\" data-target=\"#modal-device\" style='height: 25px; text-align:center;'onclick='editInfo(this)'>修改</button>";
             row.appendChild(changebuttoncell);
 
             document.getElementById("devicelist").appendChild(row);
@@ -444,7 +445,7 @@
         alert("选择地点");
     }
     //提交按钮
-    function device() {
+    function neworchangedevice() {
         //得到输入的值
         var devicenum=$("#devicenum").val();
         var devicetype=$("#devicetype option:selected").text();
@@ -456,8 +457,10 @@
         if(devicenum&&devicetype&&regionID&&deposID&&deviceaddress&&deviceIP){
                 if(isneworchange){
                     newdevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,deposID);
+                    console.log("jjj");
                 }else{
                     modifydevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,deposID);
+                    console.log("运行到这");
                 }
         }else{
             alert("请检查输入是否正确");
@@ -465,7 +468,7 @@
     }
 
     //新建设备
-    //@RequestParam String devicenum,@RequestParam String devicetype,@RequestParam String devicestatus,@RequestParam double devicelat,@RequestParam double devicelng,@RequestParam String deviceaddress,@RequestParam String regionID,@RequestParam String defposID,@RequestParam String IP){
+    //@ String devicenum,@ String devicetype,@ String devicestatus,@ double devicelat,@ double devicelng,@ String deviceaddress,@ String regionID,@ String defposID,@ String IP){
     //"stuno=" + stuno + "&pass=" + pass + "&name=" + name + "&sex=" + sex,
     function newdevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,deposID) {
         $.ajax({
@@ -487,20 +490,33 @@
         });
     }
     //更新设备
+    //@ int deviceID,@ String devicenum,@ String devicetype,@ String devicestatus,@ double devicelat,@ double devicelng,@ String deviceaddress,@ String regionID,@ String defposID,@ String IP
     function modifydevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,deposID) {
+        console.log("?deviceID="+deviceID+"&devicenum="+devicenum+"&devicetype="+devicetype+"&devicestatus="+devicestatus+"&devicelat="+devicelat+"&devicelng="+devicelng+"&deviceaddress="+deviceaddress+"&regionID="+regionID+"&defposID="+deposID+"&IP="+deviceIP);
+        console.log(deviceID);
         $.ajax({
-            url: "http://47.100.107.158:8080/api/device/modifydevice",
+            url: "/api/device/modifydevice",
             type: "POST",
-            data: "devicenum="+devicenum+"&devicetype="+devicetype+"&devicestatus=停机状态"+"devicelat="+devicelat+"&devicelng="+devicelng+"&deviceaddress="+deviceaddress+"&regionID="+regionID+"$defposID="+deposID+"&IP="+deviceIP,
+            data:{
+                "deviceID":deviceID,
+                "devicenum":devicenum,
+                "devicetype":devicetype,
+                "devicestatus":devicestatus,
+                "devicelat":devicelat,
+                "devicelng":devicelng,
+                "deviceaddress":deviceaddress,
+                "regionID":regionID,
+                "defposID":deposID,
+                "IP":deviceIP
+            },
             processData: false,  // 告诉jQuery不要去处理发送的数据
             contentType: false   // 告诉jQuery不要去设置Content-Type请求头
         }).done(function(resp) {
             if(resp.data == "success"){
-                alert("新建成功");
-                init();
+                alert("更新成功");
             }
             else if(resp.data == "fail"){
-                alert("建立失败");
+                alert("更新失败");
             }
         }).fail(function(err) {
             alert("服务器无响应");
@@ -508,32 +524,43 @@
     }
     //触发模态框的同时调用此方法
     function editInfo(obj) {
-        //这个函数必然表示是修改
-        isneworchange=false;
-
         //得到点击的行
-        var i=obj.parentNode.parentNode.rowIndex;
-        i-=1;
-        console.log(i);
-        var s= document.getElementById("devicelist").getElementsByTagName("tr")[i];
-        console.log(s);
+        try{
+            var i=obj.parentNode.parentNode.rowIndex;
+            i-=1;
+        }catch (e) {
+            console.log(e);
+        }
+       //i不为Nan时表示这个是对设备进行修改
+        if (i||i==0){
+            isneworchange=false;
+            var s= document.getElementById("devicelist").getElementsByTagName("tr")[i];
 
-        var device=devicelist[i];
+            var device=devicelist[i];
+            //先把经纬度存下来
+            devicelat=device.devicelat;
+            devicelng=device.devicelng;
+            devicestatus=device.devicestatus;
+            deviceID=device.deviceID;
 
-        //先把经纬度存下来
-        devicelat=device.devicelat;
-        devicelng=device.devicelng;
-        devicestatus=device.devicestatus;
-        deviceID=device.deviceID;
-        console.log(deviceID);
+            //向模态框传值
+            $("#devicenum").val(device.devicenum);
+            $("#deviceIP").val(device.ip);
+            $("#deviceaddress").val(device.deviceaddress);
+            $("#devicetype").val(device.devicetype);
+            $("#regionID").val(device.regionID);
+            $("#deposID").val(device.defposID);
+        }else {
+            isneworchange=true;
+            //清空上一次modal数据
+            $("#devicenum").val("");
+            $("#deviceIP").val("");
+            $("#deviceaddress").val("");
+            $("#devicetype").val("振动传感");
+            $("#regionID").val("区域一");
+            $("#deposID").val("防区一");
+        }
 
-        //向模态框传值
-        $("#devicenum").val(device.devicenum);
-        $("#deviceIP").val(device.ip);
-        $("#deviceaddress").val(device.deviceaddress);
-        $("#devicetype").val(device.devicetype);
-        $("#regionID").val(device.regionID);
-        $("#deposID").val(device.defposID);
     }
 
     $(function () {
