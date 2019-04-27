@@ -35,6 +35,10 @@ public class UserService {
         userRepository.updateUserInfo(username, regionID, defposID);
     }
 
+    public void setUserInfo(int userID,String username,String password,String phoneID,String regionID,String defposID){
+        userRepository.setUserInfo(userID,username,password,phoneID,regionID,defposID);
+    }
+
     public String getPassword(String username) {
         return userRepository.getPassword(username);
     }
@@ -50,6 +54,11 @@ public class UserService {
 
     public void deleteUser(int id) {
         userRepository.deleteById(id);
+    }
+
+    public void deletesome(int []id) {
+        for(int i=0;i<id.length;i++)
+        userRepository.deleteById(id[i]);
     }
 
     public void deleteall(){

@@ -163,9 +163,13 @@
                 </tr>
                   <tbody id="userlist"></tbody>
               </table>
-                <!--点击添加设备跳出弹窗-->
             <div id="table-foot">
-                <button type="button"id="adduser" class="btn btn-block btn-primary" style="width: 100px;float: right;margin-right: 25px" data-toggle="modal" data-target="#modal-user" onclick="editInfo(this)">添加用户</button>
+                <button type="button"id="adduser" class="btn btn-block btn-primary" style="width: auto;float: right;margin-right: 25px" data-toggle="modal" data-target="#modal-user" onclick="editInfo(this)">添加用户</button>
+                <button type="button"id="cancel" class="btn btn-block btn-success" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="cancel()">返回</button>
+                <button type="button"id="chooseall" class="btn btn-block btn-default" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="chooseall()">全选</button>
+                <button type="button"id="cancelchooseall" class="btn btn-block btn-defautl" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="cancelchooseall()">取消全选</button>
+                <button type="button"id="reversechoose" class="btn btn-block btn-default" style="width: auto;float: right;margin-right: 5px; display: none;" onclick="reversechoose()">反选</button>
+                <button type="button"id="deletechoose" class="btn btn-block btn-danger" style="width: auto;float: right;margin-right: 5px; display: none;" onclick="deletechoose()">删除</button>
             </div>
             </div>
             <!-- /.box-body -->
@@ -191,7 +195,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closemodal()">
                     <span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">用户详情</h4>
             </div>
@@ -224,18 +228,18 @@
                             <div class="form-group">
                                 <label>管理区域</label>
                                 <select id="regionID" class="form-control">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
+                                    <option>区域一</option>
+                                    <option>区域二</option>
+                                    <option>区域三</option>
                                 </select>
                             </div>
                             <!-- select -->
                             <div class="form-group">
                                 <label>管理防区</label>
                                 <select id="defposID" class="form-control">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
+                                    <option>防区一</option>
+                                    <option>防区二</option>
+                                    <option>防区三</option>
                                 </select>
                             </div>
 
@@ -243,6 +247,7 @@
                             <div class="form-group">
                                 <label>注册日期</label>
                                 <input id="regiserday" type="text" class="form-control" placeholder="注册日期" disabled>
+                                <small>注册日期固定，不可更改</small>
                             </div>
 
                             <!-- /.box-body -->
@@ -251,8 +256,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="neworchangeuser()">提交</button>
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="closemodal()">Close</button>
+                <button type="button" class="btn btn-primary" onclick="addormodifyuser()">提交</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -286,11 +291,19 @@
     //启动页面启动Init（）函数
     window.onload=init();
 
+    //判断当前操作是添加用户还是修改用户
+    //false为修改用户  true为新建用户
     var isneworchange;
 
     var userlist=[];
     //初始化函数
     function init() {
+        //先将userlist设为空
+        try{
+            userlist=[];
+        }catch (e) {
+        }
+
         $.ajax({
             url:"http://47.100.107.158:8080/api/user/getuserlist",
             type:"GET",
@@ -358,7 +371,7 @@
 
             //修改按钮
             var changebuttoncell=document.createElement("td");
-            changebuttoncell.innerHTML="<button type=\"button\" class=\"btn btn-default\" data-toggle=\"modal\" data-target=\"#modal-user\" style='height: 25px; text-align:center;'onclick='editInfo(this)'>修改</button>";
+            changebuttoncell.innerHTML="<button type=\"button\" name='modifybtn' class=\"btn btn-default\" data-toggle=\"modal\" data-target=\"#modal-user\" style='height: 25px; text-align:center;'onclick='editInfo(this)'>修改</button>";
             row.appendChild(changebuttoncell);
 
             //初始化先把checkbox放在这 并且设置不可见
@@ -378,14 +391,19 @@
             i++;
         });
 
-        //初始化先把按钮放在这 并且设置不可见
-        addcheckboxbtn();
         //设置按钮不可见
         setbtnnone("chooseall");
         setbtnnone("cancelchooseall");
         setbtnnone("deletechoose");
         setbtnnone("cancel");
         setbtnnone("reversechoose");
+
+        //设置按钮可见
+        setbtnblock("adduser");
+        setbtnblock("chooseuser");
+        $("input[name='modifybtn']").each(function(){
+            $(this).attr("style","display:block");
+        });
     }
 
     //触发模态框的同时调用此方法
@@ -416,12 +434,93 @@
             //清空上一次modal数据
             $("#username").val("");
             $("#password").val("");
-            $("#regionID").val("1");
-            $("#defposID").val("1");
+            $("#regionID").val("区域一");
+            $("#defposID").val("防区一");
             $("#phonID").val("");
         }
     }
     
+    //新建用户或修改用户信息
+    function addormodifyuser(){
+        //先判断是不是该填的数据都已经填了
+        var username=$("#username").val();
+        var regionID=$("#regionID").val();
+        var defposID=$("#defposID").val();
+        var phoneID=$("#phoneID").val();
+        var password=$("#password").val();
+        if(username&&regionID&&defposID&&phoneID&&password){
+            //判断是否新建的用户
+            if(isneworchange){
+                adduser(username,password,regionID,defposID,phoneID);
+            }else{
+                //得到用户ID 和注册日期
+                var userID=$("#userID").val();
+                modifyuser(userID,username,password,regionID,defposID,phoneID);
+            }
+        }else{
+            alert("请检查输入");
+            return ;
+        }
+    }
+
+    //添加用户
+    function  adduser(username,password,regionID,defposID,phoneID) {
+        //建立一个user对象
+        //得到注册的日期
+        var registerday=new Date;
+       //构建json格式
+        //String username,String password,String phoneID,String regionID,String defposID,Date registerday
+        var user={};
+        user["username"]=username;
+        user["password"]=password;
+        user["phoneID"]=phoneID;
+        user["regionID"]=regionID;
+        user["defposID"]=defposID;
+        user["registerday"]=registerday;
+
+        $.ajax({
+            url: "/api/user/adduser",
+            type: "POST",
+            dataType:'json',
+            contentType:'application/json;charset=UTF-8',
+            data: JSON.stringify(user),
+        }).done(function(resp) {
+            if(resp.message == "SUCCESS"){
+                alert("添加成功");
+                //刷新页面留到用户点击modal的close后再刷新
+            }
+            else{
+                alert("添加失败");
+            }
+        }).fail(function(err) {
+            alert("服务器无响应");
+        });
+    }
+    //修改用户
+    function modifyuser(userID,username,password,regionID,defposID,phoneID) {
+        $.ajax({
+            url: "/api/user/setuserInfo",
+            type: "POST",
+            data: {
+                "userID":userID,
+                "username":username,
+                "password":password,
+                "phoneID":phoneID,
+                "regionID":regionID,
+                "defposID":defposID
+            }
+        }).done(function(resp) {
+            if(resp.message == "SUCCESS"){
+                alert("修改成功");
+               //刷新页面留到用户关掉modal的close后刷新
+            }
+            else{
+                alert("修改失败");
+            }
+        }).fail(function(err) {
+            alert("服务器无响应");
+        });
+    }
     //选择用户进行批量删除
     function chooseuser() {
         //设置checkbox可见
@@ -437,7 +536,11 @@
 
         //设置按钮不可见
         setbtnnone("adduser");
-        setbtnnone("chooseuser")
+        setbtnnone("chooseuser");
+        $("input[name='modifybtn']").each(function(){
+            $(this).attr("style","display:none");
+        });
+
     }
 
     //得到表格的行数
@@ -465,13 +568,14 @@
 
     }
 
-    //删除
+    //删除用户
     function deletechoose() {
         //得到选中的id
         //var str="";
+        var wantdelete=0,okdelete=0;//用来判断是否全部删完
         $("input:checkbox").each(function () {
             if(this.checked){
-                //userid =$(this).val();
+               wantdelete++;
                 //发送post请求
                 var userid=$(this).val();
                 $.ajax({
@@ -481,27 +585,38 @@
                         "userID":userid
                     }
                 }).done(function(resp) {
-                    if(resp.data == "success"){
-                        ;
-                    }
-                    else if(resp.data == "fail"){
-                        alert("删除失败");
+                    if(resp.message == "SUCCESS"){
+                        okdelete++;
+                        console.log(okdelete);
+                    }else{
+                        alert("删除事物");
                     }
                 }).fail(function(err) {
                     alert("服务器无响应");
                 });
-            }
+            }else ;
         });
-        //重新构建表格
-        createtable();
+       //判断是否删除完成
+        isdeletesuccess(wantdelete,okdelete);
     }
 
+    //判断删除用户是否删除完整
+    function isdeletesuccess(wantdelete,okdelete) {
+        if (wantdelete==okdelete) console.log("删除成功");
+        else console.log("删除失败");
+    }
+    //关掉modal 刷新表格
+    function closemodal() {
+        init();
+    }
+    //设置按钮不可见
     function setbtnnone(elementid) {
         try{
             document.getElementById(elementid).style.display = "none";
         }catch (e) {}
 
     }
+    //设置按钮可见
     function setbtnblock(elementid) {
         try{
             document.getElementById(elementid).style.display = "block";

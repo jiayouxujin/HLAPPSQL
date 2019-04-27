@@ -240,7 +240,7 @@
                             <!-- select -->
                             <div class="form-group">
                                 <label>所属防区</label>
-                                <select id="deposID" class="form-control">
+                                <select id="defposID" class="form-control">
                                     <option>防区一</option>
                                     <option>防区二</option>
                                     <option>防区三</option>
@@ -455,16 +455,16 @@
         var devicenum=$("#devicenum").val();
         var devicetype=$("#devicetype option:selected").text();
         var regionID=$("#regionID option:selected").text();
-        var deposID=$("#deposID option:selected").text();
+        var defposID=$("#defposID option:selected").text();
         var deviceaddress=$("#deviceaddress").val();
         var deviceIP = $("#deviceIP").val();
 
-        if(devicenum&&devicetype&&regionID&&deposID&&deviceaddress&&deviceIP){
+        if(devicenum&&devicetype&&regionID&&defposID&&deviceaddress&&deviceIP){
                 if(isneworchange){
-                    newdevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,deposID);
+                    newdevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,defposID);
                     console.log("jjj");
                 }else{
-                    modifydevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,deposID);
+                    modifydevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,defposID);
                     console.log("运行到这");
                 }
         }else{
@@ -475,11 +475,11 @@
     //新建设备
     //@ String devicenum,@ String devicetype,@ String devicestatus,@ double devicelat,@ double devicelng,@ String deviceaddress,@ String regionID,@ String defposID,@ String IP){
     //"stuno=" + stuno + "&pass=" + pass + "&name=" + name + "&sex=" + sex,
-    function newdevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,deposID) {
+    function newdevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,defposID) {
         $.ajax({
             url: "http://47.100.107.158:8080/api/device/createdevice",
             type: "POST",
-            data: "devicenum="+devicenum+"&devicetype="+devicetype+"&devicestatus=停机状态"+"&devicelat="+devicelat+"&devicelng="+devicelng+"&deviceaddress="+deviceaddress+"&regionID="+regionID+"&defposID="+deposID+"&IP="+deviceIP,
+            data: "devicenum="+devicenum+"&devicetype="+devicetype+"&devicestatus=停机状态"+"&devicelat="+devicelat+"&devicelng="+devicelng+"&deviceaddress="+deviceaddress+"&regionID="+regionID+"&defposID="+defposID+"&IP="+deviceIP,
             processData: false,  // 告诉jQuery不要去处理发送的数据
             contentType: false   // 告诉jQuery不要去设置Content-Type请求头
         }).done(function(resp) {
@@ -496,8 +496,8 @@
     }
     //更新设备
     //@ int deviceID,@ String devicenum,@ String devicetype,@ String devicestatus,@ double devicelat,@ double devicelng,@ String deviceaddress,@ String regionID,@ String defposID,@ String IP
-    function modifydevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,deposID) {
-        console.log("?deviceID="+deviceID+"&devicenum="+devicenum+"&devicetype="+devicetype+"&devicestatus="+devicestatus+"&devicelat="+devicelat+"&devicelng="+devicelng+"&deviceaddress="+deviceaddress+"&regionID="+regionID+"&defposID="+deposID+"&IP="+deviceIP);
+    function modifydevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,defposID) {
+        console.log("?deviceID="+deviceID+"&devicenum="+devicenum+"&devicetype="+devicetype+"&devicestatus="+devicestatus+"&devicelat="+devicelat+"&devicelng="+devicelng+"&deviceaddress="+deviceaddress+"&regionID="+regionID+"&defposID="+defposID+"&IP="+deviceIP);
         console.log(deviceID);
         $.ajax({
             url: "/api/device/modifydevice",
@@ -511,7 +511,7 @@
                 "devicelng":devicelng,
                 "deviceaddress":deviceaddress,
                 "regionID":regionID,
-                "defposID":deposID,
+                "defposID":defposID,
                 "IP":deviceIP
             },
             processData: false,  // 告诉jQuery不要去处理发送的数据
@@ -554,7 +554,7 @@
             $("#deviceaddress").val(device.deviceaddress);
             $("#devicetype").val(device.devicetype);
             $("#regionID").val(device.regionID);
-            $("#deposID").val(device.defposID);
+            $("#defposID").val(device.defposID);
         }else {
             isneworchange=true;
             //清空上一次modal数据
@@ -563,7 +563,7 @@
             $("#deviceaddress").val("");
             $("#devicetype").val("振动传感");
             $("#regionID").val("区域一");
-            $("#deposID").val("防区一");
+            $("#defposID").val("防区一");
         }
 
     }
