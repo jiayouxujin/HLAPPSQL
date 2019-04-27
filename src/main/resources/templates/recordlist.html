@@ -223,7 +223,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="closemodal()">Close</button>
-                <button id="submitsolution" type="button" class="btn btn-primary" onclick="newsolution()">提交</button>
+                <button id="submitsolution" type="button" class="btn btn-primary" onclick="addsolution()">提交</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -263,7 +263,10 @@
       });
   }  
  function createtable() {
-     _table=document.getElementById("recordlist");
+    //删除0
+     deletezero();
+    //清空表格
+     $("#recordlist").html("");
      for(var i in recordlist){
          var row=document.createElement("tr");
          if(i)
@@ -340,9 +343,7 @@
         }catch (e) {
             console.log(e);
         }
-        //i不为Nan时表示这个是对设备进行修改
         if (i||i==0){
-
             var record=recordlist[i];
 
             //向模态框传值
@@ -360,17 +361,26 @@
                $("#title").val("");
                $("#context").val("");
            }
-
-        }else {
-            isneworchange=true;
-            //清空上一次modal数据
-            $("#username").val("");
-            $("#password").val("");
-            $("#regionID").val("1");
-            $("#defposID").val("1");
-            $("#phonID").val("");
         }
+    }
 
+    //添加处理
+    function addsolution() {
+        alert("你是后台管理员 需在app端对其进行处理")
+    }
+
+    //关掉模态窗 刷新页面
+    function closemodal() {
+        init();
+    }
+
+    //删除0
+    function deletezero(){
+        for (var i=recordlist.length-1;i>=0;i--){
+            if(recordlist[i].devicenum=="0"){
+                recordlist.splice(i, 1);
+            }
+        }
     }
 </script>
 </body>

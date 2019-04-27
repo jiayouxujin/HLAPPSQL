@@ -284,6 +284,8 @@
 <script src="../static/dist/js/timeformat.js"></script>
 <!--checkbox的常规操作 全选 取消全选 反选-->
 <script src="../static/dist/js/checkboxfunction.js"></script>
+<!--设置按钮是否可见-->
+<script src="../static/dist/js/setbtndisplay.js"></script>
 
 
 <script language="JavaScript">
@@ -401,9 +403,6 @@
         //设置按钮可见
         setbtnblock("adduser");
         setbtnblock("chooseuser");
-        $("input[name='modifybtn']").each(function(){
-            $(this).attr("style","display:block");
-        });
     }
 
     //触发模态框的同时调用此方法
@@ -432,11 +431,13 @@
         }else {
             isneworchange=true;
             //清空上一次modal数据
+            $("#userID").val("");
+            $("#regiserday").val("");
             $("#username").val("");
             $("#password").val("");
             $("#regionID").val("区域一");
             $("#defposID").val("防区一");
-            $("#phonID").val("");
+            $("#phoneID").val("");
         }
     }
     
@@ -537,9 +538,6 @@
         //设置按钮不可见
         setbtnnone("adduser");
         setbtnnone("chooseuser");
-        $("input[name='modifybtn']").each(function(){
-            $(this).attr("style","display:none");
-        });
 
     }
 
@@ -570,58 +568,34 @@
 
     //删除用户
     function deletechoose() {
-        //得到选中的id
-        //var str="";
-        var wantdelete=0,okdelete=0;//用来判断是否全部删完
+       // var userid=$(this).val();
+        var userID=[];
         $("input:checkbox").each(function () {
-            if(this.checked){
-               wantdelete++;
-                //发送post请求
-                var userid=$(this).val();
-                $.ajax({
-                    url: "/api/user/deleteuser",
-                    type: "POST",
-                    data: {
-                        "userID":userid
-                    }
-                }).done(function(resp) {
-                    if(resp.message == "SUCCESS"){
-                        okdelete++;
-                        console.log(okdelete);
-                    }else{
-                        alert("删除事物");
-                    }
-                }).fail(function(err) {
-                    alert("服务器无响应");
-                });
-            }else ;
+            if(this.checked) {
+                userID.push($(this).val());
+            }
         });
-       //判断是否删除完成
-        isdeletesuccess(wantdelete,okdelete);
+        $.ajax({
+            url: "/api/user/deletesome",
+            type: "POST",
+            data: {
+                "userID":userID
+            }
+        }).done(function(resp) {
+            if(resp.message == "SUCCESS"){
+               alert("删除成功");
+               init();
+            }else{
+                alert("删除失败");
+            }
+        }).fail(function(err) {
+            alert("服务器无响应");
+        });
     }
 
-    //判断删除用户是否删除完整
-    function isdeletesuccess(wantdelete,okdelete) {
-        if (wantdelete==okdelete) console.log("删除成功");
-        else console.log("删除失败");
-    }
     //关掉modal 刷新表格
     function closemodal() {
         init();
-    }
-    //设置按钮不可见
-    function setbtnnone(elementid) {
-        try{
-            document.getElementById(elementid).style.display = "none";
-        }catch (e) {}
-
-    }
-    //设置按钮可见
-    function setbtnblock(elementid) {
-        try{
-            document.getElementById(elementid).style.display = "block";
-        }catch (e) {}
-
     }
 </script>
 </body>

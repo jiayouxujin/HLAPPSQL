@@ -55,6 +55,11 @@ public class DeviceService {
         deviceRepository.deleteById(deviceID);
     }
 
+    public void deletesome(int []deviceID){
+        for(int i=0;i<deviceID.length;i++)
+        deviceRepository.deleteById(deviceID[i]);
+    }
+
     public boolean modifydevice(int deviceID,String devicenum,String devicetype,String devicestatus,double devicelat,double devicelng,String deviceaddress,String regionID,String defposID,String IP){
         try {
             deviceRepository.modifydevice(deviceID,devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,IP);

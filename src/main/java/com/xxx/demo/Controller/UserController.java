@@ -135,16 +135,17 @@ public class UserController {
         }
     }
 
-//    @PostMapping("/api/user/deletesome")
-//    public Response deleteUser(@RequestParam int []userID){
-//        try{
-//            userService.deletesome(userID);
-//            return genSuccessResult(true);
-//        }
-//        catch(Exception e) {
-//            return genFailResult("删除用户失败");
-//        }
-//    }
+    //(value = "ids[]") String[] ids
+    @PostMapping("/api/user/deletesome")
+    public Response deletesome(@RequestParam(value = "userID[]") int []userID){
+        try{
+            userService.deletesome(userID);
+            return genSuccessResult(true);
+        }
+        catch(Exception e) {
+            return genFailResult("删除用户失败");
+        }
+    }
 
     @PostMapping("/api/user/deleteall")
     public Response deleteall(){
