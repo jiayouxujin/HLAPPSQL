@@ -180,9 +180,9 @@
                                 <tbody id="devicelist"></tbody>
                             </table>
                             <!--点击添加设备跳出弹窗-->
-                            <i type="button" id="adddevice" class="fa fa-fw fa-plus" style="width: 30px;height:30px;float: right;color:#337ab7;margin-right: 40px" data-toggle="modal" data-target="#modal-device" onclick="editInfo(this)"></i>
-                            <i type="button"id="cancel" class="fa fa-fw fa-reply" style="width: 30px;height:30px;float: right;color: #5cb85c;margin-right: 5px;display: none;" onclick="cancel()"></i>
-                            <i type="button"id="chooseall" class="fa fa-fw fa-check-square-o" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="chooseall()"></i>
+                            <button type="button" id="adddevice" class="btn btn-bl btn-primary" style="width: auto;height:auto;float: right;margin-right: 40px" data-toggle="modal" data-target="#modal-device" onclick="editInfo(this)">添加设备</button>
+                            <button type="button"id="cancel" class="btn btn-block btn-success" style="width: auto;height:auto;float: right;margin-right: 40px;margin-bottom:0px;display: none;" onclick="cancel()">取消</button>
+                            <button type="button"id="chooseall" class="btn btn-block btn-default" style="width: auto;height:auto;float: right;margin-right: 5px;display: none;" onclick="chooseall()">全选</button>
                             <button type="button"id="cancelchooseall" class="btn btn-block btn-defautl" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="cancelchooseall()">取消全选</button>
                             <button type="button"id="reversechoose" class="btn btn-block btn-primary" style="width: auto;float: right;margin-right: 5px; display: none;" onclick="reversechoose()">反选</button>
                             <button type="button"id="deletechoose" class="btn btn-block btn-danger" style="width: auto;float: right;margin-right: 5px; display: none;" onclick="deletechoose()">删除</button>
