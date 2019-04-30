@@ -175,15 +175,16 @@
                                     <th>区域</th>
                                     <th>防区</th>
                                     <th>运行情况</th>
+                                    <th>修改</th>
                                 </tr>
                                 <tbody id="devicelist"></tbody>
                             </table>
                             <!--点击添加设备跳出弹窗-->
-                            <button type="button" id="adddevice" class="btn btn-block btn-primary" style="width: 100px;float: right;margin-right: 40px" data-toggle="modal" data-target="#modal-device" onclick="editInfo(this)">添加设备</button>
-                            <button type="button"id="cancel" class="btn btn-block btn-success" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="cancel()">返回</button>
-                            <button type="button"id="chooseall" class="btn btn-block btn-default" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="chooseall()">全选</button>
+                            <i type="button" id="adddevice" class="fa fa-fw fa-plus" style="width: 30px;height:30px;float: right;color:#337ab7;margin-right: 40px" data-toggle="modal" data-target="#modal-device" onclick="editInfo(this)"></i>
+                            <i type="button"id="cancel" class="fa fa-fw fa-reply" style="width: 30px;height:30px;float: right;color: #5cb85c;margin-right: 5px;display: none;" onclick="cancel()"></i>
+                            <i type="button"id="chooseall" class="fa fa-fw fa-check-square-o" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="chooseall()"></i>
                             <button type="button"id="cancelchooseall" class="btn btn-block btn-defautl" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="cancelchooseall()">取消全选</button>
-                            <button type="button"id="reversechoose" class="btn btn-block btn-default" style="width: auto;float: right;margin-right: 5px; display: none;" onclick="reversechoose()">反选</button>
+                            <button type="button"id="reversechoose" class="btn btn-block btn-primary" style="width: auto;float: right;margin-right: 5px; display: none;" onclick="reversechoose()">反选</button>
                             <button type="button"id="deletechoose" class="btn btn-block btn-danger" style="width: auto;float: right;margin-right: 5px; display: none;" onclick="deletechoose()">删除</button>
                         </div>
                         <!-- /.box-body -->
@@ -455,22 +456,22 @@
             var devicestatuscell=document.createElement("td");
             switch (devicelist[i].devicestatus) {
                 case "正常运转":
-                    devicestatuscell.innerHTML="<button class=\"btn btn-block btn-success\" style='width: auto;height: auto;' data-toggle=\"modal\" data-target=\"#modal-updatedevice\" onclick='editupdateInfo(this)'>正常运转</button>";
+                    devicestatuscell.innerHTML="<span class=\"label label-success\" style='width: auto;height: auto;' data-toggle=\"modal\" data-target=\"#modal-updatedevice\" onclick='editupdateInfo(this)'>正常运转</span>";
                     break;
                 case "报警状态":
-                    devicestatuscell.innerHTML=" <button class=\"btn btn-block  btn-danger\" style='width: auto;height: auto;' data-toggle=\"modal\" data-target=\"#modal-updatedevice\" onclick='editupdateInfo(this)'>报警状态</button>";
+                    devicestatuscell.innerHTML=" <span class=\"label label-danger\" style='width: auto;height: auto;' data-toggle=\"modal\" data-target=\"#modal-updatedevice\" onclick='editupdateInfo(this)'>报警状态</span>";
                     break;
                 case "停机状态":
-                    devicestatuscell.innerHTML=" <button class=\"btn btn-block btn-default\" style='width: auto;height: auto' data-toggle=\"modal\" data-target=\"#modal-updatedevice\" onclick='editupdateInfo(this)'>停机状态</button>";
+                    devicestatuscell.innerHTML=" <span class=\"label label-default\" style='width: auto;height: auto' data-toggle=\"modal\" data-target=\"#modal-updatedevice\" onclick='editupdateInfo(this)'>停机状态</span>";
                     break;
                 case "预警状态":
-                    devicestatuscell.innerHTML="<button class=\"btn btn-block btn-warning\" style='width:auto; height: auto' data-toggle=\"modal\" data-target=\"#modal-updatedevice\" onclick='editupdateInfo(this)'>预警状态</button>";
+                    devicestatuscell.innerHTML="<span class=\"label label-warning\" style='width:auto; height: auto' data-toggle=\"modal\" data-target=\"#modal-updatedevice\" onclick='editupdateInfo(this)'>预警状态</span>";
                     break;
             }
             row.appendChild(devicestatuscell);
 
             var changebuttoncell=document.createElement("td");
-            changebuttoncell.innerHTML="<button type=\"button\" class=\"btn btn-default\" data-toggle=\"modal\" data-target=\"#modal-device\" style='height: 25px; text-align:center;'onclick='editInfo(this)'>修改</button>";
+            changebuttoncell.innerHTML="<i type=\"button\" class=\"fa fa-fw fa-edit\" data-toggle=\"modal\" data-target=\"#modal-device\" style='height: 25px; text-align:center;'onclick='editInfo(this)'></i>";
             row.appendChild(changebuttoncell);
 
             //初始化先把checkbox放在这 并且设置不可见
@@ -758,9 +759,7 @@
             }
         }
     }
-    $(function () {
 
-  });
 
 </script>
 </body>

@@ -160,11 +160,12 @@
                   <th>防区</th>
                   <th>区域</th>
                   <th>注册日期</th>
+                  <th>修改</th>
                 </tr>
                   <tbody id="userlist"></tbody>
               </table>
             <div id="table-foot">
-                <button type="button"id="adduser" class="btn btn-block btn-primary" style="width: auto;float: right;margin-right: 25px" data-toggle="modal" data-target="#modal-user" onclick="editInfo(this)">添加用户</button>
+                <i type="button"id="adduser" class="fa fa-fw fa-user-plus" style="width: 30px;height:30px;color:deepskyblue;float: right;margin-right: 25px" data-toggle="modal" data-target="#modal-user" onclick="editInfo(this)"></i>
                 <button type="button"id="cancel" class="btn btn-block btn-success" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="cancel()">返回</button>
                 <button type="button"id="chooseall" class="btn btn-block btn-default" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="chooseall()">全选</button>
                 <button type="button"id="cancelchooseall" class="btn btn-block btn-defautl" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="cancelchooseall()">取消全选</button>
@@ -373,7 +374,7 @@
 
             //修改按钮
             var changebuttoncell=document.createElement("td");
-            changebuttoncell.innerHTML="<button type=\"button\" name='modifybtn' class=\"btn btn-default\" data-toggle=\"modal\" data-target=\"#modal-user\" style='height: 25px; text-align:center;'onclick='editInfo(this)'>修改</button>";
+            changebuttoncell.innerHTML="<i type=\"button\" name='modifybtn' class=\"fa fa-fw fa-edit\" data-toggle=\"modal\" data-target=\"#modal-user\" style='height: 25px; text-align:center;'onclick='editInfo(this)'></i>";
             row.appendChild(changebuttoncell);
 
             //初始化先把checkbox放在这 并且设置不可见
