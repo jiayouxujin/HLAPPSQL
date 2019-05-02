@@ -404,7 +404,7 @@
                          sensormarkers.push(marker);
                          break;
                  }
-                 marker.content='<div class="infowindow-content">'+'<div class="amap-info-header">'+'设备编号:'+devicelist[i].devicenum+'</div>'+'<div class="amap-info-body">'+'设备地点:'+devicelist[i].deviceaddress+'</div></div>';
+                 marker.content='<div class="infowindow-content" style="text-align: center">'+'<div >'+devicelist[i].devicenum+'</div>'+'<div >'+devicelist[i].deviceaddress+'</div></div>';
                  devicemarkers.push(marker);
                  num2marker.put(devicelist[i].devicenum,marker);
                  num2device.put(devicelist[i].devicenum,devicelist[i]);
@@ -586,12 +586,6 @@
     //触发模态框的同时调用此方法
     function editInfo(obj) {
 
-        //按钮样式更改
-        //设置按钮可见
-        setbtnblock("confirmaddress");
-
-        //设置按钮不可见
-        setbtnnone("adddevice");
 
         //清空上一次modal数据
         $("#devicenum").val("");
@@ -611,6 +605,13 @@
     function chooseaddress() {
 
         $("#modal-device").modal('hide');
+        //按钮样式更改
+        //设置按钮可见
+        setbtnblock("confirmaddress");
+
+        //设置按钮不可见
+        setbtnnone("adddevice");
+
         //注：返回值
         //显示到 modal上面  $("#deviceaddress").val(地点);
         //经纬度更新 devicelat,devicelng;
