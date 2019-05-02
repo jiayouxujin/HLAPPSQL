@@ -277,7 +277,7 @@
 
     //新建设备的经纬度
     var devicelat,devicelng;
-
+    var listener;
     var camera_g,camera_r,camera_y,camera_grey;
     var sensor_g,sensor_r,sensor_y,sensor_grey;
     var radar_g,radar_r,radar_y,radar_grey;
@@ -610,12 +610,11 @@
         //设置按钮不可见
         setbtnnone("adddevice");
         $("#modal-device").modal('hide');
-        AMap.event.addListener(map,"click",getLnglat);
+        listener=AMap.event.addListener(map,"click",getLnglat);
         
         //注：返回值
         //显示到 modal上面  $("#deviceaddress").val(地点);
         //经纬度更新 devicelat,devicelng;
-        hello();
     }
 
     //提交按钮
@@ -665,7 +664,7 @@
     function changepage() {
         //按钮样式更改
         //设置按钮不可见
-        AMap.event.removeListener(map,"click",getLnglat);
+        AMap.event.removeListener(listener);
         setbtnnone("confirmaddress");
 
         //设置按钮可见
