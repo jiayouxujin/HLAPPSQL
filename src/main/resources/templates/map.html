@@ -265,7 +265,7 @@
 <!-- AdminLTE for demo purposes -->
 <script src="../static/dist/js/demo.js"></script>
 <script>
-    var lnglatXY,imgsize,imgpixel,index;
+    var lnglatXY,imgsize,imgpixel,index,premarker;
     //device sets
     var cameralist=[],sensorlist=[],radarlist=[],devicelist=[];
     //marker sets
@@ -461,18 +461,21 @@
                   radius: 1000,
                   extensions: "all"
               });
-              //返回地理编码结果
-              AMap.event.addListener(MGeocoder, "complete", geocoder_CallBack);
-              //逆地理编码
-              MGeocoder.getAddress(lnglatXY);
+              MGeocoder.getAddress(lnglatXY, function(status, result) {
+                if (status === 'complete' && result.info === 'OK') {
+                    address = result.regeocode.formattedAddress;
+                    $("#deviceaddress").val(address);
+                }
+              });
           });
           //加点
           var marker = new AMap.Marker({
               map:map,
-              icon: camera_g,
+              icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
               position: lnglatXY,
           });
           map.add(marker);
+          premarker=marker;
     }
     //回调函数
     function geocoder_CallBack(data) {
@@ -483,7 +486,7 @@
     }
     //鼠标点击，获取经纬度坐标
     function getLnglat(e){
-        map.clearMap();
+        if(premarker!=null) map.remove(premarker);
         var x = e.lnglat.getLng();
         var y = e.lnglat.getLat();
         lnglatXY = new AMap.LngLat(x,y);
@@ -585,14 +588,6 @@
 
     //触发模态框的同时调用此方法
     function editInfo(obj) {
-
-        //按钮样式更改
-        //设置按钮可见
-        setbtnblock("confirmaddress");
-
-        //设置按钮不可见
-        setbtnnone("adddevice");
-
         //清空上一次modal数据
         $("#devicenum").val("");
         $("#deviceIP").val("");
@@ -609,8 +604,15 @@
 
     //选择设备地点的函数
     function chooseaddress() {
+        //按钮样式更改
+        //设置按钮可见
+        setbtnblock("confirmaddress");
+        //设置按钮不可见
+        setbtnnone("adddevice");
 
         $("#modal-device").modal('hide');
+        AMap.event.addListener(map,"click",getLnglat);
+        
         //注：返回值
         //显示到 modal上面  $("#deviceaddress").val(地点);
         //经纬度更新 devicelat,devicelng;
