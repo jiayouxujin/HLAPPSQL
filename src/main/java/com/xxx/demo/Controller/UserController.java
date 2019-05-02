@@ -45,8 +45,10 @@ public class UserController {
 
     @PostMapping("/api/user/adduser")
     public Response addUser (@RequestBody User thisUser){
-        thisUser.setDefposID("防区一");
-        thisUser.setRegionID("区域一");
+//        thisUser.setDefposID("防区一");
+//        thisUser.setRegionID("区域一");
+        //这两行代码的不知道干什么而且对不上userlist里面的区域跟防区
+        //userlsit区域跟防区都是 阿拉伯数字
         User newUser = userService.addUser(thisUser);
 
         if (newUser == null){
@@ -88,6 +90,17 @@ public class UserController {
         }
     }
 
+    @PostMapping("/api/user/setuserInfo")
+    public Response setUserInfo(@RequestParam int userID,@RequestParam String username,@RequestParam String password,@RequestParam String phoneID,@RequestParam String regionID,@RequestParam String defposID){
+        try {
+            userService.setUserInfo(userID,username,password,phoneID,regionID,defposID);
+            return genSuccessResult(true);
+        }
+        catch (Exception e){
+            return genFailResult("更新失败");
+        }
+    }
+
     @PostMapping ("/api/user/login")
     public Response getPassword (@RequestParam String username,@RequestParam String password){
         try{
@@ -115,6 +128,18 @@ public class UserController {
     public Response deleteUser(@RequestParam int userID){
         try{
             userService.deleteUser(userID);
+            return genSuccessResult(true);
+        }
+        catch(Exception e) {
+            return genFailResult("删除用户失败");
+        }
+    }
+
+    //(value = "ids[]") String[] ids
+    @PostMapping("/api/user/deletesome")
+    public Response deletesome(@RequestParam(value = "userID[]") int []userID){
+        try{
+            userService.deletesome(userID);
             return genSuccessResult(true);
         }
         catch(Exception e) {

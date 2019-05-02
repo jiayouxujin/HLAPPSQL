@@ -213,10 +213,10 @@
 <script src="../static/dist/js/demo.js"></script>
 <!-- page script -->
 <script>
-    window.onload=getrecordlist();
+    window.onload=init();
     //请求警报记录
     var recordlist=[];
-    function getrecordlist(){
+    function init(){
         $.ajax({
             url: "http://47.100.107.158:8080/api/record/getrecordlist",
             type: "GET",
@@ -224,12 +224,16 @@
             contentType: false   // 告诉jQuery不要去设置Content-Type请求头
         }).done(function(resp) {
             recordlist=eval(resp.data);
+            if(recordlist.length) initstatistics();
         }).fail(function(err) {
             alert("服务器无响应");
         });
     }
-    $(function () {
+    function initstatistics() {
 
+
+        //删除0
+        deletezero();
         //最近月份的数量
         var previoustowmonthnormal=0,previoustowmonthstop=0,previoustowmonthwarning=0,previoustowmonthalarm=0;
         var previousonemonthnormal=0,previousonemonthstop=0,previousonemonthwarning=0,previousonemonthalarm=0;
@@ -517,9 +521,16 @@
         //Create pie or douhnut chart
         // You can switch between pie and douhnut using the method below.
         pieChart.Doughnut(PieData, pieOptions)
+    }
 
-
-    })
+    //删除0
+    function deletezero(){
+        for (var i=recordlist.length-1;i>=0;i--){
+            if(recordlist[i].devicenum=="0"){
+                recordlist.splice(i, 1);
+            }
+        }
+    }
 </script>
 </body>
 </html>

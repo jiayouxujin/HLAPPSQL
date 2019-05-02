@@ -138,7 +138,7 @@
             <h1>
                 设备列表
             </h1>
-        </section>
+             </section>
 
         <!-- Main content -->
         <section class="content">
@@ -146,6 +146,7 @@
                     <!-- /.box -->
                     <div class="box">
                         <div class="box-header">
+                            <button type="button" id="choosedevice" class="btn btn-block btn-default" style="width: 100px;float: right;margin-right: 20px;width: 60px; text-align: center"  onclick="choosedevice()">选择</button>
                             <select id="typeselect" class="form-control input-sm " style="width: 100px; Float:left;height:30px; margin-left: 40px;">
                                 <option >类型</option>
                                 <option>振动传感</option>
@@ -174,9 +175,17 @@
                                     <th>区域</th>
                                     <th>防区</th>
                                     <th>运行情况</th>
+                                    <th>修改</th>
                                 </tr>
                                 <tbody id="devicelist"></tbody>
                             </table>
+                            <!--点击添加设备跳出弹窗-->
+                            <button type="button" id="adddevice" class="btn btn-bl btn-primary" style="width: auto;height:auto;float: right;margin-right: 40px" data-toggle="modal" data-target="#modal-device" onclick="editInfo(this)">添加设备</button>
+                            <button type="button"id="cancel" class="btn btn-block btn-success" style="width: auto;height:auto;float: right;margin-right: 40px;margin-bottom:0px;display: none;" onclick="cancel()">取消</button>
+                            <button type="button"id="chooseall" class="btn btn-block btn-default" style="width: auto;height:auto;float: right;margin-right: 5px;display: none;" onclick="chooseall()">全选</button>
+                            <button type="button"id="cancelchooseall" class="btn btn-block btn-defautl" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="cancelchooseall()">取消全选</button>
+                            <button type="button"id="reversechoose" class="btn btn-block btn-primary" style="width: auto;float: right;margin-right: 5px; display: none;" onclick="reversechoose()">反选</button>
+                            <button type="button"id="deletechoose" class="btn btn-block btn-danger" style="width: auto;float: right;margin-right: 5px; display: none;" onclick="deletechoose()">删除</button>
                         </div>
                         <!-- /.box-body -->
                     </div>
@@ -197,8 +206,122 @@
   </footer>
 
 
-      </div>
+</div>
 
+<div class="modal fade" id="modal-device">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closemodal()">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">设备详情</h4>
+            </div>
+            <div class="modal-body">
+                <!-- general form elements disabled -->
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <form role="form" name="device_form"  method="post">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>设备编号</label>
+                                <input id="devicenum" type="text" class="form-control" placeholder="设备编号">
+                            </div>
+
+                            <div class="form-group">
+                                <label>设备类型</label>
+                                <select id="devicetype" class="form-control">
+                                    <option>振动传感</option>
+                                    <option>监控</option>
+                                    <option>雷达</option>
+                                </select>
+                            </div>
+                            <!-- select -->
+                            <div class="form-group">
+                                <label>所在区域</label>
+                                <select id="regionID" class="form-control">
+                                    <option>区域一</option>
+                                    <option>区域二</option>
+                                    <option>区域三</option>
+                                </select>
+                            </div>
+                            <!-- select -->
+                            <div class="form-group">
+                                <label>所属防区</label>
+                                <select id="defposID" class="form-control">
+                                    <option>防区一</option>
+                                    <option>防区二</option>
+                                    <option>防区三</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label >设备地点</label>
+                                <input id="deviceaddress" type="text" class="form-control" placeholder="设备地点">
+                                <button type="button" class="btn btn-primary" style="float:right;margin-top: 5px; margin-bottom: 5px;"onclick="chooseaddress()">选择</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label>IP地址</label>
+                                <input id="deviceIP" type="text" class="form-control" placeholder="IP地址">
+                            </div>
+
+                    <!-- /.box-body -->
+                        </form>
+                </div>
+            </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="closemodal()">Close</button>
+                <button type="button" class="btn btn-primary" onclick="neworchangedevice()">提交</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="modal-updatedevice">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closemodal()">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">更新运行状态</h4>
+            </div>
+            <div class="modal-body">
+                <!-- general form elements disabled -->
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <form role="form" name="device_form"  method="post">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>设备编号</label>
+                                <input id="updatedevicenum" type="text" class="form-control" placeholder="设备编号">
+                            </div>
+                            <!-- select -->
+                            <div class="form-group">
+                                <label>运行状态</label>
+                                <select id="devicestatus" class="form-control">
+                                    <option>正常运转</option>
+                                    <option>报警状态</option>
+                                    <option>停机状态</option>
+                                    <option>预警状态</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="closemodal()">Close</button>
+                <button type="button" class="btn btn-primary" onclick="updatedevicestatus()">提交</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 <!-- ./wrapper -->
 
 <!-- jQuery 3 -->
@@ -216,15 +339,27 @@
 <script src="../static/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../static/dist/js/demo.js"></script>
+<!--checkbox的常规操作 全选 取消全选 反选-->
+<script src="../static/dist/js/checkboxfunction.js"></script>
+<!--设置按钮是否可见-->
+<script src="../static/dist/js/setbtndisplay.js"></script>
 <!-- page script -->
 <script>
 
     //启动页面启动Init（）函数
     window.onload=init();
 
+    //这个isneworchange表示当前是对设备进行修改还是新建 true表示新建 false表示修改
+    var isneworchange;
+    var devicelat,devicelng;
+    var deviceID;
+    var devicestatus;
+
     var devicelist=[];
     //初始化函数
+    var table;
     function init() {
+
         $.ajax({
             url:"http://47.100.107.158:8080/api/device/getdevicelist",
             type:"GET",
@@ -237,15 +372,10 @@
             alert("服务器无响应");
         });
     }
-    // <th>设备编号</th>
-    // <th>设备类型</th>
-    // <th>设备地点</th>
-    // <th>区域/防区</th>
-    // <th>运行情况</th>
-    //生成表格
     function createtable(){
-        _table=document.getElementById("devicelist");
 
+        //删除0
+        deletezero();
         //对三个筛选框进行判断
         var type=$("#typeselect option:selected").text();
         var region=$("#regionselect option:selected").text();
@@ -284,7 +414,12 @@
         for(var i in devicelist){
             if(devicelist[i]==undefined) continue;
             var row=document.createElement("tr");
-            row.id=i;
+            if(i){
+                row.id=i;
+            }
+            else {
+                row.id=0;
+            }
             //设备编号
             var devicenumcell=document.createElement("td");
             devicenumcell.context=devicelist[i].devicenum;
@@ -316,14 +451,55 @@
             row.appendChild(defendcell);
             
 
-            //注册日期
+            //设备状态
+            //设备运行状态
             var devicestatuscell=document.createElement("td");
-            devicestatuscell.context=devicelist[i].devicestatus;
-            devicestatuscell.appendChild(document.createTextNode(devicestatuscell.context));
+            switch (devicelist[i].devicestatus) {
+                case "正常运转":
+                    devicestatuscell.innerHTML="<span class=\"label label-success\" style='width: auto;height: auto;' data-toggle=\"modal\" data-target=\"#modal-updatedevice\" onclick='editupdateInfo(this)'>正常运转</span>";
+                    break;
+                case "报警状态":
+                    devicestatuscell.innerHTML=" <span class=\"label label-danger\" style='width: auto;height: auto;' data-toggle=\"modal\" data-target=\"#modal-updatedevice\" onclick='editupdateInfo(this)'>报警状态</span>";
+                    break;
+                case "停机状态":
+                    devicestatuscell.innerHTML=" <span class=\"label label-default\" style='width: auto;height: auto' data-toggle=\"modal\" data-target=\"#modal-updatedevice\" onclick='editupdateInfo(this)'>停机状态</span>";
+                    break;
+                case "预警状态":
+                    devicestatuscell.innerHTML="<span class=\"label label-warning\" style='width:auto; height: auto' data-toggle=\"modal\" data-target=\"#modal-updatedevice\" onclick='editupdateInfo(this)'>预警状态</span>";
+                    break;
+            }
             row.appendChild(devicestatuscell);
+
+            var changebuttoncell=document.createElement("td");
+            changebuttoncell.innerHTML="<i type=\"button\" class=\"fa fa-fw fa-edit\" data-toggle=\"modal\" data-target=\"#modal-device\" style='height: 25px; text-align:center;'onclick='editInfo(this)'></i>";
+            row.appendChild(changebuttoncell);
+
+            //初始化先把checkbox放在这 并且设置不可见
+            var choosedevicecell=document.createElement("td");
+            choosedevicecell.innerHTML=" <input type=\"checkbox\" name=\"checkbox\">";
+            row.appendChild(choosedevicecell);
 
             document.getElementById("devicelist").appendChild(row);
         }
+
+        //设置checkbox不可见 并且将userid赋值进去
+        //设置checkbox不可见
+        var i=0;
+        $("input[name='checkbox']").each(function(){
+            $(this).attr("value",devicelist[i].deviceID);
+            $(this).attr("style","display:none");
+            i++;
+        });
+        //设置按钮不可见
+        setbtnnone("chooseall");
+        setbtnnone("cancelchooseall");
+        setbtnnone("deletechoose");
+        setbtnnone("cancel");
+        setbtnnone("reversechoose");
+
+        //设置按钮可见
+        setbtnblock("adddevice");
+        setbtnblock("choosedevice");
     }
 
     //筛选函数
@@ -340,17 +516,251 @@
         init();
     })
 
-  $(function () {
-    $('#example1').DataTable()
-    $('#example2').DataTable({
-      'paging'      : true,
-      'lengthChange': false,
-      'searching'   : false,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : false
-    })
-  })
+    //选择设备地点的函数
+    function chooseaddress() {
+
+        //注：返回值
+        //显示到 modal上面  $("#deviceaddress").val(地点);
+        //经纬度更新 devicelat,devicelng;
+        alert("选择地点");
+    }
+    //提交按钮
+    function neworchangedevice() {
+        //得到输入的值
+        var devicenum=$("#devicenum").val();
+        var devicetype=$("#devicetype option:selected").text();
+        var regionID=$("#regionID option:selected").text();
+        var defposID=$("#defposID option:selected").text();
+        var deviceaddress=$("#deviceaddress").val();
+        var deviceIP = $("#deviceIP").val();
+
+        if(devicenum&&devicetype&&regionID&&defposID&&deviceaddress&&deviceIP){
+                if(isneworchange){
+                    newdevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,defposID);
+                }else{
+                    modifydevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,defposID);
+                }
+        }else{
+            alert("请检查输入是否正确");
+        }
+    }
+
+    //新建设备
+    function newdevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,defposID) {
+        $.ajax({
+            url: "/api/device/createdevice",
+            type: "POST",
+            data:{
+                "devicenum":devicenum,
+                "devicetype":devicetype,
+                "devicestatus":"停机状态",
+                "devicelat":devicelat,
+                "devicelng":devicelng,
+                "deviceaddress":deviceaddress,
+                "regionID":regionID,
+                "defposID":defposID,
+                "IP":deviceIP
+            }
+        }).done(function(resp) {
+            if(resp.message == "SUCCESS"){
+                alert("新建成功");
+            } else {
+                alert("建立失败");
+            }
+        }).fail(function(err) {
+            alert("服务器无响应");
+        });
+    }
+    //更新设备
+  function modifydevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,defposID) {
+        $.ajax({
+            url: "/api/device/modifydevice",
+            type: "POST",
+            data:{
+                "deviceID":deviceID,
+                "devicenum":devicenum,
+                "devicetype":devicetype,
+                "devicestatus":devicestatus,
+                "devicelat":devicelat,
+                "devicelng":devicelng,
+                "deviceaddress":deviceaddress,
+                "regionID":regionID,
+                "defposID":defposID,
+                "IP":deviceIP
+            }
+        }).done(function(resp) {
+            if(resp.message == "SUCCESS"){
+                alert("更新成功");
+            }
+            else{
+                alert("更新失败");
+            }
+        }).fail(function(err) {
+            alert("服务器无响应");
+        });
+    }
+
+    //触发模态框的同时调用此方法
+    function editInfo(obj) {
+        //得到点击的行
+        try{
+            var i=obj.parentNode.parentNode.rowIndex;
+            i-=1;
+        }catch (e) {
+            console.log(e);
+        }
+       //i不为Nan时表示这个是对设备进行修改
+        if (i||i==0){
+            isneworchange=false;
+            var s= document.getElementById("devicelist").getElementsByTagName("tr")[i];
+
+            var device=devicelist[i];
+            //先把经纬度存下来
+            devicelat=device.devicelat;
+            devicelng=device.devicelng;
+            devicestatus=device.devicestatus;
+            deviceID=device.deviceID;
+
+            //向模态框传值
+            $("#devicenum").val(device.devicenum);
+            $("#deviceIP").val(device.ip);
+            $("#deviceaddress").val(device.deviceaddress);
+            $("#devicetype").val(device.devicetype);
+            $("#regionID").val(device.regionID);
+            $("#defposID").val(device.defposID);
+        }else {
+            isneworchange=true;
+            //清空上一次modal数据
+            $("#devicenum").val("");
+            $("#deviceIP").val("");
+            $("#deviceaddress").val("");
+            $("#devicetype").val("振动传感");
+            $("#regionID").val("区域一");
+            $("#defposID").val("防区一");
+        }
+
+    }
+
+    //触发更新设备的模态窗的同时调用此方法
+    function editupdateInfo(obj) {
+        //得到点击的行
+        try{
+            var i=obj.parentNode.parentNode.rowIndex;
+            i-=1;
+        }catch (e) {
+            console.log(e);
+        }
+        $("#updatedevicenum").val(devicelist[i].devicenum);
+        $("#devicestatus").val(devicelist[i].devicestatus);
+        $("#updatedevicenum").attr("disabled",true);
+    }
+
+    //更新设备状态
+    function updatedevicestatus(){
+        var devicenum=$("#updatedevicenum").val();
+        var newdevicestatus=$("#devicestatus").val();
+        $.ajax({
+            url: "/api/device/updatestatus",
+            type: "POST",
+            data: {
+                "devicenum":devicenum,
+                "newstatus":newdevicestatus
+            }
+        }).done(function(resp) {
+            if(resp.message == "SUCCESS"){
+                alert("更新成功");
+                //刷新页面留到用户关掉modal的close后刷新
+            }
+            else{
+                alert("更新失败");
+            }
+        }).fail(function(err) {
+            alert("服务器无响应");
+        });
+    }
+
+    //选择用户进行批量删除
+    function choosedevice() {
+        //设置checkbox可见
+        $("input[name='checkbox']").each(function(){
+            $(this).attr("style","display:block");
+        });
+        //设置按钮可见
+        setbtnblock("chooseall");
+        setbtnblock("cancelchooseall");
+        setbtnblock("deletechoose");
+        setbtnblock("cancel");
+        setbtnblock("reversechoose");
+
+        //设置按钮不可见
+        setbtnnone("adddevice");
+        setbtnnone("choosedevice");
+
+    }
+
+
+    //取消函数 即返回不进行以上操作
+    function cancel() {
+        //设置checkbox不可见
+        $("input[name='checkbox']").each(function(){
+            $(this).attr("style","display:none");
+        });
+        //设置按钮可见
+        setbtnblock("adddevice");
+        setbtnblock("choosedevice");
+
+        //设置按钮不可见
+        setbtnnone("chooseall");
+        setbtnnone("cancelchooseall");
+        setbtnnone("deletechoose");
+        setbtnnone("cancel");
+        setbtnnone("reversechoose");
+
+    }
+
+    //删除用户
+    function deletechoose() {
+        // var userid=$(this).val();
+        var deviceID=[];
+        $("input:checkbox").each(function () {
+            if(this.checked) {
+                deviceID.push($(this).val());
+            }
+        });
+        console.log(deviceID);
+        $.ajax({
+            url: "/api/device/deletesome",
+            type: "POST",
+            data: {
+                "deviceID":deviceID
+            }
+        }).done(function(resp) {
+            if(resp.message == "SUCCESS"){
+                alert("删除成功");
+                init();
+            }else{
+                alert("删除失败");
+            }
+        }).fail(function(err) {
+            alert("服务器无响应");
+        });
+    }
+
+    //关闭模态窗刷新界面
+    function closemodal(){
+        init();
+    }
+
+    //删除0
+    function deletezero(){
+        for (var i=devicelist.length-1;i>=0;i--){
+            if(devicelist[i].devicenum=="0"){
+                devicelist.splice(i, 1);
+            }
+        }
+    }
+
+
 </script>
 </body>
 </html>

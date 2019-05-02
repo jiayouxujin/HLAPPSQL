@@ -104,6 +104,13 @@ public class DeviceController {
         new DeviceThread().start();
         return genSuccessResult(true);
     }
+    
+    @PostMapping("/api/device/deletesome")
+    public Response deletesome(@RequestParam(value = "deviceID[]") int []deviceID){
+        deviceService.deletesome(deviceID);
+        new DeviceThread().start();
+        return genSuccessResult(true);
+    }
 
     @PostMapping("/api/device/modifydevice")
     public Response modifyDevice(@RequestParam int deviceID,@RequestParam String devicenum,@RequestParam String devicetype,@RequestParam String devicestatus,@RequestParam double devicelat,@RequestParam double devicelng,@RequestParam String deviceaddress,@RequestParam String regionID,@RequestParam String defposID,@RequestParam String IP){

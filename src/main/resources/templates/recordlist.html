@@ -157,6 +157,7 @@
                   <th>警报时间</th>
                   <th>警报状态</th>
                   <th>处理情况</th>
+                  <th>查看</th>
                 </tr>
                   <tbody id="recordlist">
                   </tbody>
@@ -181,6 +182,56 @@
 </div>
 <!-- ./wrapper -->
 
+<div class="modal fade" id="modal-record">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closemodal()">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">记录详情</h4>
+            </div>
+            <div class="modal-body">
+                <!-- general form elements disabled -->
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <form role="form" name="device_form"  method="post">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>设备编号</label>
+                                <input id="devicenum" type="text" class="form-control" placeholder="设备编号" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>设备地点</label>
+                                <input id="deviceaddress" type="text" class="form-control" placeholder="设备地点" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>警报时间</label>
+                                <input id="recordtime" type="text" class="form-control" placeholder="警报时间" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>处理标题</label>
+                                <input id="title" type="text" class="form-control" placeholder="处理标题">
+                            </div>
+                            <div class="form-group">
+                                <label>处理结论</label>
+                                <textarea id="context" class="form-control" rows="3" placeholder="处理结论"></textarea>
+                            </div>
+
+                            <!-- /.box-body -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="closemodal()">Close</button>
+                <button id="submitsolution" type="button" class="btn btn-primary" onclick="addsolution()">提交</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
 <!-- jQuery 3 -->
 <script src="../static/bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
@@ -193,6 +244,7 @@
 <script src="../static/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../static/dist/js/demo.js"></script>
+<script src="../static/dist/js/timeformat.js"></script>
 <script language="JavaScript">
 
     //启动页面启动init()函数
@@ -212,10 +264,15 @@
       });
   }  
  function createtable() {
-     _table=document.getElementById("recordlist");
+    //删除0
+     deletezero();
+    //清空表格
+     $("#recordlist").html("");
      for(var i in recordlist){
          var row=document.createElement("tr");
+         if(i)
          row.id=i;
+         else row.id=0;
          //设备编号
          var devicenumcell=document.createElement("td");
          devicenumcell.context=recordlist[i].devicenum;
@@ -230,7 +287,8 @@
 
          //警报时间
          var recordtimecell=document.createElement("td");
-         recordtimecell.context=recordlist[i].recordtime;
+         var time=myTime(recordlist[i].recordtime);
+         recordtimecell.context=formatDateTime(time);
          recordtimecell.appendChild(document.createTextNode( recordtimecell.context));
          row.appendChild(recordtimecell);
 
@@ -268,9 +326,63 @@
          recordstatuscell.appendChild(document.createTextNode( recordstatuscell.context));
          row.appendChild(recordstatuscell);
 
+         var changebuttoncell=document.createElement("td");
+         changebuttoncell.innerHTML="<i type=\"button\" class=\"fa fa-fw fa-eye\" data-toggle=\"modal\" data-target=\"#modal-record\" style='height: 25px; text-align:center;'onclick='editInfo(this)'></i>";
+         row.appendChild(changebuttoncell);
+
+
          document.getElementById("recordlist").appendChild(row);
      }
  }
+
+    //触发模态框的同时调用此方法
+    function editInfo(obj) {
+        //得到点击的行
+        try{
+            var i=obj.parentNode.parentNode.rowIndex;
+            i-=1;
+        }catch (e) {
+            console.log(e);
+        }
+        if (i||i==0){
+            var record=recordlist[i];
+
+            //向模态框传值
+           $("#devicenum").val(record.devicenum);
+           $("#deviceaddress").val(record.deviceaddress);
+           var time=myTime(record.recordtime);
+           $("#recordtime").val(formatDateTime(time));
+           if(record.recordstatus=="已处理"){
+               $("#title").val(record.title);
+               $("#context").val(record.context);
+               $("#title").attr('disabled',true);
+               $("#context").attr('disabled',true);
+               $("#submitsolution").attr('disabled',true);
+           }else{
+               $("#title").val("");
+               $("#context").val("");
+           }
+        }
+    }
+
+    //添加处理
+    function addsolution() {
+        alert("你是后台管理员 需在app端对其进行处理")
+    }
+
+    //关掉模态窗 刷新页面
+    function closemodal() {
+        init();
+    }
+
+    //删除0
+    function deletezero(){
+        for (var i=recordlist.length-1;i>=0;i--){
+            if(recordlist[i].devicenum=="0"){
+                recordlist.splice(i, 1);
+            }
+        }
+    }
 </script>
 </body>
 </html>

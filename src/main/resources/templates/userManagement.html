@@ -147,7 +147,7 @@
           <div class="box">
             <div class="box-header">
               <h3 class="box-title">所用用户</h3>
-
+                <button type="button" id="chooseuser" class="btn btn-block btn-default" style="width: 100px;float: right;margin-right: 20px;width: 60px; text-align: center"  onclick="chooseuser()">选择</button>
             </div>
             <!-- /.box-header -->
             <div class="box-body table-responsive no-padding">
@@ -160,9 +160,18 @@
                   <th>防区</th>
                   <th>区域</th>
                   <th>注册日期</th>
+                  <th>修改</th>
                 </tr>
                   <tbody id="userlist"></tbody>
               </table>
+            <div id="table-foot">
+                <button type="button"id="adduser" class="btn btn-block btn-primary" style="width: auto;height:auto;float: right;margin-right: 25px" data-toggle="modal" data-target="#modal-user" onclick="editInfo(this)">添加用户</button>
+                <button type="button"id="cancel" class="btn btn-block btn-success" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="cancel()">返回</button>
+                <button type="button"id="chooseall" class="btn btn-block btn-default" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="chooseall()">全选</button>
+                <button type="button"id="cancelchooseall" class="btn btn-block btn-defautl" style="width: auto;float: right;margin-right: 5px;display: none;" onclick="cancelchooseall()">取消全选</button>
+                <button type="button"id="reversechoose" class="btn btn-block btn-default" style="width: auto;float: right;margin-right: 5px; display: none;" onclick="reversechoose()">反选</button>
+                <button type="button"id="deletechoose" class="btn btn-block btn-danger" style="width: auto;float: right;margin-right: 5px; display: none;" onclick="deletechoose()">删除</button>
+            </div>
             </div>
             <!-- /.box-body -->
           </div>
@@ -183,6 +192,81 @@
 </div>
 <!-- ./wrapper -->
 
+<div class="modal fade" id="modal-user">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closemodal()">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">用户详情</h4>
+            </div>
+            <div class="modal-body">
+                <!-- general form elements disabled -->
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <form role="form" name="device_form"  method="post">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>ID</label>
+                                <input id="userID" type="text" class="form-control" placeholder="ID" disabled>
+                            </div>
+
+                            <div class="form-group">
+                                <label>用户名</label>
+                                <input id="username" type="text" class="form-control" placeholder="用户名">
+                            </div>
+
+                            <div class="form-group">
+                                <label>密码</label>
+                                <input id="password" type="text" class="form-control" placeholder="密码">
+                            </div>
+                            <div class="form-group">
+                                <label>认证设备</label>
+                                <input id="phoneID" type="text" class="form-control" placeholder="认证设备">
+                            </div>
+
+                            <!-- select -->
+                            <div class="form-group">
+                                <label>管理区域</label>
+                                <select id="regionID" class="form-control">
+                                    <option>区域一</option>
+                                    <option>区域二</option>
+                                    <option>区域三</option>
+                                </select>
+                            </div>
+                            <!-- select -->
+                            <div class="form-group">
+                                <label>管理防区</label>
+                                <select id="defposID" class="form-control">
+                                    <option>防区一</option>
+                                    <option>防区二</option>
+                                    <option>防区三</option>
+                                </select>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>注册日期</label>
+                                <input id="regiserday" type="text" class="form-control" placeholder="注册日期" disabled>
+                                <small>注册日期固定，不可更改</small>
+                            </div>
+
+                            <!-- /.box-body -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="closemodal()">Close</button>
+                <button type="button" class="btn btn-primary" onclick="addormodifyuser()">提交</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
 <!-- jQuery 3 -->
 <script src="../static/bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
@@ -195,15 +279,34 @@
 <script src="../static/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../static/dist/js/demo.js"></script>
+<!--添加按钮-->
+<script src="../static/dist/js/addbutton.js"></script>
+<!--时间格式-->
+<script src="../static/dist/js/timeformat.js"></script>
+<!--checkbox的常规操作 全选 取消全选 反选-->
+<script src="../static/dist/js/checkboxfunction.js"></script>
+<!--设置按钮是否可见-->
+<script src="../static/dist/js/setbtndisplay.js"></script>
+
 
 <script language="JavaScript">
 
     //启动页面启动Init（）函数
     window.onload=init();
 
+    //判断当前操作是添加用户还是修改用户
+    //false为修改用户  true为新建用户
+    var isneworchange;
+
     var userlist=[];
     //初始化函数
     function init() {
+        //先将userlist设为空
+        try{
+            userlist=[];
+        }catch (e) {
+        }
+
         $.ajax({
             url:"http://47.100.107.158:8080/api/user/getuserlist",
             type:"GET",
@@ -218,10 +321,15 @@
     }
     //生成表格
     function createtable(){
-        _table=document.getElementById("userlist");
+        //清空表格
+        $("#userlist").html("");
         for(var i in userlist){
             var row=document.createElement("tr");
-            row.id=i;
+            if(i){
+                row.id=i;
+            }else{
+                row.id=0;
+            }
             //用户Id
             var idcell=document.createElement("td");
             idcell.context=userlist[i].userID;
@@ -242,7 +350,7 @@
 
             //认证设备
             var confirmdevicecell=document.createElement("td");
-            confirmdevicecell.context="小米";
+            confirmdevicecell.context=userlist[i].phoneID;
             confirmdevicecell.appendChild(document.createTextNode(confirmdevicecell.context));
             row.appendChild(confirmdevicecell);
 
@@ -260,12 +368,235 @@
 
             //注册日期
             var regiserday=document.createElement("td");
-            regiserday.context=userlist[i].regiserday;
-            regiserday.appendChild(document.createTextNode(regiserday.context));
+            var time=myTime(userlist[i].regiserday);
+            regiserday.appendChild(document.createTextNode(formatDateTime(time)));
             row.appendChild(regiserday);
+
+            //修改按钮
+            var changebuttoncell=document.createElement("td");
+            changebuttoncell.innerHTML="<i type=\"button\" name='modifybtn' class=\"fa fa-fw fa-edit\" data-toggle=\"modal\" data-target=\"#modal-user\" style='height: 25px; text-align:center;'onclick='editInfo(this)'></i>";
+            row.appendChild(changebuttoncell);
+
+            //初始化先把checkbox放在这 并且设置不可见
+            var chooseusercell=document.createElement("td");
+            chooseusercell.innerHTML=" <input type=\"checkbox\" name=\"checkbox\">";
+            row.appendChild(chooseusercell);
 
             document.getElementById("userlist").appendChild(row);
         }
+
+        //设置checkbox不可见 并且将userid赋值进去
+        //设置checkbox不可见
+         var i=0;
+        $("input[name='checkbox']").each(function(){
+            $(this).attr("value",userlist[i].userID);
+            $(this).attr("style","display:none");
+            i++;
+        });
+
+        //设置按钮不可见
+        setbtnnone("chooseall");
+        setbtnnone("cancelchooseall");
+        setbtnnone("deletechoose");
+        setbtnnone("cancel");
+        setbtnnone("reversechoose");
+
+        //设置按钮可见
+        setbtnblock("adduser");
+        setbtnblock("chooseuser");
+    }
+
+    //触发模态框的同时调用此方法
+    function editInfo(obj) {
+        //得到点击的行
+        try{
+            var i=obj.parentNode.parentNode.rowIndex;
+            i-=1;
+        }catch (e) {
+            console.log(e);
+        }
+        //i不为Nan时表示这个是对设备进行修改
+        if (i||i==0){
+            isneworchange=false;
+            var user=userlist[i];
+
+            //向模态框传值
+            $("#userID").val(user.userID);
+            $("#password").val(user.password);
+            var time=myTime(user.regiserday);
+            $("#regiserday").val(formatDateTime(time));
+            $("#username").val(user.username);
+            $("#phoneID").val(user.phoneID);
+            $("#regionID").val(user.regionID);
+            $("#defposID").val(user.defposID);
+        }else {
+            isneworchange=true;
+            //清空上一次modal数据
+            $("#userID").val("");
+            $("#regiserday").val("");
+            $("#username").val("");
+            $("#password").val("");
+            $("#regionID").val("区域一");
+            $("#defposID").val("防区一");
+            $("#phoneID").val("");
+        }
+    }
+    
+    //新建用户或修改用户信息
+    function addormodifyuser(){
+        //先判断是不是该填的数据都已经填了
+        var username=$("#username").val();
+        var regionID=$("#regionID").val();
+        var defposID=$("#defposID").val();
+        var phoneID=$("#phoneID").val();
+        var password=$("#password").val();
+        if(username&&regionID&&defposID&&phoneID&&password){
+            //判断是否新建的用户
+            if(isneworchange){
+                adduser(username,password,regionID,defposID,phoneID);
+            }else{
+                //得到用户ID 和注册日期
+                var userID=$("#userID").val();
+                modifyuser(userID,username,password,regionID,defposID,phoneID);
+            }
+        }else{
+            alert("请检查输入");
+            return ;
+        }
+    }
+
+    //添加用户
+    function  adduser(username,password,regionID,defposID,phoneID) {
+        //建立一个user对象
+        //得到注册的日期
+        var registerday=new Date;
+       //构建json格式
+        //String username,String password,String phoneID,String regionID,String defposID,Date registerday
+        var user={};
+        user["username"]=username;
+        user["password"]=password;
+        user["phoneID"]=phoneID;
+        user["regionID"]=regionID;
+        user["defposID"]=defposID;
+        user["registerday"]=registerday;
+
+        $.ajax({
+            url: "/api/user/adduser",
+            type: "POST",
+            dataType:'json',
+            contentType:'application/json;charset=UTF-8',
+            data: JSON.stringify(user),
+        }).done(function(resp) {
+            if(resp.message == "SUCCESS"){
+                alert("添加成功");
+                //刷新页面留到用户点击modal的close后再刷新
+            }
+            else{
+                alert("添加失败");
+            }
+        }).fail(function(err) {
+            alert("服务器无响应");
+        });
+    }
+    //修改用户
+    function modifyuser(userID,username,password,regionID,defposID,phoneID) {
+        $.ajax({
+            url: "/api/user/setuserInfo",
+            type: "POST",
+            data: {
+                "userID":userID,
+                "username":username,
+                "password":password,
+                "phoneID":phoneID,
+                "regionID":regionID,
+                "defposID":defposID
+            }
+        }).done(function(resp) {
+            if(resp.message == "SUCCESS"){
+                alert("修改成功");
+               //刷新页面留到用户关掉modal的close后刷新
+            }
+            else{
+                alert("修改失败");
+            }
+        }).fail(function(err) {
+            alert("服务器无响应");
+        });
+    }
+    //选择用户进行批量删除
+    function chooseuser() {
+        //设置checkbox可见
+        $("input[name='checkbox']").each(function(){
+            $(this).attr("style","display:block");
+        });
+        //设置按钮可见
+        setbtnblock("chooseall");
+        setbtnblock("cancelchooseall");
+        setbtnblock("deletechoose");
+        setbtnblock("cancel");
+        setbtnblock("reversechoose");
+
+        //设置按钮不可见
+        setbtnnone("adduser");
+        setbtnnone("chooseuser");
+
+    }
+
+    //得到表格的行数
+    function getTableRowsLength(id){
+        var mytable = document.getElementById(id);
+        return mytable.rows.length;
+    }
+
+    //取消函数 即返回不进行以上操作
+    function cancel() {
+        //设置checkbox不可见
+        $("input[name='checkbox']").each(function(){
+            $(this).attr("style","display:none");
+        });
+        //设置按钮可见
+        setbtnblock("adduser");
+        setbtnblock("chooseuser");
+
+        //设置按钮不可见
+        setbtnnone("chooseall");
+        setbtnnone("cancelchooseall");
+        setbtnnone("deletechoose");
+        setbtnnone("cancel");
+        setbtnnone("reversechoose");
+
+    }
+
+    //删除用户
+    function deletechoose() {
+       // var userid=$(this).val();
+        var userID=[];
+        $("input:checkbox").each(function () {
+            if(this.checked) {
+                userID.push($(this).val());
+            }
+        });
+        $.ajax({
+            url: "/api/user/deletesome",
+            type: "POST",
+            data: {
+                "userID":userID
+            }
+        }).done(function(resp) {
+            if(resp.message == "SUCCESS"){
+               alert("删除成功");
+               init();
+            }else{
+                alert("删除失败");
+            }
+        }).fail(function(err) {
+            alert("服务器无响应");
+        });
+    }
+
+    //关掉modal 刷新表格
+    function closemodal() {
+        init();
     }
 </script>
 </body>
