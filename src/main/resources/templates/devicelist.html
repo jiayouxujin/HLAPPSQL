@@ -351,16 +351,15 @@
 
     //这个isneworchange表示当前是对设备进行修改还是新建 true表示新建 false表示修改
     var isneworchange;
-    var devicelat,devicelng,deviceIP;
-    var deviceID="",devicenum="";
+    var devicelat,devicelng;
+    var deviceID;
     var devicestatus;
-    var defposID,regionID;
-    var IP;
+
     var devicelist=[];
     //初始化函数
     var table;
-    var isshow=getQueryString("devicenum");
     function init() {
+
         $.ajax({
             url:"http://47.100.107.158:8080/api/device/getdevicelist",
             type:"GET",
@@ -369,17 +368,6 @@
         }).done(function (resp) {
             devicelist=eval(resp.data);
             if (devicelist.length) createtable();
-            if (isshow!=""){
-                devicenum=getQueryString("devicenum");
-                devicelat=getQueryString("devicelat");
-                devicelng=getQueryString("devicelng");
-                devicetype=getQueryString("devicetype");
-                deviceaddress=getQueryString("address");
-                deviceIP=getQueryString("IP");
-                defposID=getQueryString("defposID");
-                regionID=getQueryString("regionID");
-                showold();
-            }
         }).fail(function (err) {
             alert("服务器无响应");
         });
@@ -539,12 +527,12 @@
     //提交按钮
     function neworchangedevice() {
         //得到输入的值
-        devicenum=$("#devicenum").val();
-        devicetype=$("#devicetype option:selected").text();
-        regionID=$("#regionID option:selected").text();
-        defposID=$("#defposID option:selected").text();
-        deviceaddress=$("#deviceaddress").val();
-        deviceIP = $("#deviceIP").val();
+        var devicenum=$("#devicenum").val();
+        var devicetype=$("#devicetype option:selected").text();
+        var regionID=$("#regionID option:selected").text();
+        var defposID=$("#defposID option:selected").text();
+        var deviceaddress=$("#deviceaddress").val();
+        var deviceIP = $("#deviceIP").val();
 
         if(devicenum&&devicetype&&regionID&&defposID&&deviceaddress&&deviceIP){
                 if(isneworchange){
@@ -652,14 +640,7 @@
         }
 
     }
-    function showold(){
-        $("#devicenum").val(devicenum);
-        $("#deviceIP").val(IP);
-        $("#deviceaddress").val(deviceaddress);
-        $("#devicetype").val(devicetype);
-        $("#regionID").val(regionID);
-        document.getElementById("modal-device").showModal(); 
-    }
+
     //触发更新设备的模态窗的同时调用此方法
     function editupdateInfo(obj) {
         //得到点击的行
@@ -778,14 +759,7 @@
             }
         }
     }
-    function getQueryString(name) {
-        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
-        var r = window.location.search.substr(1).match(reg);
-        if (r != null) {
-            return unescape(r[2]);
-        }
-        return null;
-    }
+
 
 </script>
 </body>
