@@ -17,6 +17,7 @@
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="../static/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../static/dist/css/map/marker.css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -32,6 +33,8 @@
     <script src="https://cache.amap.com/lbs/static/es5.min.js"></script>
     <script src="https://webapi.amap.com/maps?v=1.4.8&key=d45e066e9d7b475ce397fc37e04aeef1&plugin=AMap.PlaceSearch,AMap.AdvancedInfoWindow"></script>
     <script src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <!--设置按钮是否可见-->
+    <script src="../static/dist/js/setbtndisplay.js"></script>
 
     <style>
         #search{
@@ -169,8 +172,85 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
+    <div id="adddevice" class="add_note_icon" data-toggle="modal" data-target="#modal-device" style="display: block" onclick="editInfo(this)">
+    </div>
+    <div id="confirmaddress" class="list_note_icon" data-toggle="modal" data-target="#modal-device" style="display: none;"onclick="changepage()">
+    </div>
 </div>
 <!-- ./wrapper -->
+<div class="modal fade" id="modal-device">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closemodal()">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">设备详情</h4>
+            </div>
+            <div class="modal-body">
+                <!-- general form elements disabled -->
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <form role="form" name="device_form"  method="post">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>设备编号</label>
+                                <input id="devicenum" type="text" class="form-control" placeholder="设备编号">
+                            </div>
+
+                            <div class="form-group">
+                                <label>设备类型</label>
+                                <select id="devicetype" class="form-control">
+                                    <option>振动传感</option>
+                                    <option>监控</option>
+                                    <option>雷达</option>
+                                </select>
+                            </div>
+                            <!-- select -->
+                            <div class="form-group">
+                                <label>所在区域</label>
+                                <select id="regionID" class="form-control">
+                                    <option>区域一</option>
+                                    <option>区域二</option>
+                                    <option>区域三</option>
+                                </select>
+                            </div>
+                            <!-- select -->
+                            <div class="form-group">
+                                <label>所属防区</label>
+                                <select id="defposID" class="form-control">
+                                    <option>防区一</option>
+                                    <option>防区二</option>
+                                    <option>防区三</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label >设备地点</label>
+                                <input id="deviceaddress" type="text" class="form-control" placeholder="设备地点">
+                                <button type="button" class="btn btn-primary" style="float:right;margin-top: 5px; margin-bottom: 5px;"onclick="chooseaddress()">选择</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label>IP地址</label>
+                                <input id="deviceIP" type="text" class="form-control" placeholder="IP地址">
+                            </div>
+
+                            <!-- /.box-body -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="closemodal()">Close</button>
+                <button type="button" class="btn btn-primary" onclick="neworchangedevice()">提交</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!--悬浮按钮-->
 
 <!-- jQuery 3 -->
 <script src="../static/bower_components/jquery/dist/jquery.min.js"></script>
@@ -194,6 +274,10 @@
     var num2marker = new HashMap();//创建一个HashMap对象
     var num2device = new HashMap();//创建一个HashMap对象
     //定义icon
+
+    //新建设备的经纬度
+    var devicelat,devicelng;
+
     var camera_g,camera_r,camera_y,camera_grey;
     var sensor_g,sensor_r,sensor_y,sensor_grey;
     var radar_g,radar_r,radar_y,radar_grey;
@@ -320,7 +404,7 @@
                          sensormarkers.push(marker);
                          break;
                  }
-                 marker.content='<div class="infowindow-content">'+'<div class="amap-info-header">'+devicelist[i].devicenum+'</div>'+'<div class="amap-info-body">'+devicelist[i].deviceaddress+'</div></div>';
+                 marker.content='<div class="infowindow-content">'+'<div class="amap-info-header">'+'设备编号:'+devicelist[i].devicenum+'</div>'+'<div class="amap-info-body">'+'设备地点:'+devicelist[i].deviceaddress+'</div></div>';
                  devicemarkers.push(marker);
                  num2marker.put(devicelist[i].devicenum,marker);
                  num2device.put(devicelist[i].devicenum,devicelist[i]);
@@ -497,6 +581,94 @@
         this.size = function(){ 
             return length; 
         }; 
+    }
+
+    //触发模态框的同时调用此方法
+    function editInfo(obj) {
+
+        //按钮样式更改
+        //设置按钮可见
+        setbtnblock("confirmaddress");
+
+        //设置按钮不可见
+        setbtnnone("adddevice");
+
+        //清空上一次modal数据
+        $("#devicenum").val("");
+        $("#deviceIP").val("");
+        $("#deviceaddress").val("");
+        $("#devicetype").val("振动传感");
+        $("#regionID").val("区域一");
+        $("#defposID").val("防区一");
+    }
+
+    //关闭模态窗刷新界面
+    function closemodal(){
+        updatedevicelist();
+    }
+
+    //选择设备地点的函数
+    function chooseaddress() {
+
+        $("#modal-device").modal('hide');
+        //注：返回值
+        //显示到 modal上面  $("#deviceaddress").val(地点);
+        //经纬度更新 devicelat,devicelng;
+        hello();
+    }
+
+    //提交按钮
+    function neworchangedevice() {
+        //得到输入的值
+        var devicenum=$("#devicenum").val();
+        var devicetype=$("#devicetype option:selected").text();
+        var regionID=$("#regionID option:selected").text();
+        var defposID=$("#defposID option:selected").text();
+        var deviceaddress=$("#deviceaddress").val();
+        var deviceIP = $("#deviceIP").val();
+
+        if(devicenum&&devicetype&&regionID&&defposID&&deviceaddress&&deviceIP){
+                newdevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,defposID);
+            }else{
+            alert("请检查输入是否正确");
+        }
+    }
+
+    //新建设备
+    function newdevice(devicenum,devicetype,deviceaddress,deviceIP,regionID,defposID) {
+        $.ajax({
+            url: "/api/device/createdevice",
+            type: "POST",
+            data:{
+                "devicenum":devicenum,
+                "devicetype":devicetype,
+                "devicestatus":"停机状态",
+                "devicelat":30,
+                "devicelng":30,
+                "deviceaddress":deviceaddress,
+                "regionID":regionID,
+                "defposID":defposID,
+                "IP":deviceIP
+            }
+        }).done(function(resp) {
+            if(resp.message == "SUCCESS"){
+                alert("新建成功");
+            } else {
+                alert("建立失败");
+            }
+        }).fail(function(err) {
+            alert("服务器无响应");
+        });
+    }
+
+    function changepage() {
+        //按钮样式更改
+        //设置按钮不可见
+        setbtnnone("confirmaddress");
+
+        //设置按钮可见
+        setbtnblock("adddevice");
+
     }
 </script>
 </body>
