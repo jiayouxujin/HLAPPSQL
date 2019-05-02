@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>报警记录</title>
+  <title>报修记录</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -146,7 +146,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        报警记录
+        报修记录
       </h1>
     </section>
 
@@ -164,9 +164,9 @@
                 <tr>
                   <th>单车编号</th>
                   <th>单车地点</th>
-                  <th>事故时间</th>
-                  <th>警报状态</th>
-                  <th>报警用户</th>
+                  <th>报修时间</th>
+                  <th>报修用户</th>
+                  <th>上个用户</th>
                   <th>处理情况</th>
                 </tr>
                   <tbody id="recordlist">
@@ -210,10 +210,11 @@
     window.onload = init()
     var recordlist=[];
     var userlist=["bike","suedr","simple","complex","solution","tony","tom","jerystar","niko","zous","paris","complex","solution","tony","tom","jerystar","niko","zous","paris","bike","suedr","simple","complex","solution","tony","tom","jerystar"];
-    
+    var userlist2=["niko","zous","paris","bike","suedr","simple","complex","complex","solution","tony","tom","jerystar","niko","zous","paris","bike","suedr","simple","complex","solution","tony","solution","tony","tom","jerystar","tom","jerystar"];
+
   function init(){
       $.ajax({
-          url: "http://47.100.107.158:8080/api/record/getrecordlist",
+          url: "http://47.100.107.158:80/api/record//searchRecordbydevicestatus?status=报警状态",
           type: "GET",
           data: "",
           contentType: false   // 告诉jQuery不要去设置Content-Type请求头
@@ -248,31 +249,13 @@
          recordtimecell.appendChild(document.createTextNode( recordtimecell.context));
          row.appendChild(recordtimecell);
 
-         //设备运行状态
-         var devicestatuscell=document.createElement("td");
-         devicestatuscell.innerHTML=" <span class=\"label label-danger\">报警状态</span>";
-         /*switch (recordlist[i].devicestatus) {
-             case "正常运转":
-                    devicestatuscell.innerHTML="<span class=\"label label-success\">正常运转</span>";
-                    break;
-             case "报警状态":
-                 devicestatuscell.innerHTML=" <span class=\"label label-danger\">报警状态</span>";
-                         break;
-             case "停机状态":
-                 devicestatuscell.innerHTML=" <span class=\"label label-default\">停机状态</span>";
-                 break;
-             case "预警状态":
-                 devicestatuscell.innerHTML="<span class=\"label label-warning\">预警状态</span>";
-                 break;
-             default:
-                 devicestatuscell=recordlist[i].devicestatus;
-                 break;
-         }*/
-         row.appendChild(devicestatuscell);
-         
-         //报警用户
-         var deviceaddresscell=document.createElement("td");
+        var deviceaddresscell=document.createElement("td");
          deviceaddresscell.context=userlist[i];
+         deviceaddresscell.appendChild(document.createTextNode(deviceaddresscell.context));
+         row.appendChild(deviceaddresscell);
+         
+         var deviceaddresscell=document.createElement("td");
+         deviceaddresscell.context=userlist2[i];
          deviceaddresscell.appendChild(document.createTextNode(deviceaddresscell.context));
          row.appendChild(deviceaddresscell);
          //警报处理状态

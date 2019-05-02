@@ -1,0 +1,25 @@
+@charset "utf-8";
+/* CSS Document */
+
+*{
+	margin:0;
+	padding:0;
+}
+ 
+.wrap{
+	width:300px;
+	height:300px;
+	border-radius:50%;
+	position:absolute;
+	top:calc(50% - 150px);
+	left:calc(50% - 150px);
+	box-shadow: 0 0 9px red;
+}
+ 
+ 
+#timer{
+	position:absolute;
+	top:90px;
+	left:60px;
+	font-size:38px;
+}

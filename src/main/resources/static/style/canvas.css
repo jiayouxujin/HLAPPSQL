@@ -1,0 +1,11 @@
+
+  .normal_cycle {
+
+    animation: move_eye 5s linear 0s 1 normal forwards;
+
+  }
+
+  .infinite_cycle{
+    animation: move_eye 5s linear 0s infinite alternate forwards;
+  }
+  @keyframes move_eye { from { margin-left:-50%; margin-top:600px;} to { margin-left:90%;margin-top: 100px; }  }

@@ -2,8 +2,8 @@ package com.xxx.demo.Entity;
 
 import javax.persistence.*;
 
-@Entity(name = "device")
-public class Device {
+@Entity(name = "bike")
+public class Bike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +31,6 @@ public class Device {
     @Column(name = "region_id")
     String regionID;
 
-    @Column(name = "defpos_id")
-    String defposID;
 
     @Column(name = "ip")
     String IP;
@@ -57,9 +55,6 @@ public class Device {
         return devicenum;
     }
 
-    public String getDefposID() {
-        return defposID;
-    }
 
     public String getDevicestatus() {
         return devicestatus;
@@ -71,10 +66,6 @@ public class Device {
 
     public String getRegionID() {
         return regionID;
-    }
-
-    public void setDefposID(String defposID) {
-        this.defposID = defposID;
     }
 
     public String getIP() {

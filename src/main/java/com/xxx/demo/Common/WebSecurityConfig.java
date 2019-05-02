@@ -24,6 +24,7 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
         addInterceptor.excludePathPatterns("/api/device/**");
         addInterceptor.excludePathPatterns("/api/solution/**");
         addInterceptor.excludePathPatterns("/api/record/**");
+        addInterceptor.excludePathPatterns("/api/bike/**");
         addInterceptor.excludePathPatterns("/static/**");
         // 增加拦截配置
         addInterceptor.addPathPatterns("/**");

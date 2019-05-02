@@ -51,4 +51,24 @@ public class AdminController {
     public String returnusermanagement(ModelMap map){
         return "userManagement";
     }
+    @RequestMapping(value = "/start",method = RequestMethod.GET)
+    public String returnstart(ModelMap map){
+        return "start";
+    }
+    @RequestMapping(value = "/end",method = RequestMethod.GET)
+    public String returnend(ModelMap map){
+        return "end";
+    }
+    @RequestMapping(value = "/home",method = RequestMethod.GET)
+    public String returnhome(ModelMap map){
+        return "home";
+    }
+    @RequestMapping(value = "/insurance",method = RequestMethod.GET)
+    public String returninsurance(ModelMap map){
+        return "insurance";
+    }
+    @RequestMapping(value = "/repairlist",method = RequestMethod.GET)
+    public String returnrepairlist(ModelMap map){
+        return "repairlist";
+    }
 }

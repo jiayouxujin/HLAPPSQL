@@ -1,7 +1,7 @@
 package com.xxx.demo.Controller;
 
 import com.xxx.demo.Common.Response;
-import com.xxx.demo.Entity.Device;
+import com.xxx.demo.Entity.Bike;
 import com.xxx.demo.Entity.Record;
 import com.xxx.demo.Service.DeviceService;
 import com.xxx.demo.Service.RecordService;
@@ -42,7 +42,7 @@ public class DeviceController {
         }
     }
     public class DeviceThread extends Thread{
-        Device device=new Device();
+        Bike device=new Bike();
         @Override
         public void run() {
             device=deviceService.createdevice0("0","0","0",0,0,"0","0","0","0");
@@ -55,17 +55,16 @@ public class DeviceController {
         }
     }
 
-    @GetMapping("/api/device/check")
+    @GetMapping("/api/bike/check")
     public Response check(){
-        List<Device> list=deviceService.check("0");
-        if(list.isEmpty()) return genSuccessResult(false);
-        else return genSuccessResult(true);
+        deviceService.dos();
+        return genSuccessResult(true);
     }
 
-    @GetMapping("/api/device/getdevicelist")
+    @GetMapping("/api/bike/getdevicelist")
     public Response getDeviceList()
     {
-        List<Device> deviceList = deviceService.getdevicelist();
+        List<Bike> deviceList = deviceService.getdevicelist();
         if (deviceList == null||deviceList.size()==0){
             return genFailResult("无记录或查询失败");
         }
@@ -74,10 +73,10 @@ public class DeviceController {
         }
     }
 
-    @GetMapping("/api/device/getdevicelistbystatus")
+    @GetMapping("/api/bike/getdevicelistbystatus")
     public Response getDeviceList(@RequestParam String status)
     {
-        List<Device> deviceList = deviceService.getdevicelistbystatus(status);
+        List<Bike> deviceList = deviceService.getdevicelistbystatus(status);
         if (deviceList == null||deviceList.size()==0){
             return genFailResult("无记录或查询失败");
         }
@@ -86,10 +85,10 @@ public class DeviceController {
         }
     }
 
-    @PostMapping("/api/device/createdevice")
+    @PostMapping("/api/bike/createdevice")
     public Response createDevice(@RequestParam String devicenum,@RequestParam String devicetype,@RequestParam String devicestatus,@RequestParam double devicelat,@RequestParam double devicelng,@RequestParam String deviceaddress,@RequestParam String regionID,@RequestParam String defposID,@RequestParam String IP){
         try {
-            deviceService.createdevice(devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,IP);
+            deviceService.createdevice(devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,IP);
             new DeviceThread().start();
             return genSuccessResult(true);
         }catch (Exception e){
@@ -98,29 +97,29 @@ public class DeviceController {
     }
 
 
-    @PostMapping("/api/device/deletedevice")
+    @PostMapping("/api/bike/deletedevice")
     public Response deleteDevice(@RequestParam int deviceID){
         deviceService.deletedevice(deviceID);
         new DeviceThread().start();
         return genSuccessResult(true);
     }
 
-    @PostMapping("/api/device/modifydevice")
+    @PostMapping("/api/bike/modifydevice")
     public Response modifyDevice(@RequestParam int deviceID,@RequestParam String devicenum,@RequestParam String devicetype,@RequestParam String devicestatus,@RequestParam double devicelat,@RequestParam double devicelng,@RequestParam String deviceaddress,@RequestParam String regionID,@RequestParam String defposID,@RequestParam String IP){
-        deviceService.modifydevice(deviceID,devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,IP);
+        deviceService.modifydevice(deviceID,devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,IP);
         new DeviceThread().start();
         return genSuccessResult(true);
     }
 
-    @PostMapping("/api/device/updatestatus")
+    @PostMapping("/api/bike/updatestatus")
     public Response updateStatus(@RequestParam String devicenum,@RequestParam String newstatus){
         if(deviceService.updatestatus(devicenum,newstatus)){
-            List<Device> a=deviceService.searchbynum(devicenum);
-            Device device=a.get(0);
+            List<Bike> a=deviceService.searchbynum(devicenum);
+            Bike device=a.get(0);
             if(device.getDevicestatus()!=newstatus){
                 Date date=new Date();
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                recordService.addRecord(devicenum,device.getDevicetype(),newstatus,device.getDevicelat(),device.getDevicelng(),device.getDeviceaddress(),device.getRegionID(),device.getDefposID(),date,device.getDevicetype()+format.format(date).substring(17));
+                recordService.addRecord(devicenum,device.getDevicetype(),newstatus,device.getDevicelat(),device.getDevicelng(),device.getDeviceaddress(),device.getRegionID(),"防区1",date,device.getDevicetype()+format.format(date).substring(17));
                 new DeviceThread().start();
                 //new RecordThread().start();
                 return genSuccessResult(true);
@@ -130,7 +129,7 @@ public class DeviceController {
         else return genFailResult("修改失败");
     }
 
-    @PostMapping("/api/device/deleteall")
+    @PostMapping("/api/bike/deleteall")
     public Response deleteall(){
         try{
             deviceService.deleteall();

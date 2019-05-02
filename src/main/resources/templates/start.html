@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>用户登入</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="../static/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="../static/bower_components/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="../static/bower_components/Ionicons/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="../static/dist/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="../static/dist/css/skins/_all-skins.min.css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- Google Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic" th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic}"></link>
+  <style>
+    td{
+      font-size:x-large;
+    }
+  </style>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <header class="main-header">
+        <!-- Logo -->
+        <a href="../static/index2.html" class="logo">
+          <!-- mini logo for sidebar mini 50x50 pixels -->
+          <span class="logo-mini">后台</span>
+          <!-- logo for regular state and mobile devices -->
+          <span class="logo-lg">共享单车</span>
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+    
+          <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+              <!-- User Account: style can be found in dropdown.less -->
+              <li class="dropdown user user-menu">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <img src="../static/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                  <span class="hidden-xs">JOSEE</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <!-- User image -->
+                  <li class="user-header">
+                    <img src="../static/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+    
+                    <p>
+                     JOSEE-共享管理者
+                    </p>
+                  </li>
+                  <!-- Menu Footer-->
+                  <li class="user-footer">
+                    <div style="margin:0 auto;width:50px;">
+                      <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel -->
+      <div class="user-panel">
+        <div class="pull-left image">
+          <img src="../static/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+        </div>
+        <div class="pull-left info">
+          <p>JOSEE</p>
+          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+        </div>
+      </div>
+      <!--图表统计-->
+      <!--用户管理-->
+      <!--地图功能页-->
+      <!--设备列表+详情-->
+      <!--报警记录列表+详情-->
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">MAIN NAVIGATION</li>
+        <li>
+            <a href="statistics">
+                <i class="fa fa-pie-chart"></i><span>图表统计</span>
+            </a>
+        </li>
+        <li>
+            <a href="map">
+                <i class="fa fa-map"></i><span>地图功能</span>
+            </a>
+        </li>
+        <li >
+            <a href="devicelist">
+                <i class="fa fa-files-o"></i><span>单车列表</span>
+            </a>
+        </li>
+        <li>
+            <a href="recordlist">
+                <i class="fa fa-edit"></i> <span>报警记录</span>
+            </a>
+        </li>
+        <li>
+            <a href="repairlist">
+                <i class="fa fa-wrench"></i> <span>维修记录</span>
+            </a>
+        </li>
+        <li>
+            <a href="userManagement">
+                <i class="fa fa-th"></i> <span>用户管理</span>
+            </a>
+        </li>
+        <li>
+                <a href="start">
+                    <i class="fa fa-th"></i> <span>用户Demo</span>
+                </a>
+            </li>
+    </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+			<div class="box">
+					<div class="box-header with-border">
+					  <h3 class="box-title">用户信息</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+					  <table id="tabled" class="table table-bordered">
+						<tr>
+						  <td>账 户</td>
+						  <td><span>189****5198</span></td>
+						</tr>
+						<tr>
+						  <td>保险剩余时间</td>
+						  <td><span>0 时 0 分 0 秒</span></td>
+						</tr>
+						<tr>
+							<td>当前信用分数</td>
+							<td><span>95</span></td>
+						</tr>
+					  </table>
+					</div>
+			</div>
+			<img width=100px  id="finger_print"  onclick="jump_to()" src = "../static/res/fingerprint.png"  class="Button img-circle center-block"  />
+      </section>
+      <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 2.4.0
+    </div>
+    <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
+    reserved.
+  </footer>
+</div>
+<!-- ./wrapper -->
+</body>
+<!-- jQuery 3 -->
+<script src="../static/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="../static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- ChartJS -->
+<script src="../static/bower_components/chart.js/Chart.js"></script>
+<!-- FastClick -->
+<script src="../static/bower_components/fastclick/lib/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="../static/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="../static/dist/js/demo.js"></script>
+    <script>
+            function jump_to(){
+                window.location.href="home";
+            }
+        </script>
+</body>
+</html>

@@ -43,6 +43,16 @@
             margin: 30px;
             margin-top: 100px;
         }
+        #exam{
+            width: 250px;
+            height: 160px;       
+            position: absolute;
+            float:right;
+            z-index:1000;
+            margin: 30px;
+            bottom: 0px;
+            right: 0px;
+        }
     </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -137,7 +147,7 @@
                 </li>
                 <li >
                     <a href="devicelist">
-                        <i class="fa fa-files-o"></i><span>设备列表</span>
+                        <i class="fa fa-files-o"></i><span>单车列表</span>
                     </a>
                 </li>
                 <li>
@@ -146,13 +156,18 @@
                     </a>
                 </li>
                 <li>
-                    <a href="recordlist">
+                    <a href="repairlist">
                         <i class="fa fa-wrench"></i> <span>维修记录</span>
                     </a>
                 </li>
                 <li>
                     <a href="userManagement">
                         <i class="fa fa-th"></i> <span>用户管理</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="start">
+                        <i class="fa fa-th"></i> <span>用户Demo</span>
                     </a>
                 </li>
             </ul>
@@ -167,6 +182,7 @@
             <div id="container">
                 <div>
                     <input id="search" class="form-control input-style" placeholder="输入关键字搜索位置" value=""/>
+                    <img id="exam" src="../static/exam.png">
                 </div>
             </div>
         </section>
@@ -174,6 +190,7 @@
     </div>
     <!-- /.content-wrapper -->
 </div>
+</body>
 <!-- ./wrapper -->
 
 <!-- jQuery 3 -->
@@ -198,9 +215,8 @@
     var num2marker = new HashMap();//创建一个HashMap对象
     var num2device = new HashMap();//创建一个HashMap对象
     //定义icon
-    var camera_g,camera_r,camera_y,camera_grey;
-    var sensor_g,sensor_r,sensor_y,sensor_grey;
-    var radar_g,radar_r,radar_y,radar_grey;
+    var camera_g,camera_r,camera_y,camera_grey,camera_b,camera_p;
+    var radar_g,radar_r,radar_y,radar_grey,radar_b,radar_p;
     var advancedInfoWindow = new AMap.AdvancedInfoWindow({
         offset:new AMap.Pixel(0,-30),
         placeSearch: true,
@@ -231,9 +247,9 @@
     });
     // 每隔  4 秒钟 运行一次，发送一个 ajax 请求
     function runEvery4Sec() {
-        setTimeout( runEvery4Sec, 1000 * 4 );
+        setTimeout( runEvery4Sec, 2500);
         $.ajax({
-            url: "http://47.100.107.158:8080/api/device/check",
+            url: "http://47.100.107.158:80/api/bike/check",
             type: "GET",
             data: "",
             contentType: false   // 告诉jQuery不要去设置Content-Type请求头
@@ -248,7 +264,7 @@
     }
     function updatedevicelist(){
          $.ajax({
-             url: "http://47.100.107.158:8080/api/device/getdevicelist",
+             url: "http://47.100.107.158:80/api/bike/getdevicelist",
              type: "GET",
              data: "",
              contentType: false   // 告诉jQuery不要去设置Content-Type请求头
@@ -272,7 +288,7 @@
                  });
 
                  switch(devicelist[i].devicetype){
-                     case "监控":
+                     case "哈罗":
                          switch(devicelist[i].devicestatus){
                              case "正常运转":
                              marker.setIcon(camera_g);
@@ -280,48 +296,43 @@
                              case "报警状态":
                              marker.setIcon(camera_r);
                              break;
-                             case "预警状态":
-                             marker.setIcon(camera_y);
+                             case "私人占用":
+                             marker.setIcon(camera_p);
                              break;
-                             case "停机状态":
+                             case "停用状态":
                              marker.setIcon(camera_grey);
+                             break;
+                             case "违规停放":
+                             marker.setIcon(camera_b);
+                             break;
+                             case "违反交规":
+                             marker.setIcon(camera_y);
                              break;
                          }
                          cameramarkers.push(marker);
                          break;
-                     case "雷达":
+                     case "摩拜":
                          switch(devicelist[i].devicestatus){
-                             case "正常运转":
+                            case "正常运转":
                              marker.setIcon(radar_g);
                              break;
                              case "报警状态":
                              marker.setIcon(radar_r);
                              break;
-                             case "预警状态":
-                             marker.setIcon(radar_y);
+                             case "私人占用":
+                             marker.setIcon(radar_p);
                              break;
-                             case "停机状态":
+                             case "停用状态":
                              marker.setIcon(radar_grey);
+                             break;
+                             case "违规停放":
+                             marker.setIcon(radar_b);
+                             break;
+                             case "违反交规":
+                             marker.setIcon(radar_y);
                              break;
                          }
                          radarmarkers.push(marker);
-                         break;
-                     case "振动传感":
-                         switch(devicelist[i].devicestatus){
-                             case "正常运转":
-                             marker.setIcon(sensor_g);
-                             break;
-                             case "报警状态":
-                             marker.setIcon(sensor_r);
-                             break;
-                             case "预警状态":
-                             marker.setIcon(sensor_y);
-                             break;
-                             case "停机状态":
-                             marker.setIcon(sensor_grey);
-                             break;
-                         }
-                         sensormarkers.push(marker);
                          break;
                  }
                  marker.content='<div class="infowindow-content">'+'<div class="amap-info-header">'+devicelist[i].devicenum+'</div>'+'<div class="amap-info-body">'+devicelist[i].deviceaddress+'</div></div>';
@@ -346,22 +357,18 @@
                 case 0:
                     visable(cameramarkers,true);
                     visable(radarmarkers,true);
-                    visable(sensormarkers,true);
                     break;
                 case 1:
                     visable(cameramarkers,true);
                     visable(radarmarkers,false);
-                    visable(sensormarkers,false);
                     break;
                 case 2:
                     visable(cameramarkers,false);
                     visable(radarmarkers,true);
-                    visable(sensormarkers,false);
                     break;
                 case 3:
                     visable(cameramarkers,false);
                     visable(radarmarkers,false);
-                    visable(sensormarkers,true);
                     break;
             }
     }
@@ -415,73 +422,73 @@
         imgpixel=new AMap.Pixel(0,0);
         camera_g = new AMap.Icon({
             size:imgsize,    // 图标尺寸
-            image: "http://47.100.107.158:8080/static/marker_camera_g.png",  // Icon的图像
+            image: "http://47.100.107.158:80/static/marker_camera_g.png",  // Icon的图像
             imageOffset: imgpixel,
             imageSize: imgsize,
         });
         camera_r = new AMap.Icon({
             size:imgsize,    // 图标尺寸
-            image: "http://47.100.107.158:8080/static/marker_camera_r.png",  // Icon的图像
+            image: "http://47.100.107.158:80/static/marker_camera_r.png",  // Icon的图像
             imageOffset: imgpixel,
             imageSize: imgsize
         });
         camera_y= new AMap.Icon({
             size:imgsize,    // 图标尺寸
-            image: "http://47.100.107.158:8080/static/marker_camera_y.png",  // Icon的图像
+            image: "http://47.100.107.158:80/static/marker_camera_y.png",  // Icon的图像
+            imageOffset: imgpixel,
+            imageSize: imgsize
+        });
+        camera_b= new AMap.Icon({
+            size:imgsize,    // 图标尺寸
+            image: "http://47.100.107.158:80/static/marker_camera_b.png",  // Icon的图像
+            imageOffset: imgpixel,
+            imageSize: imgsize
+        });
+        camera_p= new AMap.Icon({
+            size:imgsize,    // 图标尺寸
+            image: "http://47.100.107.158:80/static/marker_camera_p.png",  // Icon的图像
             imageOffset: imgpixel,
             imageSize: imgsize
         });
         camera_grey= new AMap.Icon({
             size:imgsize,    // 图标尺寸
-            image: "http://47.100.107.158:8080/static/marker_camera_gray.png",  // Icon的图像
+            image: "http://47.100.107.158:80/static/marker_camera_gray.png",  // Icon的图像
             imageOffset: imgpixel,
             imageSize: imgsize
         });
         radar_g= new AMap.Icon({
             size:imgsize,    // 图标尺寸
-            image: "http://47.100.107.158:8080/static/marker_radar_g.png",  // Icon的图像
+            image: "http://47.100.107.158:80/static/marker_radar_g.png",  // Icon的图像
             imageOffset: imgpixel,
             imageSize: imgsize
         });
         radar_r= new AMap.Icon({
             size:imgsize,    // 图标尺寸
-            image: "http://47.100.107.158:8080/static/marker_radar_r.png",  // Icon的图像
+            image: "http://47.100.107.158:80/static/marker_radar_r.png",  // Icon的图像
             imageOffset: imgpixel,
             imageSize: imgsize
         });
         radar_y= new AMap.Icon({
             size:imgsize,    // 图标尺寸
-            image: "http://47.100.107.158:8080/static/marker_radar_y.png",  // Icon的图像
+            image: "http://47.100.107.158:80/static/marker_radar_y.png",  // Icon的图像
+            imageOffset: imgpixel,
+            imageSize: imgsize
+        });
+        radar_b= new AMap.Icon({
+            size:imgsize,    // 图标尺寸
+            image: "http://47.100.107.158:80/static/marker_radar_b.png",  // Icon的图像
+            imageOffset: imgpixel,
+            imageSize: imgsize
+        });
+        radar_p= new AMap.Icon({
+            size:imgsize,    // 图标尺寸
+            image: "http://47.100.107.158:80/static/marker_radar_p.png",  // Icon的图像
             imageOffset: imgpixel,
             imageSize: imgsize
         });
         radar_grey= new AMap.Icon({
             size:imgsize,    // 图标尺寸
-            image: "http://47.100.107.158:8080/static/marker_radar_gray.png",  // Icon的图像
-            imageOffset: imgpixel,
-            imageSize: imgsize
-        });
-        sensor_g= new AMap.Icon({
-            size:imgsize,    // 图标尺寸
-            image: "http://47.100.107.158:8080/static/marker_senser_g.png",  // Icon的图像
-            imageOffset: imgpixel,
-            imageSize: imgsize
-        });
-        sensor_r= new AMap.Icon({
-            size:imgsize,    // 图标尺寸
-            image: "http://47.100.107.158:8080/static/marker_senser_r.png",  // Icon的图像
-            imageOffset: imgpixel,
-            imageSize: imgsize
-        });
-        sensor_y= new AMap.Icon({
-            size:imgsize,    // 图标尺寸
-            image: "http://47.100.107.158:8080/static/marker_senser_y.png",  // Icon的图像
-            imageOffset: imgpixel,
-            imageSize: imgsize
-        });
-        sensor_grey= new AMap.Icon({
-            size:imgsize,    // 图标尺寸
-            image: "http://47.100.107.158:8080/static/marker_senser_gray.png",  // Icon的图像
+            image: "http://47.100.107.158:80/static/marker_radar_gray.png",  // Icon的图像
             imageOffset: imgpixel,
             imageSize: imgsize
         });
@@ -503,5 +510,4 @@
         }; 
     }
 </script>
-</body>
 </html>

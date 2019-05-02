@@ -121,7 +121,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="recordlist">
+                    <a href="repairlist">
                         <i class="fa fa-wrench"></i> <span>维修记录</span>
                     </a>
                 </li>
@@ -130,6 +130,11 @@
                         <i class="fa fa-th"></i> <span>用户管理</span>
                     </a>
                 </li>
+                <li>
+                        <a href="start">
+                            <i class="fa fa-th"></i> <span>用户Demo</span>
+                        </a>
+                    </li>
             </ul>
         </section>
         <!-- /.sidebar -->
@@ -162,8 +167,7 @@
                   <th>用户名</th>
                   <th>密码</th>
                   <th>认证设备</th>
-                  <th>防区</th>
-                  <th>区域</th>
+                  <th>信用分数</th>
                   <th>注册日期</th>
                 </tr>
                   <tbody id="userlist"></tbody>
@@ -205,7 +209,7 @@
 
     //启动页面启动Init（）函数
     window.onload=init();
-
+    var scorelist=[100,77,95];
     var userlist=[];
     //初始化函数
     function init() {
@@ -253,24 +257,45 @@
 
             //防区
             var defendcell=document.createElement("td");
-            defendcell.context=userlist[i].defposID;
+            defendcell.context=scorelist[i];
             defendcell.appendChild(document.createTextNode(defendcell.context));
             row.appendChild(defendcell);
 
-            //区域
-            var regioncell=document.createElement("td");
-            regioncell.context=userlist[i].regionID;
-            regioncell.appendChild(document.createTextNode(regioncell.context));
-            row.appendChild(regioncell);
-
             //注册日期
             var regiserday=document.createElement("td");
-            regiserday.context=userlist[i].regiserday;
+            var time=userlist[i].regiserday
+            regiserday.context=formatDateTime(time);
             regiserday.appendChild(document.createTextNode(regiserday.context));
             row.appendChild(regiserday);
 
             document.getElementById("userlist").appendChild(row);
         }
+    }
+    function myTime(date){
+        var arr=date.split("T");
+        var d=arr[0];
+        var darr = d.split('-');
+        var t=arr[1];
+        var tarr = t.split('.000');
+        var marr = tarr[0].split(':');
+        var dd = parseInt(darr[0])+"/"+parseInt(darr[1])+"/"+parseInt(darr[2])+" "+parseInt(marr[0])+":"+parseInt(marr[1])+":"+parseInt(marr[2]);
+        return dd;
+    }
+    // 数字补0操作
+    function  addZero(num) {
+        return num < 10 ? '0' + num : num;
+    } 
+
+    function formatDateTime (date) {
+        var time = new Date(Date.parse(date));
+        time.setTime(time.setHours(time.getHours() + 8));
+        var Y = time.getFullYear() + '-';
+        var  M = this.addZero(time.getMonth() + 1) + '-';
+        var D = this.addZero(time.getDate()) + ' ';
+        var h = this.addZero(time.getHours()) + ':';
+        var m = this.addZero(time.getMinutes()) + ':';
+        var  s = this.addZero(time.getSeconds());
+        return Y + M + D +" "+ h + m + s;
     }
 </script>
 </body>

@@ -1,6 +1,6 @@
 package com.xxx.demo.Service;
 
-import com.xxx.demo.Entity.Device;
+import com.xxx.demo.Entity.Bike;
 import com.xxx.demo.Entity.Record;
 import com.xxx.demo.Repository.DeviceRepository;
 import com.xxx.demo.Repository.RecordRepository;
@@ -16,27 +16,27 @@ public class DeviceService {
     @Autowired
     DeviceRepository deviceRepository;
 
-    public List<Device> getdevicelist (){
-        List<Device> deviceList= deviceRepository.getdevicelist();
+    public List<Bike> getdevicelist (){
+        List<Bike> deviceList= deviceRepository.getdevicelist();
         return deviceList;
     }
 
-    public List<Device> getdevicelistbystatus (String status){
-        List<Device> deviceList= deviceRepository.getdevicelistbystatus(status);
+    public List<Bike> getdevicelistbystatus (String status){
+        List<Bike> deviceList= deviceRepository.getdevicelistbystatus(status);
         return deviceList;
     }
 
-    public boolean createdevice(String devicenum,String devicetype,String devicestatus,double devicelat,double devicelng,String deviceaddress,String regionID,String defposID,String IP){
+    public boolean createdevice(String devicenum,String devicetype,String devicestatus,double devicelat,double devicelng,String deviceaddress,String regionID,String IP){
         try {
-            deviceRepository.createdevice(devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,IP);
+            deviceRepository.createdevice(devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,IP);
             return true;
         }catch (Exception e){
             return false;
         }
     }
-    public Device createdevice0(String devicenum,String devicetype,String devicestatus,double devicelat,double devicelng,String deviceaddress,String regionID,String defposID,String IP){
+    public Bike createdevice0(String devicenum,String devicetype,String devicestatus,double devicelat,double devicelng,String deviceaddress,String regionID,String defposID,String IP){
         try {
-            Device a=new Device();
+            Bike a=new Bike();
             a.setDevicenum(devicenum);
             a.setDevicetype(devicetype);
             a.setDevicestatus(devicestatus);
@@ -44,7 +44,6 @@ public class DeviceService {
             a.setDevicelng(devicelng);
             a.setDeviceaddress(deviceaddress);
             a.setRegionID(regionID);
-            a.setDefposID(defposID);
             return deviceRepository.save(a);
         }catch (Exception e){
             return null;
@@ -55,9 +54,9 @@ public class DeviceService {
         deviceRepository.deleteById(deviceID);
     }
 
-    public boolean modifydevice(int deviceID,String devicenum,String devicetype,String devicestatus,double devicelat,double devicelng,String deviceaddress,String regionID,String defposID,String IP){
+    public boolean modifydevice(int deviceID,String devicenum,String devicetype,String devicestatus,double devicelat,double devicelng,String deviceaddress,String regionID,String IP){
         try {
-            deviceRepository.modifydevice(deviceID,devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,defposID,IP);
+            deviceRepository.modifydevice(deviceID,devicenum,devicetype,devicestatus,devicelat,devicelng,deviceaddress,regionID,IP);
             return true;
         }catch (Exception e){
             return false;
@@ -73,17 +72,43 @@ public class DeviceService {
         }
     }
 
-    public List<Device> check(String devicenum){
-        List<Device> list=deviceRepository.check(devicenum);
+    public List<Bike> check(String devicenum){
+        List<Bike> list=deviceRepository.check(devicenum);
         return list;
     }
-    public List<Device> searchbynum(String devicenum){
-        List<Device> a=deviceRepository.check(devicenum);
+    public List<Bike> searchbynum(String devicenum){
+        List<Bike> a=deviceRepository.check(devicenum);
         return a;
     }
-
     public void deleteall(){
         deviceRepository.deleteAll();
     }
 
+    public void dos(){
+        List<Bike> a=deviceRepository.check("MT001");
+        double lx=38.759973308405215,rx=41.24086437044588,ly=115.02935726630257,ry=117.75076150839774;
+        double lat=a.get(0).getDevicelat();
+        double lng=a.get(0).getDevicelng();
+        double x=lat+0.3/(int)((Math.random()-0.5)*10+1);
+        double y=lng+0.3/(int)((Math.random()-0.5)*10+1);
+        if(x>lx && x<rx && y>ly && y<ry) {
+            deviceRepository.updatelat("MT001", x, y);
+        }
+        a=deviceRepository.check("MT019");
+        lat=a.get(0).getDevicelat();
+        lng=a.get(0).getDevicelng();
+        x=lat+0.3/(int)((Math.random()-0.5)*10+1);
+        y=lng+0.3/(int)((Math.random()-0.5)*10+1);
+        if(x>lx && x<rx && y>ly && y<ry) {
+            deviceRepository.updatelat("MT019",x,y);
+        }
+        a=deviceRepository.check("MT020");
+        lat=a.get(0).getDevicelat();
+        lng=a.get(0).getDevicelng();
+        x=lat+0.3/(int)((Math.random()-0.5)*10+1);
+        y=lng+0.3/(int)((Math.random()-0.5)*10+1);
+        if(x>lx && x<rx && y>ly && y<ry) {
+            deviceRepository.updatelat("MT020",x,y);
+        }
+    }
 }

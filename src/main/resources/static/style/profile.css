@@ -1,0 +1,16 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+	background-image: url(../res/background.png);
+	background-repeat:no-repeat;
+  	background-attachment:fixed;
+	background-size: cover;
+	background-position: left;
+	
+}
+#up{
+	margin-left: calc(40%);
+	margin-top: 60px;
+	font-size: 20px;
+	font-family: "幼圆"；
+}

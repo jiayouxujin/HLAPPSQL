@@ -123,7 +123,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="recordlist">
+                    <a href="repairlist">
                         <i class="fa fa-wrench"></i> <span>维修记录</span>
                     </a>
                 </li>
@@ -132,6 +132,11 @@
                         <i class="fa fa-th"></i> <span>用户管理</span>
                     </a>
                 </li>
+                <li>
+                        <a href="start">
+                            <i class="fa fa-th"></i> <span>用户Demo</span>
+                        </a>
+                    </li>
             </ul>
         </section>
         <!-- /.sidebar -->
@@ -175,7 +180,8 @@
                                     <th>单车编号</th>
                                     <th>单车类型</th>
                                     <th>单车地点</th>
-                                    <th>区域</th>
+                                    <th>正在使用用户</th>
+                                    <th>上次使用用户</th>
                                     <th>运行状态</th>
                                 </tr>
                                 <tbody id="devicelist"></tbody>
@@ -226,10 +232,12 @@
     window.onload=init();
 
     var devicelist=[];
+    var userlist=["bike","suedr","simple","complex","solution","tony","tom","jerystar","niko","zous","paris","complex","solution","tony","tom","jerystar","niko","zous","paris","bike","suedr","simple","complex","solution","tony","tom","jerystar"];
+    var userlist2=["niko","zous","paris","bike","suedr","simple","complex","complex","solution","tony","tom","jerystar","niko","zous","paris","bike","suedr","simple","complex","solution","tony","solution","tony","tom","jerystar","tom","jerystar"];
     //初始化函数
     function init() {
         $.ajax({
-            url:"http://47.100.107.158:8080/api/device/getdevicelist",
+            url:"http://47.100.107.158:80/api/bike/getdevicelist",
             type:"GET",
             data:"",
             contentType:false
@@ -302,12 +310,18 @@
             deviceaddresscell.appendChild(document.createTextNode(deviceaddresscell.context));
             row.appendChild(deviceaddresscell);
 
-            //区域
+            //正在使用用户
             var regionidcell=document.createElement("td");
-            regionidcell.context=devicelist[i].regionID;
+            if(devicelist[i].devicestatus=="正常运转") regionidcell.context=userlist[i];
+            else regionidcell.context="---";
             regionidcell.appendChild(document.createTextNode(regionidcell.context));
             row.appendChild(regionidcell);
-
+            
+            //上次使用用户
+            var regionidcell=document.createElement("td");
+            regionidcell.context=userlist2[i];
+            regionidcell.appendChild(document.createTextNode(regionidcell.context));
+            row.appendChild(regionidcell);
 
             //状态
             var devicestatuscell=document.createElement("td");
