@@ -174,7 +174,7 @@
     <!-- /.content-wrapper -->
     <div id="adddevice" class="add_note_icon" data-toggle="modal" data-target="#modal-device" style="display: block" onclick="editInfo(this)">
     </div>
-    <div id="confirmaddress" class="list_note_icon" data-toggle="modal" data-target="#modal-device" style="display: none;"onclick="changepage()">
+    <div id="confirmaddress" class="confirm_address_icon" data-toggle="modal" data-target="#modal-device" style="display: none;"onclick="changepage()">
     </div>
 </div>
 <!-- ./wrapper -->
@@ -226,8 +226,8 @@
 
                             <div class="form-group">
                                 <label >设备地点</label>
+                                <button type="button" class="btn btn-primary" style="float:right;"onclick="chooseaddress()">选择</button>
                                 <input id="deviceaddress" type="text" class="form-control" placeholder="设备地点">
-                                <button type="button" class="btn btn-primary" style="float:right;margin-top: 5px; margin-bottom: 5px;"onclick="chooseaddress()">选择</button>
                             </div>
 
                             <div class="form-group">
