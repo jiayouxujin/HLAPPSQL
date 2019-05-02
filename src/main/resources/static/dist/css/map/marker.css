@@ -28,9 +28,7 @@
     width:40px;
     top:24px;
     left:20px;
-    box-shadow:0 10px #333, 0 20px #333, 0 30px #333;
-    -webkit-box-shadow:0 10px #333, 0 20px #333, 0 30px #333;
-    -moz-box-shadow:0 10px #333, 0 20px #333, 0 30px #333;
+
 }
 
 /** 右下角跳转按钮 跳转到添加页 */
@@ -78,4 +76,7 @@
     left: 12px;
     top: 39px;
 }
+
+
+/*打钩 */
 
