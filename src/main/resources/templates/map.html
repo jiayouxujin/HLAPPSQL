@@ -237,8 +237,8 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
-                <button type="submit" class="btn btn-success" style="margin-right: auto" onclick="confirmAddDevice()">确认</button>
-                <button type="submit" class="btn btn-primary"style="float:right;" onclick="generateDevices()">生成</button>
+                <button class="btn btn-success" style="margin-right: auto" onclick="confirmAddDevice()">确认</button>
+                <button  class="btn btn-primary"style="float:right;" onclick="generateDevices()">生成</button>
             </div>
             <!-- /.box-footer -->
         </form>
@@ -253,17 +253,23 @@
         <!-- /.box-header -->
         <!-- form start -->
         <form class="form-horizontal">
-            <div class="box-body" style="width: auto;">
+            <div id="operationtable" class="box-body" style="width: auto;overflow: scroll;height: auto">
                 <div class="form-group">
-                    <label class="col-sm-4">记录</label>
-                    <div class="col-sm-8">
-
+                    <div class="col-sm-12">
+                        <table class="table table-hover">
+                            <tr>
+                                <th>ID</th>
+                                <th>操作时间</th>
+                                <th>设备ID</th>
+                            </tr>
+                            <tbody id="operationRecord" ></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
-                <button type="submit" class="btn btn-danger" style="float: right" onclick="undoOperation()" >撤销操作</button>
+                <button  class="btn btn-danger" style="float: right" onclick="undoOperation()" >删除</button>
             </div>
             <!-- /.box-footer -->
         </form>
@@ -284,6 +290,8 @@
 <script src="../static/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../static/dist/js/demo.js"></script>
+<!--时间格式-->
+<script src="../static/dist/js/timeformat.js"></script>
 <script>
     var lnglatXY,imgsize,imgpixel,index,premarker;
     //device sets
@@ -295,6 +303,7 @@
     var num2device = new HashMap();//创建一个HashMap对象
     //定义icon
 
+    var operationlist;  //表示操作记录用来做撤销
     //新建设备的经纬度
     var devicelat,devicelng;
     var listener;
@@ -694,6 +703,8 @@
     
     // 批量添加设备的按钮点击事件
     function batchAdd() {
+        //先将记录页面关掉
+        setbtnnone("checkRecordForm");
         setbtnblock("addDeviceForm");
     }
 
@@ -714,17 +725,112 @@
 
     //查看历史记录的按钮点击事件
     function checkRecord() {
-        setbtnblock("checkRecordForm");
-    }
-    //关掉历史记录表格
-    function closeRecordForm() {
-        setbtnnone("checkRecordForm");
-    }
 
-    //撤销操作按钮
-    function undoOperation() {
-        alert("撤销操作");
+        //将批量添加页面关掉
+        setbtnnone("addDeviceForm");
+        //先把表格显示出来
+        setbtnblock("checkRecordForm");
+        operationlist=[];
+        //请求数据
+        $.ajax({
+            url:"http://localhost:8080/api/operation/getoperationlist",
+            type:"GET",
+            data:"",
+            contentType:false
+        }).done(function (resp) {
+            operationlist=eval(resp.data);
+            if (operationlist.length) createtable();
+        }).fail(function (err) {
+            alert("服务器无响应");
+        });
+
+
     }
+        //关掉历史记录表格
+        function closeRecordForm() {
+            setbtnnone("checkRecordForm");
+        }
+
+
+        //撤销操作按钮
+        function undoOperation() {
+            var operationID;
+            $("input:radio").each(function () {
+                if(this.checked) {
+                    operationID=$(this).val();
+                }
+            });
+            $.ajax({
+                url: "http://localhost:8080/api/operation/deleteoperation",
+                type: "POST",
+                data: {
+                    "operationID":operationID
+                }
+            }).done(function(resp) {
+                if(resp.message == "SUCCESS"){
+                    checkRecord();
+                }else{
+                    alert("删除失败");
+                }
+            }).fail(function(err) {
+                alert("服务器无响应");
+            });
+        }
+
+        function createtable() {
+            //判断operationlist的长度
+            if(operationlist.length>4){
+                //设置表格的固定宽度
+                document.getElementById("operationtable").style.height="230px";
+            }
+            //清空表格
+            $("#operationRecord").html("");
+            for (var i in operationlist) {
+                if (operationlist[i] == undefined) continue;
+                var row = document.createElement("tr");
+                if (i) {
+                    row.id = i;
+                }
+                else {
+                    row.id = 0;
+                }
+                //ID
+                var operationidcell = document.createElement("td");
+                operationidcell.context = operationlist[i].operationID;
+                operationidcell.appendChild(document.createTextNode(operationidcell.context));
+                row.appendChild(operationidcell);
+
+                //时间
+                var generationday = document.createElement("td");
+                var time = myTime(operationlist[i].operationday);
+                generationday.appendChild(document.createTextNode(formatDateTime(time)));
+                row.appendChild(generationday);
+
+                console.log(operationlist[i].deviceidList);
+
+                //设备编号列表
+                var deviceidlist = document.createElement("td");
+                deviceidlist.context = operationlist[i].deviceidList;
+                deviceidlist.appendChild(document.createTextNode(deviceidlist.context));
+                row.appendChild(deviceidlist);
+
+                //初始化先把optionsRadios放在这 并且设置不可见
+                var choosedevicecell = document.createElement("td");
+                choosedevicecell.innerHTML = " <input type=\"radio\" name=\"optionsRadios\">";
+                row.appendChild(choosedevicecell);
+
+                document.getElementById("operationRecord").appendChild(row);
+
+                //将选择框value设为Id
+                var i = 0;
+                $("input[name='optionsRadios']").each(function () {
+                    $(this).attr("value", operationlist[i].operationID);
+                    i++;
+                });
+            }
+        }
+
+
 </script>
 </body>
 </html>
