@@ -3,129 +3,146 @@
     border-radius: 15px;
 }
 
-/** 右下角跳转按钮 跳转到列表 */
-.list_note_icon
+/*!** 右下角跳转按钮 跳转到列表 *!*/
+/*.list_note_icon*/
+/*{*/
+    /*position: fixed;*/
+    /*bottom: 10%;*/
+    /*right: 8%;*/
+    /*z-index: 888;*/
+    /*background: #ff9900;*/
+    /*width: 80px;*/
+    /*height: 80px;*/
+    /*border-radius: 40px;*/
+    /*box-shadow: 2px 2px 2px #888888;*/
+    /*opacity:0.7 ;*/
+/*}*/
+
+/*.list_note_icon:before*/
+/*{*/
+    /*content: "";*/
+    /*display:block;*/
+    /*background:#333;*/
+    /*position:absolute;*/
+    /*height:3px;*/
+    /*width:40px;*/
+    /*top:24px;*/
+    /*left:20px;*/
+    /*border-bottom: 2px solid #aaaaaa;*/
+    /*border-right: 2px solid #aaaaaa;*/
+
+/*}*/
+
+/*!** 右下角跳转按钮 跳转到添加页 *!*/
+/*.add_note_icon*/
+/*{*/
+    /*position: fixed;*/
+    /*bottom: 10%;*/
+    /*right: 8%;*/
+    /*z-index: 888;*/
+    /*background: #3c8dbc;*/
+    /*width: 80px;*/
+    /*height: 80px;*/
+    /*border-radius: 40px;*/
+    /*box-shadow: 2px 2px 2px #888888;*/
+    /*opacity:0.7 ;*/
+/*}*/
+
+/*.add_note_icon:before*/
+/*{*/
+    /*content: "";*/
+    /*display:block;*/
+    /*background:#333;*/
+    /*position:absolute;*/
+/*}*/
+
+ /*.add_note_icon:after*/
+/*{*/
+    /*content: "";*/
+    /*display:block;*/
+    /*background:#333;*/
+    /*position:absolute;*/
+/*}*/
+/*.add_note_icon:before*/
+/*{*/
+    /*width: 2px;*/
+    /*height: 56px;*/
+    /*left: 39px;*/
+    /*top: 12px;*/
+/*}*/
+
+/*.add_note_icon:after*/
+/*{*/
+    /*width: 56px;*/
+    /*height: 2px;*/
+    /*left: 12px;*/
+    /*top: 39px;*/
+/*}*/
+
+
+/*!*打钩 *!*/
+
+/*.confirm_address_icon*/
+/*{*/
+    /*position: fixed;*/
+    /*bottom: 10%;*/
+    /*right: 8%;*/
+    /*z-index: 888;*/
+    /*background: #00a65a;*/
+    /*width: 80px;*/
+    /*height: 80px;*/
+    /*border-radius: 40px;*/
+    /*box-shadow: 2px 2px 2px #888888;*/
+    /*opacity:0.7 ;*/
+    /*-webkit-transform: rotate(45deg);*/
+    /*-moz-transform: rotate(45deg);*/
+    /*transform: rotate(45deg);*/
+/*}*/
+
+/*.confirm_address_icon:before*/
+/*{*/
+    /*content: "";*/
+    /*display:block;*/
+    /*background:#333;*/
+    /*position:absolute;*/
+/*}*/
+
+/*.confirm_address_icon:after*/
+/*{*/
+    /*content: "";*/
+    /*display:block;*/
+    /*background:#333;*/
+    /*position:absolute;*/
+/*}*/
+/*.confirm_address_icon:before*/
+/*{*/
+    /*width: 2px;*/
+    /*height: 56px;*/
+    /*left: 50px;*/
+    /*top: 8px;*/
+/*}*/
+
+/*.confirm_address_icon:after*/
+/*{*/
+    /*width: 28px;*/
+    /*height: 2px;*/
+    /*left: 23px;*/
+    /*top: 64px;*/
+/*}*/
+
+
+.batch-add
 {
     position: fixed;
     bottom: 10%;
-    right: 8%;
-    z-index: 888;
-    background: #ff9900;
-    width: 80px;
-    height: 80px;
-    border-radius: 40px;
-    box-shadow: 2px 2px 2px #888888;
-    opacity:0.7 ;
+    right: 3%;
+    width: auto;
 }
 
-.list_note_icon:before
-{
-    content: "";
-    display:block;
-    background:#333;
-    position:absolute;
-    height:3px;
-    width:40px;
-    top:24px;
-    left:20px;
-    border-bottom: 2px solid #aaaaaa;
-    border-right: 2px solid #aaaaaa;
-
-}
-
-/** 右下角跳转按钮 跳转到添加页 */
-.add_note_icon
+.check-record
 {
     position: fixed;
     bottom: 10%;
-    right: 8%;
-    z-index: 888;
-    background: #3c8dbc;
-    width: 80px;
-    height: 80px;
-    border-radius: 40px;
-    box-shadow: 2px 2px 2px #888888;
-    opacity:0.7 ;
-}
-
-.add_note_icon:before
-{
-    content: "";
-    display:block;
-    background:#333;
-    position:absolute;
-}
-
- .add_note_icon:after
-{
-    content: "";
-    display:block;
-    background:#333;
-    position:absolute;
-}
-.add_note_icon:before
-{
-    width: 2px;
-    height: 56px;
-    left: 39px;
-    top: 12px;
-}
-
-.add_note_icon:after
-{
-    width: 56px;
-    height: 2px;
-    left: 12px;
-    top: 39px;
-}
-
-
-/*打钩 */
-
-.confirm_address_icon
-{
-    position: fixed;
-    bottom: 10%;
-    right: 8%;
-    z-index: 888;
-    background: #00a65a;
-    width: 80px;
-    height: 80px;
-    border-radius: 40px;
-    box-shadow: 2px 2px 2px #888888;
-    opacity:0.7 ;
-    -webkit-transform: rotate(45deg);
-    -moz-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
-
-.confirm_address_icon:before
-{
-    content: "";
-    display:block;
-    background:#333;
-    position:absolute;
-}
-
-.confirm_address_icon:after
-{
-    content: "";
-    display:block;
-    background:#333;
-    position:absolute;
-}
-.confirm_address_icon:before
-{
-    width: 2px;
-    height: 56px;
-    left: 50px;
-    top: 8px;
-}
-
-.confirm_address_icon:after
-{
-    width: 28px;
-    height: 2px;
-    left: 23px;
-    top: 64px;
+    right: 3%;
+    width: auto;
 }

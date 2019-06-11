@@ -71,6 +71,14 @@
 
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
+                    <li>
+                      <a onclick="batchAdd()">批量添加</a>
+                    </li>
+                     <li>
+                       <a onclick="checkRecord()">查看历史记录</a>
+                    </li>
+
+
                     <!-- User Account: style can be found in dropdown.less -->
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -166,91 +174,103 @@
             <div id="container">
                 <div>
                     <input id="search" class="form-control input-style" placeholder="输入关键字搜索位置" value=""/>
+
                 </div>
             </div>
         </section>
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <div id="adddevice" class="add_note_icon" data-toggle="modal" data-target="#modal-device" style="display: block" onclick="editInfo(this)">
-    </div>
-    <div id="confirmaddress" class="confirm_address_icon" data-toggle="modal" data-target="#modal-device" style="display: none;"onclick="changepage()">
-    </div>
-</div>
-<!-- ./wrapper -->
-<div class="modal fade" id="modal-device">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closemodal()">
-                    <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">设备详情</h4>
-            </div>
-            <div class="modal-body">
-                <!-- general form elements disabled -->
-                <div class="box box-primary">
-                    <div class="box-body">
-                        <form role="form" name="device_form"  method="post">
-                            <!-- text input -->
-                            <div class="form-group">
-                                <label>设备编号</label>
-                                <input id="devicenum" type="text" class="form-control" placeholder="设备编号">
-                            </div>
+    <!--批量添加设备的表格-->
+    <div id="addDeviceForm" class="box box-info batch-add" style="display: none;">
+        <div class="box-header with-border">
+            <h3 class="box-title">添加设备</h3>
+            <button type="button" class="btn btn-box-tool"style="float: right" onclick="closeDeviceForm()"><i class="fa fa-times"></i></button>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+        <form class="form-horizontal">
+            <div class="box-body" style="width: auto;">
+                <div class="form-group">
+                    <label  class="col-sm-4 control-label">类型</label>
 
-                            <div class="form-group">
-                                <label>设备类型</label>
-                                <select id="devicetype" class="form-control">
-                                    <option>振动传感</option>
-                                    <option>监控</option>
-                                    <option>雷达</option>
-                                </select>
-                            </div>
-                            <!-- select -->
-                            <div class="form-group">
-                                <label>所在区域</label>
-                                <select id="regionID" class="form-control">
-                                    <option>区域一</option>
-                                    <option>区域二</option>
-                                    <option>区域三</option>
-                                </select>
-                            </div>
-                            <!-- select -->
-                            <div class="form-group">
-                                <label>所属防区</label>
-                                <select id="defposID" class="form-control">
-                                    <option>防区一</option>
-                                    <option>防区二</option>
-                                    <option>防区三</option>
-                                </select>
-                            </div>
+                    <div class="col-sm-8">
+                        <select id="devicetype" class="form-control">
+                            <option>振动传感</option>
+                            <option>监控</option>
+                            <option>雷达</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- select -->
 
-                            <div class="form-group">
-                                <label >设备地点</label>
-                                <button type="button" class="btn btn-primary" style="float:right;"onclick="chooseaddress()">选择</button>
-                                <input id="deviceaddress" type="text" class="form-control" placeholder="设备地点">
-                            </div>
+                <div class="form-group">
+                    <label  class="col-sm-4 control-label">区域</label>
 
-                            <div class="form-group">
-                                <label>IP地址</label>
-                                <input id="deviceIP" type="text" class="form-control" placeholder="IP地址">
-                            </div>
+                    <div class="col-sm-8">
+                        <select id="regionID" class="form-control">
+                            <option>区域一</option>
+                            <option>区域二</option>
+                            <option>区域三</option>
+                        </select>
+                    </select>
+                </div>
+                </div>
+                <!-- select -->
+                <div class="form-group">
+                    <label  class="col-sm-4 control-label">防区</label>
+                    <div class="col-sm-8">
+                        <select id="defposID" class="form-control">
+                            <option>防区一</option>
+                            <option>防区二</option>
+                            <option>防区三</option>
+                        </select>
+                    </div>
+                </div>
 
-                            <!-- /.box-body -->
-                        </form>
+                <div class="form-group">
+                    <label  class="col-sm-4 control-label">数量</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" placeholder="设备数量">
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="closemodal()">Close</button>
-                <button type="button" class="btn btn-primary" onclick="neworchangedevice()">提交</button>
+            <!-- /.box-body -->
+            <div class="box-footer">
+                <button type="submit" class="btn btn-success" style="margin-right: auto" onclick="confirmAddDevice()">确认</button>
+                <button type="submit" class="btn btn-primary"style="float:right;" onclick="generateDevices()">生成</button>
             </div>
-        </div>
-        <!-- /.modal-content -->
+            <!-- /.box-footer -->
+        </form>
     </div>
-    <!-- /.modal-dialog -->
-</div>
 
-<!--悬浮按钮-->
+    <!--查看历史记录的表格-->
+    <div id="checkRecordForm" class="box box-info check-record" style="display: none;">
+        <div class="box-header with-border">
+            <h3 class="box-title">查看历史记录</h3>
+            <button type="button" class="btn btn-box-tool"style="float: right" onclick="closeRecordForm()"><i class="fa fa-times"></i></button>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+        <form class="form-horizontal">
+            <div class="box-body" style="width: auto;">
+                <div class="form-group">
+                    <label class="col-sm-4">记录</label>
+                    <div class="col-sm-8">
+
+                    </div>
+                </div>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+                <button type="submit" class="btn btn-danger" style="float: right" onclick="undoOperation()" >撤销操作</button>
+            </div>
+            <!-- /.box-footer -->
+        </form>
+    </div>
+</div>
+<!-- ./wrapper -->
+
 
 <!-- jQuery 3 -->
 <script src="../static/bower_components/jquery/dist/jquery.min.js"></script>
@@ -670,6 +690,40 @@
         //设置按钮可见
         setbtnblock("adddevice");
 
+    }
+    
+    // 批量添加设备的按钮点击事件
+    function batchAdd() {
+        setbtnblock("addDeviceForm");
+    }
+
+    //关掉批量添加表格
+    function closeDeviceForm() {
+        setbtnnone("addDeviceForm")
+    }
+
+    //确认添加设备
+    function confirmAddDevice() {
+        alert("确认添加设备");
+    }
+
+    //生成设备按钮
+    function generateDevices() {
+        alert("生成设备按钮");
+    }
+
+    //查看历史记录的按钮点击事件
+    function checkRecord() {
+        setbtnblock("checkRecordForm");
+    }
+    //关掉历史记录表格
+    function closeRecordForm() {
+        setbtnnone("checkRecordForm");
+    }
+
+    //撤销操作按钮
+    function undoOperation() {
+        alert("撤销操作");
     }
 </script>
 </body>
