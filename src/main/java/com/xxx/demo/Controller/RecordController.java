@@ -132,6 +132,11 @@ public class RecordController {
         return genSuccessResult(true);
     }
 
+    @PostMapping("/api/record/deletesome")
+    public Response deleteSome(@RequestParam(value = "recordID[]") int recordID[]){
+        recordService.deleteSome(recordID);
+        return genSuccessResult(true);
+    }
     @PostMapping("/api/record/updatestatus")
     public Response updateStatus (@RequestParam int recordID,@RequestParam int userID,@RequestParam String username,@RequestParam String title,@RequestParam String context,@RequestParam String status){
         try {

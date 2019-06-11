@@ -72,10 +72,10 @@
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
                     <li>
-                      <a onclick="batchAdd()">批量添加</a>
+                      <a href="#" onclick="batchAdd()">批量添加</a>
                     </li>
                      <li>
-                       <a onclick="checkRecord()">查看历史记录</a>
+                       <a href="#" onclick="checkRecord()">查看历史记录</a>
                     </li>
 
 
@@ -189,7 +189,7 @@
         </div>
         <!-- /.box-header -->
         <!-- form start -->
-        <form class="form-horizontal">
+        <div class="form-horizontal">
             <div class="box-body" style="width: auto;">
                 <div class="form-group">
                     <label  class="col-sm-4 control-label">类型</label>
@@ -241,7 +241,7 @@
                 <button  class="btn btn-primary"style="float:right;" onclick="generateDevices()">生成</button>
             </div>
             <!-- /.box-footer -->
-        </form>
+        </div>
     </div>
 
     <!--查看历史记录的表格-->
@@ -252,7 +252,7 @@
         </div>
         <!-- /.box-header -->
         <!-- form start -->
-        <form class="form-horizontal">
+        <div class="form-horizontal">
             <div id="operationtable" class="box-body" style="width: auto;overflow: scroll;height: auto">
                 <div class="form-group">
                     <div class="col-sm-12">
@@ -272,7 +272,7 @@
                 <button  class="btn btn-danger" style="float: right" onclick="undoOperation()" >删除</button>
             </div>
             <!-- /.box-footer -->
-        </form>
+        </div>
     </div>
 </div>
 <!-- ./wrapper -->
@@ -295,7 +295,7 @@
 <script>
     var lnglatXY,imgsize,imgpixel,index,premarker;
     //device sets
-    var cameralist=[],sensorlist=[],radarlist=[],devicelist=[];
+    var cameralist=[],sensorlist=[],radarlist=[];
     //marker sets
     var cameramarkers=[],radarmarkers=[],sensormarkers=[],devicemarkers=[];
     //hashmap
@@ -304,6 +304,13 @@
     //定义icon
 
     var operationlist;  //表示操作记录用来做撤销
+
+    var deviceidlist=[]; //用来存储删除的deviceid
+
+    var recordidlist=[];  //用来存储删除的recordid
+
+    var recordlist;
+    var tempdevicelist;
     //新建设备的经纬度
     var devicelat,devicelng;
     var listener;
@@ -366,6 +373,7 @@
              var data=eval(resp.data);
              for(var i in data){
                  devicelist.push(data[i]);
+                 tempdevicelist.push(data[i]);
              }
              map.clearMap();
              cameralist=[],sensorlist=[],radarlist=[];
@@ -754,17 +762,52 @@
 
         //撤销操作按钮
         function undoOperation() {
+
             var operationID;
+            deviceidlist=[];
+            recordidlist=[];
             $("input:radio").each(function () {
                 if(this.checked) {
                     operationID=$(this).val();
                 }
             });
-            $.ajax({
+
+            //对operationID里面的deviceidlist形成一个数组
+            for (var i in operationlist){
+                if (operationlist[i].operationID==operationID){
+                    var strs=operationlist[i].deviceidList.split(",");
+                    for(var i=0;i<strs.length;i++){
+                        deviceidlist.push(strs[i]);
+                    }
+                }
+            }
+            //对deviceidlist中存在的deviceid遍历recordlist形成一个数组
+            //得到devicelist
+               getdevicelist();
+            //得到recordlist
+                getrecordlist();
+            console.log(deviceidlist);
+            console.log(tempdevicelist);
+                for (var j in deviceidlist){
+                    for(var k in tempdevicelist){
+                        if (deviceidlist[j]==tempdevicelist[k].deviceID){
+                            console.log("运行到这里");
+                            var tempdevicenum=tempdevicelist[k].devicenum;
+                            for(var i in recordlist){
+                                if(recordlist[i].devicenum==tempdevicenum){
+                                    recordidlist.push(recordlist[i].recordID);
+                                }
+                            }
+                        }
+                    }
+                }
+           /* $.ajax({
                 url: "http://localhost:8080/api/operation/deleteoperation",
                 type: "POST",
                 data: {
-                    "operationID":operationID
+                    "operationID":operationID,
+                    "deviceID":deviceidlist,
+                    "recordID":recordidlist
                 }
             }).done(function(resp) {
                 if(resp.message == "SUCCESS"){
@@ -774,7 +817,7 @@
                 }
             }).fail(function(err) {
                 alert("服务器无响应");
-            });
+            });*/
         }
 
         function createtable() {
@@ -806,8 +849,6 @@
                 generationday.appendChild(document.createTextNode(formatDateTime(time)));
                 row.appendChild(generationday);
 
-                console.log(operationlist[i].deviceidList);
-
                 //设备编号列表
                 var deviceidlist = document.createElement("td");
                 deviceidlist.context = operationlist[i].deviceidList;
@@ -830,6 +871,18 @@
             }
         }
 
+        function getrecordlist() {
+            $.ajax({
+                url: "http://47.100.107.158:8080/api/record/getrecordlist",
+                type: "GET",
+                data: "",
+                contentType: false   // 告诉jQuery不要去设置Content-Type请求头
+            }).done(function(resp) {
+                recordlist=eval(resp.data);
+            }).fail(function(err) {
+                alert("服务器无响应");
+            });
+        }
 
 </script>
 </body>

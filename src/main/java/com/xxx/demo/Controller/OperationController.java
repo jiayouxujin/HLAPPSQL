@@ -58,9 +58,15 @@ public class OperationController {
     }
 
     @PostMapping("/api/operation/deleteoperation")
-    public Response deleteSome(@RequestParam int operationID){
+    public Response deleteSome(@RequestParam int operationID,@RequestParam(value = "deviceID[]") int []deviceID,@RequestParam(value = "recordID[]") int []recordID){
         try{
             operationService.deleteOperation(operationID);//删除操作记录
+            if (deviceID.length!=0){
+                deviceService.deletesome(deviceID);
+            }
+            if(recordID.length!=0){
+                recordService.deleteSome(recordID);
+            }
             return genSuccessResult(true);
         }catch (Exception e){
             return genFailResult("删除操作记录失败");

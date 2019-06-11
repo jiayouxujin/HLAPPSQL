@@ -76,6 +76,11 @@ public class RecordService {
         }
     }
 
+    public void deleteSome(int []recordID){
+        for(int i=0;i<recordID.length;i++){
+            recordRepository.deleteById(recordID[i]);
+        }
+    }
     public void deleteall(){
         recordRepository.deleteAll();
     }
