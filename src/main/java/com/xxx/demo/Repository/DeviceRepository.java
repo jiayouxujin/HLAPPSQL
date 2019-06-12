@@ -43,4 +43,7 @@ public interface DeviceRepository extends JpaRepository<Device,Integer> {
     @Query(value = "SELECT * from device where device_num=?1",nativeQuery = true)
     public List<Device> check(String devicenum);
 
+    @Query(value = "SELECT * from device where device_id=?1",nativeQuery = true)
+    public Device searchDeviceByID(int deviceID);
+
 }

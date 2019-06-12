@@ -100,14 +100,39 @@ public class DeviceController {
 
     @PostMapping("/api/device/deletedevice")
     public Response deleteDevice(@RequestParam int deviceID){
+        Device device=deviceService.getDeviceBydeviceID(deviceID);
         deviceService.deletedevice(deviceID);
+        //先得到recordlist
+        List<Record> recordList=recordService.searchAllDeviceRecord();
+        int []recordidlist = new int[0];
+        int j=0;
+        //遍历得到recoridlist
+        for (int i=0;i<recordList.size();i++){
+            if(recordList.get(i).getDevicenum().equals(device.getDevicenum())){
+                recordidlist[j++]=recordList.get(i).getRecordID();
+            }
+        }
+        recordService.deleteSome(recordidlist);
         new DeviceThread().start();
         return genSuccessResult(true);
     }
     
     @PostMapping("/api/device/deletesome")
     public Response deletesome(@RequestParam(value = "deviceID[]") int []deviceID){
+        List<Record> recordList=recordService.searchAllDeviceRecord();
+        int []recordidlist=new int[deviceID.length*4];
+        int k=0;
+        for(int i=0;i<deviceID.length;i++){
+            Device device=deviceService.getDeviceBydeviceID(deviceID[i]);
+            for(int j=0;j<recordList.size();j++){
+                if(recordList.get(j).getDevicenum().equals(device.getDevicenum())){
+                    recordidlist[k++]=recordList.get(i).getRecordID();
+                }
+            }
+        }
+
         deviceService.deletesome(deviceID);
+        recordService.deleteSome(recordidlist);
         new DeviceThread().start();
         return genSuccessResult(true);
     }

@@ -31,6 +31,10 @@ public interface RecordRepository extends JpaRepository<Record,Integer> {
     @Query(value = "SELECT * from record where record_num=?1",nativeQuery = true)
     public List<Record> check(String recordnum);
 
+
+    @Query(value = "SELECT * from record where record_id=?1",nativeQuery = true)
+    public Record searchRecordByID(int recordID);
+
     @Transactional
     @Modifying
     @Query (value = "insert into record set device_num=?1,device_type=?2,device_status=?3,device_lat=?4,device_lng=?5,device_address=?6,region_id=?7,defpos_id=?8,record_time=?9,record_num=?10,record_status=?11",nativeQuery = true)

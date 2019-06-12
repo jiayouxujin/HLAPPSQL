@@ -309,8 +309,8 @@
 
     var recordidlist=[];  //用来存储删除的recordid
 
-    var recordlist;
-    var tempdevicelist;
+    var recordlist=[];
+    var tempdevicelist=[];
     //新建设备的经纬度
     var devicelat,devicelng;
     var listener;
@@ -373,7 +373,6 @@
              var data=eval(resp.data);
              for(var i in data){
                  devicelist.push(data[i]);
-                 tempdevicelist.push(data[i]);
              }
              map.clearMap();
              cameralist=[],sensorlist=[],radarlist=[];
@@ -764,6 +763,8 @@
         function undoOperation() {
 
             var operationID;
+            tempdevicelist=[];
+            recordlist=[];
             deviceidlist=[];
             recordidlist=[];
             $("input:radio").each(function () {
@@ -783,11 +784,11 @@
             }
             //对deviceidlist中存在的deviceid遍历recordlist形成一个数组
             //得到devicelist
-               getdevicelist();
+                getdevicelist();
             //得到recordlist
                 getrecordlist();
-            console.log(deviceidlist);
-            console.log(tempdevicelist);
+                console.log(recordlist);
+                console.log(tempdevicelist);
                 for (var j in deviceidlist){
                     for(var k in tempdevicelist){
                         if (deviceidlist[j]==tempdevicelist[k].deviceID){
@@ -801,7 +802,13 @@
                         }
                     }
                 }
-           /* $.ajax({
+
+                console.log(operationID);
+                console.log(deviceidlist);
+                console.log(recordidlist);
+
+
+           $.ajax({
                 url: "http://localhost:8080/api/operation/deleteoperation",
                 type: "POST",
                 data: {
@@ -811,13 +818,14 @@
                 }
             }).done(function(resp) {
                 if(resp.message == "SUCCESS"){
+                    alert("撤销操作成功");
                     checkRecord();
                 }else{
                     alert("删除失败");
                 }
             }).fail(function(err) {
                 alert("服务器无响应");
-            });*/
+            });
         }
 
         function createtable() {
@@ -876,10 +884,33 @@
                 url: "http://47.100.107.158:8080/api/record/getrecordlist",
                 type: "GET",
                 data: "",
+                async: false,
                 contentType: false   // 告诉jQuery不要去设置Content-Type请求头
             }).done(function(resp) {
-                recordlist=eval(resp.data);
+                var data=eval(resp.data);
+                for(var i in data){
+                    recordlist.push(data[i]);
+                }
+                console.log(recordlist);
             }).fail(function(err) {
+                alert("服务器无响应");
+            });
+        }
+
+        function getdevicelist() {
+            $.ajax({
+                url:"http://47.100.107.158:8080/api/device/getdevicelist",
+                type:"GET",
+                data:"",
+                async: false,
+                contentType:false
+            }).done(function (resp) {
+                var data=eval(resp.data);
+                for(var i in data){
+                    tempdevicelist.push(data[i]);
+                }
+                console.log(tempdevicelist)
+            }).fail(function (err) {
                 alert("服务器无响应");
             });
         }
